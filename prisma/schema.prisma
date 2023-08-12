@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Model {
+  ID        Int      @id @default(autoincrement())
+  UserID    Int
+  Type      String
+  Params    Json?    @db.Json
+  STLPath   String?
+  GCODEPath String?
+  TimeStamp DateTime @db.Timestamptz(6)
+  User      User     @relation(fields: [UserID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "UserID")
+  Print     Print[]
+}
+
+model Print {
+  ID        Int      @id @default(autoincrement())
+  ModelID   Int?
+  Status    String?
+  Progress  Float    @default(0)
+  TimeStamp DateTime @db.Timestamptz(6)
+  Model     Model?   @relation(fields: [ModelID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "ModelID")
+}
+
+model User {
+  ID          Int      @id @default(autoincrement())
+  ContactInfo String?
+  TimeStamp   DateTime @db.Timestamptz(6)
+  Model       Model[]
+}
