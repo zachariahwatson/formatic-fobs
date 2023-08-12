@@ -1,6 +1,6 @@
 'use client'
 
-import MainModel from './../components/MainModel'
+import ModelScene from './../components/ModelScene'
 import { useEffect, useState } from 'react'
 
 export default function Page() {
@@ -43,7 +43,7 @@ export default function Page() {
   return (
       <>
           <h1>control page</h1><br/>
-          <MainModel data={MIDIdata}/>
+          <ModelScene data={MIDIdata}/>
       </>
   )
 }
