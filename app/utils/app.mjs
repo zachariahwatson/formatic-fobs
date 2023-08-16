@@ -18,6 +18,10 @@
 // // const command = 'prusa-slicer-console.exe'
 // // const args = ['-g', './models/box.stl', '--load', './cfg/test1.ini', '--load', './cfg/test2.ini', '--load', './cfg/test3.ini', '--output', './models/box.gcode']
 
+/* Slic3r can be used as a command line tool and provides great flexibility so that you can perform operations in batch or as part of more complex workflows. The general syntax is: slic3r [ ACTION ] [ OPTIONS ] [ model1.stl model2.stl ... ]1. If multiple models are supplied, the requested action will be performed separately for each one1. You can use the --merge option to arrange and then merge the given models into a single one, thus the action will be performed once1. If the --dont-arrange option is supplied, models will be merged at their original coordinates1.
+
+If you want to auto-arrange multiple .stl models in the Slic3r CLI, you can use the --merge option without the --dont-arrange option. For example, you can use the following command: slic3r --merge model1.stl model2.stl model3.stl. This will arrange and then merge the given models into a single one.*/
+
 // // const childProcess = spawn(command, args, { stdio: 'inherit' })
 
 // const gcodePath = './models/box.gcode'
