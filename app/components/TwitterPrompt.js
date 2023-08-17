@@ -1,0 +1,27 @@
+//import { useState } from 'react'
+import { handleTwitterSubmit } from '../utils/actions'
+
+
+export default function TwitterPrompt() {
+    //const [twitterAccount, setTwitterAccount] = useState('')
+    return (
+        <>
+            <form onSubmit={handleTwitterSubmit} className="flex flex-col items-center">
+                <label className="text-lg font-medium mb-2">
+                    Twitter account:
+                    <input
+                    type="text"
+                    name="twitterAccount"
+                    //value={twitterAccount}
+                    className="border border-gray-300 rounded-md px-3 py-1"
+                    />
+                </label>
+                <input
+                    type="submit"
+                    value="Submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                />
+            </form>
+        </>
+    )
+}

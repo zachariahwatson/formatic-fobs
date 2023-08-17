@@ -1,18 +1,59 @@
 'use server'
 
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 import { spawn } from 'child_process'
+import { revalidatePath } from 'next/cache'
 const fs = require('fs')
+import { cookies } from 'next/headers'
 
-export async function SaveToOutputs(fileContents) {
+export async function handleTwitterSubmit(formData) {
+    cookies.delete('twitterAccount')
+    cookies.set('twitterAccount', formData.get('twitterAccount'))
+    cookies.set('ShowModelScene', true)
+    revalidatePath('/')
+}
+
+export async function SaveToOutputs(userContactInfo, fileContents) {
     //creates .stl file of model in the outputs folder
-    console.log('saving...')
-    fs.writeFile(process.env.OUTPUTS_PATH + 'cube.stl', fileContents, (err) => {
+
+    //create user entry
+    const user = await prisma.user.create({
+        data: {
+            ContactInfo: userContactInfo
+        }
+    })
+    console.log(user)
+
+    //console.log('saving...')
+
+    //create model entry
+    const model = await prisma.model.create({
+        data: {
+            UserID: user.ID,
+            Type: 'cube',
+            Params: {params: 'test'},
+        }
+    })
+    console.log(model)
+    //after creating, create path for the STL (gotta do it like this because there's no way to access the model id while creating the entry)
+    prisma.model.update({
+        where: { id: model.ID },
+        data: {
+          STLPath: `${process.env.OUTPUTS_PATH}${model.ID}.stl`,
+        },
+    })
+
+    fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, fileContents, (err) => {
         if (err) {
             console.error('error creating file:', err)
         } else {
             console.log('file created successfully.')
         }
-    });
+    })
+
+    cookies.set('setModelScene', false)
+    revalidatePath('/')
 }
 
 export async function Slice(meshIDs) {

@@ -14,23 +14,23 @@ model Model {
   Params    Json?    @db.Json
   STLPath   String?
   GCODEPath String?
-  TimeStamp DateTime @db.Timestamptz(6)
+  TimeStamp DateTime @default(now()) @db.Timestamptz(6)
+  PrintID   Int?
+  Print     Print?   @relation(fields: [PrintID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "PrintID")
   User      User     @relation(fields: [UserID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "UserID")
-  Print     Print[]
 }
 
 model Print {
   ID        Int      @id @default(autoincrement())
-  ModelID   Int?
   Status    String?
   Progress  Float    @default(0)
-  TimeStamp DateTime @db.Timestamptz(6)
-  Model     Model?   @relation(fields: [ModelID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "ModelID")
+  TimeStamp DateTime @default(now()) @db.Timestamptz(6)
+  Model     Model[]
 }
 
 model User {
   ID          Int      @id @default(autoincrement())
   ContactInfo String?
-  TimeStamp   DateTime @db.Timestamptz(6)
+  TimeStamp   DateTime @default(now()) @db.Timestamptz(6)
   Model       Model[]
 }

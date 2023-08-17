@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import ExportSTL from '@/app/components/ExportSTL'
 
+
 export default function Cube({MIDIdata, props}) {
   const mesh = useRef()
   const cube = useRef()
@@ -39,6 +40,7 @@ export default function Cube({MIDIdata, props}) {
   return (
     <>
       <mesh {...props} ref={mesh}>
+        {console.log('rendering1')}
         <boxGeometry ref={cube} args={[1 + cubeData.w, 1 + cubeData.d, 1 + cubeData.h]}/>
         <meshStandardMaterial color={'white'} />
       </mesh>

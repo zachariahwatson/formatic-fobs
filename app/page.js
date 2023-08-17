@@ -24,6 +24,8 @@
 
 import { useEffect, useState } from 'react'
 import ModelScene from './components/ModelScene';
+import TwitterPrompt from './components/TwitterPrompt';
+import { cookies } from 'next/headers';
 
 export default function Page() {
   const [MIDIdata, setMidiData] = useState([0,0])
@@ -56,9 +58,14 @@ export default function Page() {
     }, []);
 
   return (
-    //r3f model
+    //r3f model or twitter prompt
     <>
+      {!cookies.get('showModelScene') && (
+        <TwitterPrompt/>
+      )}
+      {cookies.get('showModelScene') && (
         <ModelScene MIDIdata={MIDIdata}/>
+      )}
     </>
   )
 }
