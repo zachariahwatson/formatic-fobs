@@ -1,3 +1,25 @@
+/*TODO
+  [x] set up stl export on button press
+  [ ] implement db
+  [ ] create print queue that waits for user input before printing next print job
+  [ ] create print queue component that contains print job components with a preview of the model
+  [ ] create slicing process that puts multiple models on the same buildplate (use --marge header in prusaslicer cli)
+  [ ] twitter api to dm people model is ready?
+  [ ] 3d print cover for midi controller
+  [ ] stickers
+  [ ] pretty everything up
+  [ ] create rainbow shader for models
+  [ ] create white gridline plane
+  [ ] maybe lighting shader?
+  [ ] create ufo model
+  [ ] create cactus model
+  [ ] create landscape model
+  [ ] do exhibit simulation test
+  [ ] test on tvs
+  [ ] calibrate 3d printer
+  [ ] generate .ini file for prusaslicer cli
+*/
+
 'use client'
 
 import { useEffect, useState } from 'react'
