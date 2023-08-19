@@ -8,7 +8,7 @@ export default function ModelScene({MIDIdata}) {
     <div className="absolute w-screen h-screen left-0 top-0">
       <Canvas
         orthographic
-        camera={{ zoom: 150, position: [-20, 20, 20] }}
+        camera={{zoom: 37.5, position: [-20, 20, 20] }}
       >
         <ambientLight />
         <directionalLight intensity={3} position={[40, 30, 20]} />

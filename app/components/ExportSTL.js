@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import * as THREE from 'three'
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter'
 import { SaveToOutputs } from '../utils/actions'
@@ -9,6 +9,7 @@ export default function ExportSTL({ MIDIdata, mesh }) {
   const router = useRouter()
   const [STLstring, setSTLstring] = useState('')
   const [printPressed, setPrintPressed] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   // listen for the 'print' button being pressed
   useEffect(() => {
@@ -26,13 +27,15 @@ export default function ExportSTL({ MIDIdata, mesh }) {
 
       setPrintPressed(true)
     }
-  }, [MIDIdata, mesh, printPressed])
+  }, [MIDIdata])
 
   useEffect(() => {
     if (STLstring) {
-      //create STL file in specified location
-      SaveToOutputs(STLstring)
-      router.push('/')
+      startTransition(() => {
+        //create STL file in specified location
+        SaveToOutputs(STLstring)
+        router.push('/')
+      })
     }
-  }, [STLstring, router])
+  }, [STLstring])
 }
