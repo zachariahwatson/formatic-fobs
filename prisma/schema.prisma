@@ -8,16 +8,19 @@ datasource db {
 }
 
 model Model {
-  ID        Int      @id @default(autoincrement())
-  UserID    Int
-  Type      String
-  Params    Json?    @db.Json
-  STLPath   String?
-  GCODEPath String?
-  TimeStamp DateTime @default(now()) @db.Timestamptz(6)
-  PrintID   Int?
-  Print     Print?   @relation(fields: [PrintID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "PrintID")
-  User      User     @relation(fields: [UserID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "UserID")
+  ID             Int      @id @default(autoincrement())
+  UserID         Int
+  Type           String?
+  Params         Json?    @db.Json
+  STLPath        String?
+  GCODEPath      String?
+  TimeStamp      DateTime @default(now()) @db.Timestamptz(6)
+  PrintID        Int?
+  IsCurrentModel Boolean  @default(true)
+  Print          Print?   @relation(fields: [PrintID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "PrintID")
+  User           User     @relation(fields: [UserID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "UserID")
+
+  @@index([PrintID], map: "fki_PrintID")
 }
 
 model Print {

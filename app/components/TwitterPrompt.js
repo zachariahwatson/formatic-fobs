@@ -2,18 +2,18 @@
 import { handleTwitterSubmit } from '../utils/actions'
 
 
-export default function TwitterPrompt() {
+export default function TwitterPrompt({setShowModelScene, setTwitterAccount}) {
     //const [twitterAccount, setTwitterAccount] = useState('')
     return (
         <>
-            <form onSubmit={handleTwitterSubmit} className="flex flex-col items-center">
+            <form action={handleTwitterSubmit} onSubmit={(event) => handleStates(event, setShowModelScene, setTwitterAccount)} className="flex flex-col items-center">
                 <label className="text-lg font-medium mb-2">
                     Twitter account:
                     <input
                     type="text"
                     name="twitterAccount"
                     //value={twitterAccount}
-                    className="border border-gray-300 rounded-md px-3 py-1"
+                    className="border border-gray-300 rounded-md px-3 py-1 text-black"
                     />
                 </label>
                 <input
@@ -24,4 +24,10 @@ export default function TwitterPrompt() {
             </form>
         </>
     )
+}
+
+function handleStates(event, setShowModelScene, setTwitterAccount) {
+    //event.preventDefault()
+    setShowModelScene(true)
+    setTwitterAccount(event.target.elements.twitterAccount.value)
 }

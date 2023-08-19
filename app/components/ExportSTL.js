@@ -9,9 +9,9 @@ import TwitterPrompt from './TwitterPrompt'
 
 
 export default function ExportSTL({ MIDIdata, mesh }) {
-  console.log('rendering2')
+  
   const [STLstring, setSTLstring] = useState('')
-  //console.log(MIDIdata.val)
+  console.log('exporting stl...')
   if (MIDIdata.id == 23 && MIDIdata.val == 127 && mesh.current) {
     const g = mesh.current.geometry.clone()
     const m = mesh.current.material.clone()
@@ -21,7 +21,7 @@ export default function ExportSTL({ MIDIdata, mesh }) {
     setSTLstring(exporter.parse(newMesh))
     //console.log(STLstring)
     //const blob = new Blob([STLstring], { type: 'text/plain' })
-    SaveToOutputs(cookies.get('twitterAccount'), STLstring)
+    SaveToOutputs(STLstring)
     //Slice([])
     // Save the STL file
     //saveAs(blob, 'cube.stl')

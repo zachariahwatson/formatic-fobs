@@ -5,55 +5,61 @@ const prisma = new PrismaClient()
 import { spawn } from 'child_process'
 import { revalidatePath } from 'next/cache'
 const fs = require('fs')
-import { cookies } from 'next/headers'
+
 
 export async function handleTwitterSubmit(formData) {
-    cookies.delete('twitterAccount')
-    cookies.set('twitterAccount', formData.get('twitterAccount'))
-    cookies.set('ShowModelScene', true)
-    revalidatePath('/')
-}
 
-export async function SaveToOutputs(userContactInfo, fileContents) {
-    //creates .stl file of model in the outputs folder
 
     //create user entry
     const user = await prisma.user.create({
         data: {
-            ContactInfo: userContactInfo
+            ContactInfo: formData.get('twitterAccount')
         }
     })
-    console.log(user)
-
-    //console.log('saving...')
 
     //create model entry
     const model = await prisma.model.create({
         data: {
             UserID: user.ID,
-            Type: 'cube',
-            Params: {params: 'test'},
         }
     })
+
+    console.log(user)
     console.log(model)
-    //after creating, create path for the STL (gotta do it like this because there's no way to access the model id while creating the entry)
-    prisma.model.update({
-        where: { id: model.ID },
+
+    //revalidatePath('/')
+}
+
+export async function SaveToOutputs(fileContents) {
+    //creates .stl file of model in the outputs folder
+
+    const searchResults = await prisma.model.findMany({
+        where: { 
+          IsCurrentModel: true      
+        },     
+        orderBy: {
+          TimeStamp: 'desc'
+        },
+        take: 1
+    })
+    const model = searchResults[0]
+
+    const updatedModel = await prisma.model.update({
+        where: { ID: model.ID },
         data: {
           STLPath: `${process.env.OUTPUTS_PATH}${model.ID}.stl`,
+          IsCurrentModel: false
         },
     })
 
-    fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, fileContents, (err) => {
+    fs.writeFile(process.env.OUTPUTS_PATH + `${updatedModel.ID}.stl`, fileContents, (err) => {
+        console.log('wat')
         if (err) {
             console.error('error creating file:', err)
         } else {
             console.log('file created successfully.')
         }
     })
-
-    cookies.set('setModelScene', false)
-    revalidatePath('/')
 }
 
 export async function Slice(meshIDs) {
