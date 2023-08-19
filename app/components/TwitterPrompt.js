@@ -6,7 +6,7 @@ export default function TwitterPrompt({setShowModelScene, setTwitterAccount}) {
     //const [twitterAccount, setTwitterAccount] = useState('')
     return (
         <>
-            <form action={handleTwitterSubmit} onSubmit={(event) => handleStates(event, setShowModelScene, setTwitterAccount)} className="flex flex-col items-center">
+            <form action={handleTwitterSubmit} className="flex flex-col items-center">
                 <label className="text-lg font-medium mb-2">
                     Twitter account:
                     <input
@@ -24,10 +24,4 @@ export default function TwitterPrompt({setShowModelScene, setTwitterAccount}) {
             </form>
         </>
     )
-}
-
-function handleStates(event, setShowModelScene, setTwitterAccount) {
-    //event.preventDefault()
-    setShowModelScene(true)
-    setTwitterAccount(event.target.elements.twitterAccount.value)
 }

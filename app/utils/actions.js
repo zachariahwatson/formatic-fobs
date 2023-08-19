@@ -6,10 +6,7 @@ import { spawn } from 'child_process'
 import { revalidatePath } from 'next/cache'
 const fs = require('fs')
 
-
 export async function handleTwitterSubmit(formData) {
-
-
     //create user entry
     const user = await prisma.user.create({
         data: {
@@ -26,13 +23,12 @@ export async function handleTwitterSubmit(formData) {
 
     console.log(user)
     console.log(model)
-
-    //revalidatePath('/')
 }
 
 export async function SaveToOutputs(fileContents) {
     //creates .stl file of model in the outputs folder
 
+    //query to find the latest model created that is also the current model
     const searchResults = await prisma.model.findMany({
         where: { 
           IsCurrentModel: true      
@@ -44,6 +40,7 @@ export async function SaveToOutputs(fileContents) {
     })
     const model = searchResults[0]
 
+    //update specified model's STL path
     const updatedModel = await prisma.model.update({
         where: { ID: model.ID },
         data: {
@@ -52,6 +49,9 @@ export async function SaveToOutputs(fileContents) {
         },
     })
 
+    console.log(updatedModel)
+
+    //create .stl file
     fs.writeFile(process.env.OUTPUTS_PATH + `${updatedModel.ID}.stl`, fileContents, (err) => {
         console.log('wat')
         if (err) {

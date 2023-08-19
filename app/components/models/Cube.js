@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import ExportSTL from '@/app/components/ExportSTL'
+import ExportSTL from '../ExportSTL'
 
 
 export default function Cube({MIDIdata, props}) {
@@ -9,7 +8,7 @@ export default function Cube({MIDIdata, props}) {
   const cube = useRef()
   const [cubeData, setcubeData] = useState({w: 0, h: 0, d: 0})
 
-  //handle MIDIdata (put this in MIDIhandler util, return data and then do useState setter)
+  //handle MIDIdata, assign knobs to different parameters
   useEffect(() => {
     if (MIDIdata.id == 0) {
         if (MIDIdata.val > 0) {
@@ -29,13 +28,13 @@ export default function Cube({MIDIdata, props}) {
   //useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.01))
 
   useEffect(() => {
-    //check to see if theres a geometry set up
+    //check to see if theres a geometry set up before modifying
     if (cube.current.geometry) {
         const geometry = new THREE.BoxGeometry(1 + cubeData.w, 1 + cubeData.d, 1 + cubeData.h)
         cube.current.geometry.dispose()
         cube.current.geometry = geometry
     }
-  }, [1 + cubeData.w, 1 + cubeData.h, 1 + cubeData.d])
+  }, [cubeData.w, cubeData.h, cubeData.d])
 
   return (
     <>
