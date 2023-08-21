@@ -5,6 +5,7 @@ const prisma = new PrismaClient()
 import { spawn } from 'child_process'
 import { revalidatePath } from 'next/cache'
 const fs = require('fs')
+import { useRouter } from 'next/navigation'
 
 export async function handleTwitterSubmit(formData) {
     //create user entry
@@ -25,16 +26,16 @@ export async function handleTwitterSubmit(formData) {
     console.log(model)
 }
 
-export async function SaveToOutputs(fileContents) {
+export async function saveToOutputs(fileContents, modelParams) {
     //creates .stl file of model in the outputs folder
 
     //query to find the latest model created that is also the current model
     const searchResults = await prisma.model.findMany({
         where: { 
-          IsCurrentModel: true      
+            IsCurrentModel: true      
         },     
         orderBy: {
-          TimeStamp: 'desc'
+            TimeStamp: 'desc'
         },
         take: 1
     })
@@ -44,8 +45,9 @@ export async function SaveToOutputs(fileContents) {
     const updatedModel = await prisma.model.update({
         where: { ID: model.ID },
         data: {
-          STLPath: `${process.env.OUTPUTS_PATH}${model.ID}.stl`,
-          IsCurrentModel: false
+            Params: modelParams,
+            STLPath: `${process.env.OUTPUTS_PATH}${model.ID}.stl`,
+            IsCurrentModel: false,
         },
     })
 
@@ -53,7 +55,6 @@ export async function SaveToOutputs(fileContents) {
 
     //create .stl file
     fs.writeFile(process.env.OUTPUTS_PATH + `${updatedModel.ID}.stl`, fileContents, (err) => {
-        console.log('wat')
         if (err) {
             console.error('error creating file:', err)
         } else {
@@ -62,7 +63,7 @@ export async function SaveToOutputs(fileContents) {
     })
 }
 
-export async function Slice(meshIDs) {
+export async function slice(meshIDs) {
     //will be different for mac
     const command = process.env.PRUSA_CLI_PATH
     const args = [

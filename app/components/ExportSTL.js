@@ -1,19 +1,19 @@
 import { useState, useEffect, useTransition } from 'react'
 import * as THREE from 'three'
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter'
-import { SaveToOutputs } from '../utils/actions'
+import { saveToOutputs } from '../actions'
 import { useRouter } from 'next/navigation'
 
 
-export default function ExportSTL({ MIDIdata, mesh }) {
+export default function ExportSTL({ printButtonHit, modelParams, mesh }) {
   const router = useRouter()
   const [STLstring, setSTLstring] = useState('')
-  const [printPressed, setPrintPressed] = useState(false)
+  
   const [isPending, startTransition] = useTransition()
 
   // listen for the 'print' button being pressed
   useEffect(() => {
-    if (MIDIdata.id == 23 && MIDIdata.val == 127 && mesh.current && !printPressed) {
+    if (printButtonHit && mesh.current) {
 
       //clone mesh to do translations because Prusaslicer's orientations are different from THREE.js
       const g = mesh.current.geometry.clone()
@@ -24,16 +24,14 @@ export default function ExportSTL({ MIDIdata, mesh }) {
       const newMesh = new THREE.Mesh(g, m)
       const exporter = new STLExporter()
       setSTLstring(exporter.parse(newMesh))
-
-      setPrintPressed(true)
     }
-  }, [MIDIdata])
+  }, [printButtonHit])
 
   useEffect(() => {
     if (STLstring) {
       startTransition(() => {
         //create STL file in specified location
-        SaveToOutputs(STLstring)
+        saveToOutputs(STLstring, modelParams)
         router.push('/')
       })
     }
