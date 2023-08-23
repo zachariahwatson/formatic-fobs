@@ -9,7 +9,7 @@ export function dataHandler(MIDIdata) {
     const [cubeData, setcubeData] = useState({type: 'cube', ...minCubeVals})
 
     //cone setup
-    const minConeVals = {r: 2, h: 2, segments: 8}
+    const minConeVals = {r: 2, h: 4, segments: 8}
     const [coneData, setConeData] = useState({type: 'cone', ...minConeVals})
 
     //cube listener
