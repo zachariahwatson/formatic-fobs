@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import ModelScene from './../../components/ModelScene';
 import { motion } from 'framer-motion';
+// import RandomText from '@/app/components/RandomText';
 
 export default function Page({ params }) {
   const [MIDIdata, setMidiData] = useState([0,0])
@@ -35,13 +36,14 @@ export default function Page({ params }) {
 
   return (
     <>
-        <motion.div
-        initial={{ opacity: 0, scale: 1 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}>
-            <h1>hi {params.id} </h1>
-            <ModelScene MIDIdata={MIDIdata}/>
-        </motion.div>
+      <ModelScene MIDIdata={MIDIdata}/>
     </>
   )
 }
+
+/* <motion.div
+      initial={{ opacity: 0}}
+      animate={{ opacity: 1}}
+      transition={{ duration: 1, delay: 2 }}>
+        <h1 className="font-black text-8xl p-5">{params.id}</h1>
+      </motion.div> */

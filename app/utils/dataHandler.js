@@ -16,11 +16,11 @@ export function dataHandler(MIDIdata) {
     useEffect(() => {
         if (type == 'cube') {
             if (MIDIdata.id == 1) {
-                setcubeData((prev) => ({ ...prev, w: minCubeVals.w + MIDIdata.val/7.11 }))
+                setcubeData((prev) => ({ ...prev, w: minCubeVals.w + MIDIdata.val/8 }))
             } else if (MIDIdata.id == 2) {
-                setcubeData((prev) => ({ ...prev, h: minCubeVals.h + MIDIdata.val/7.11 }))
+                setcubeData((prev) => ({ ...prev, h: minCubeVals.h + MIDIdata.val/8 }))
             } else if (MIDIdata.id == 3) {
-                setcubeData((prev) => ({ ...prev, d: minCubeVals.d + MIDIdata.val/7.11 }))
+                setcubeData((prev) => ({ ...prev, d: minCubeVals.d + MIDIdata.val/8 }))
             }
             console.log(cubeData)
         }
@@ -30,11 +30,11 @@ export function dataHandler(MIDIdata) {
     useEffect(() => {
         if (type == 'cone') {
             if (MIDIdata.id == 1) {
-                setConeData((prev) => ({ ...prev, r: minConeVals.r + MIDIdata.val/7.11 }))
+                setConeData((prev) => ({ ...prev, r: minConeVals.r + MIDIdata.val/8 }))
             } else if (MIDIdata.id == 2) {
-                setConeData((prev) => ({ ...prev, h: minConeVals.h + MIDIdata.val/7.11 }))
+                setConeData((prev) => ({ ...prev, h: minConeVals.h + MIDIdata.val/8 }))
             } else if (MIDIdata.id == 3) {
-                setConeData((prev) => ({ ...prev, segments: minConeVals.segments + MIDIdata.val/7.11 }))
+                setConeData((prev) => ({ ...prev, segments: minConeVals.segments + MIDIdata.val/8 }))
             }
             console.log(coneData)
         }
