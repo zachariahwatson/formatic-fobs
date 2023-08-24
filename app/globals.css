@@ -52,70 +52,70 @@ body {
 
 @font-face {
   font-family: 'Copula';
-  src: url('./fonts/Copula.otf') format('opentype');
+  src: url('./../public/fonts/Copula.otf') format('opentype');
 }
 
 @font-face {
   font-family: 'n27-bold-webfont';
-  src: url('./fonts/n27-bold-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-bold-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-bolditalic-webfont';
-  src: url('./fonts/n27-bolditalic-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-bolditalic-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-extralight-webfont';
-  src: url('./fonts/n27-extralight-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-extralight-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-extralightitalic-webfont';
-  src: url('./fonts/n27-extralightitalic-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-extralightitalic-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-light-webfont';
-  src: url('./fonts/n27-light-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-light-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-lightitalic-webfont';
-  src: url('./fonts/n27-lightitalic-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-lightitalic-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-medium-webfont';
-  src: url('./fonts/n27-medium-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-medium-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-mediumitalic-webfont';
-  src: url('./fonts/n27-mediumitalic-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-mediumitalic-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-regular-webfont';
-  src: url('./fonts/n27-regular-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-regular-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-regularitalic-webfont';
-  src: url('./fonts/n27-regularitalic-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-regularitalic-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-thin-webfont';
-  src: url('./fonts/n27-thin-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-thin-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'n27-thinitalic-webfont';
-  src: url('./fonts/n27-thinitalic-webfont.woff2') format('woff2');
+  src: url('./../public/fonts/n27-thinitalic-webfont.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Waffold';
-  src: url('./fonts/Waffold.woff') format('woff');
+  src: url('./../public/fonts/Waffold.woff') format('woff');
 }

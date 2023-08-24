@@ -28,6 +28,7 @@ model Print {
   Status    String?
   Progress  Float    @default(0)
   TimeStamp DateTime @default(now()) @db.Timestamptz(6)
+  ModelIDs  Int[]
   Model     Model[]
 }
 

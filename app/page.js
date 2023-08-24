@@ -24,7 +24,7 @@
 
 import { handleTwitterSubmit } from './actions'
 import {useRouter} from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useRef } from 'react'
 // import RandomText from './components/RandomText'
 
@@ -42,6 +42,7 @@ export default function Page() {
             <motion.div
             initial={{ opacity: 0}}
             animate={{ opacity: 1}}
+            exit={{opacity: 1}}
             transition={{ duration: 1}}
             className="flex justify-center h-full w-full items-center">
                 <form action={handleTwitterSubmit} onSubmit={(e) => {router.push('model/' + (e.target.elements.twitterAccount.value).replace(/^@/, ''))}} className="flex flex-col gap-2">

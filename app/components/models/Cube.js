@@ -22,7 +22,7 @@ export default function Cube({shapeData, printButtonHit, props}) {
     <>
       <mesh {...props} ref={mesh}>
         <boxGeometry ref={cube} args={[shapeData.w, shapeData.d, shapeData.h]}/>
-        <meshStandardMaterial color={'white'} />
+        <meshPhongMaterial color={'white'} />
       </mesh>
       <ExportSTL printButtonHit={printButtonHit} modelParams={shapeData} mesh={mesh}/>
     </>

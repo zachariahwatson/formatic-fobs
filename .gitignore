@@ -40,4 +40,4 @@ next-env.d.ts
 /outputs
 
 #fonts
-/app/fonts/
+/public/fonts/

@@ -22,7 +22,7 @@ export default function Cone({shapeData, printButtonHit, props}) {
     <>
       <mesh {...props} ref={mesh}>
         <coneGeometry ref={cone} args={[shapeData.r, shapeData.h, shapeData.segments]}/>
-        <meshStandardMaterial color={'white'} />
+        <meshPhongMaterial color={'white'} />
       </mesh>
       <ExportSTL printButtonHit={printButtonHit} modelParams={shapeData} mesh={mesh}/>
     </>

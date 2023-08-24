@@ -36,7 +36,7 @@ export default function Page({ params }) {
 
   return (
     <>
-      <ModelScene MIDIdata={MIDIdata}/>
+      <ModelScene MIDIdata={MIDIdata} params={params} />
     </>
   )
 }
@@ -47,3 +47,7 @@ export default function Page({ params }) {
       transition={{ duration: 1, delay: 2 }}>
         <h1 className="font-black text-8xl p-5">{params.id}</h1>
       </motion.div> */
+
+    //   <div>
+    //   <p className="absolute px-6 py-4 left-0 top-28"><span className="font-n27-extralight">CONTROL_</span><span className="font-n27-regular">USERNAME:</span></p>
+    // </div>

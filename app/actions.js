@@ -1,7 +1,6 @@
 'use server'
 
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { prisma } from './utils/prisma'
 import { spawn } from 'child_process'
 import { revalidatePath } from 'next/cache'
 const fs = require('fs')
@@ -39,22 +38,65 @@ export async function saveToOutputs(fileContents, modelParams) {
         },
         take: 1
     })
-    const model = searchResults[0]
+    let model = searchResults[0]
 
-    //update specified model's STL path
-    const updatedModel = await prisma.model.update({
+    //attach model to print job
+    const printJobs = await prisma.print.findMany({
+        where: {
+            Status: 'filling'
+        },
+        orderBy: {
+            TimeStamp: 'asc'
+        },
+        take: 1
+    })
+    let printJob = printJobs.length == 0 ? 
+        await prisma.print.create({
+            data: {
+                Status: 'filling',
+            }
+        }) : printJobs[0]
+
+    //update specified model's STL path and add print job ID
+    model = await prisma.model.update({
         where: { ID: model.ID },
         data: {
             Params: modelParams,
             STLPath: `${process.env.OUTPUTS_PATH}${model.ID}.stl`,
             IsCurrentModel: false,
+            Print: {
+                connect: {
+                    ID: printJob.ID
+                }
+            }
         },
     })
 
-    console.log(updatedModel)
+    //add model ID to print job
+    printJob = await prisma.print.update({
+        where: { ID: printJob.ID },
+        data: {
+            ModelIDs: {
+                push: model.ID
+            }
+        },
+    })
+
+    //check to see if print job is full (4 models) and set to full if it is
+    if (printJob.ModelIDs.length >= 4) {
+        printJob = await prisma.print.update({
+            where: { ID: printJob.ID },
+            data: {
+                Status: 'full'
+            },
+        })
+    }
+
+    console.log(printJob)
+    console.log(model)
 
     //create .stl file
-    fs.writeFile(process.env.OUTPUTS_PATH + `${updatedModel.ID}.stl`, fileContents, (err) => {
+    fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, fileContents, (err) => {
         if (err) {
             console.error('error creating file:', err)
         } else {
