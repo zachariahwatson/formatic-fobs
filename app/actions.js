@@ -105,6 +105,17 @@ export async function saveToOutputs(fileContents, modelParams) {
     })
 }
 
+export async function clearDB() {
+    await prisma.model.deleteMany({})
+    await prisma.user.deleteMany({})
+    await prisma.print.deleteMany({})
+
+    // console.log(await prisma.model.findMany({}))
+    // console.log(await prisma.user.findMany({}))
+    // console.log(await prisma.print.findMany({}))
+    
+}
+
 export async function slice(meshIDs) {
     //will be different for mac
     const command = process.env.PRUSA_CLI_PATH
