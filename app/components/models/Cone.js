@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import ExportSTL from '../ExportSTL'
 
 
-export default function Cone({shapeData, printButtonHit, props}) {
+export default function Cone({shapeData, printButtonHit, params, props}) {
   const mesh = useRef()
   const cone = useRef()
 
@@ -24,7 +24,7 @@ export default function Cone({shapeData, printButtonHit, props}) {
         <coneGeometry ref={cone} args={[shapeData.r, shapeData.h, shapeData.segments]}/>
         <meshPhongMaterial color={'white'} />
       </mesh>
-      <ExportSTL printButtonHit={printButtonHit} modelParams={shapeData} mesh={mesh}/>
+      <ExportSTL printButtonHit={printButtonHit} modelParams={shapeData} mesh={mesh} params={params}/>
     </>
   )
 }

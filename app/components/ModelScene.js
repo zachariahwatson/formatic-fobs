@@ -1,22 +1,19 @@
 import React, {useEffect, useState} from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Text3D, Center } from '@react-three/drei'
+import { OrbitControls} from '@react-three/drei'
 import Cube from './models/Cube'
 import Cone from './models/Cone'
 import { dataHandler } from '../utils/dataHandler'
 import { motion as motion3d } from 'framer-motion-3d'
 import { motion, AnimatePresence } from 'framer-motion'
 
-
-
 export default function ModelScene({MIDIdata, params}) {
   const [modelID, setModelID] = useState('0')
-
-  console.log(typeof modelID)
+  
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('./../../api')
+      const res = await fetch('./../../api/getmodel')
       const model = await res.json()
       setModelID(model.ID)
     }
@@ -74,7 +71,7 @@ export default function ModelScene({MIDIdata, params}) {
               key={currentLineIndex}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, transition: { duration: 0.5 } }}
+              exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
               transition={{ duration: 1, delay: 0.5 }}
               className="text-4xl text-center font-n27-regular absolute top-1/2 left-0 w-full"
             >
@@ -89,11 +86,6 @@ export default function ModelScene({MIDIdata, params}) {
           camera={{zoom: 37.5, position: [-20, 20, 20] }}
           className="rounded-3xl"
         >
-          <Center position={[0, 0, 10]}>
-            <Text3D font="/fonts/Inter_Thin_Regular.json" rotation={[-Math.PI/2,0,0]} height={.2}>
-              {params.id}
-            </Text3D>
-          </Center>
           <ambientLight />
           <directionalLight intensity={3} position={[40, 30, 20]} />
           <motion3d.group
@@ -103,8 +95,8 @@ export default function ModelScene({MIDIdata, params}) {
               delay: 17
             }}
           >
-            {(shapeData.type == 'cube') && <Cube position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit}/>}
-            {(shapeData.type == 'cone') && <Cone position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit}/>}
+            {(shapeData.type == 'cube') && <Cube position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params}/>}
+            {(shapeData.type == 'cone') && <Cone position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params}/>}
           </motion3d.group>
           <OrbitControls />
         </Canvas>

@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import ExportSTL from '../ExportSTL'
 
 
-export default function Cube({shapeData, printButtonHit, props}) {
+export default function Cube({shapeData, printButtonHit, params, props}) {
   const mesh = useRef()
   const cube = useRef()
 
@@ -24,7 +24,7 @@ export default function Cube({shapeData, printButtonHit, props}) {
         <boxGeometry ref={cube} args={[shapeData.w, shapeData.d, shapeData.h]}/>
         <meshPhongMaterial color={'white'} />
       </mesh>
-      <ExportSTL printButtonHit={printButtonHit} modelParams={shapeData} mesh={mesh}/>
+      <ExportSTL printButtonHit={printButtonHit} modelParams={shapeData} mesh={mesh} params={params}/>
     </>
   )
 }
