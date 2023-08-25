@@ -15,6 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <title>Formatic Fobs</title>
       <body>
         <svg className="h-full w-10 absolute" viewBox="0 -5 10 5">
           <path d="M 0 0 l 0 5 l 10 -5 l -10 -5 z" fill="#fff"/>
