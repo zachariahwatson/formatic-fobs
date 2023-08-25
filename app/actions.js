@@ -103,6 +103,8 @@ export async function saveToOutputs(fileContents, modelParams) {
             console.log('file created successfully.')
         }
     })
+
+    revalidatePath('/')
 }
 
 export async function clearDB() {
@@ -113,6 +115,8 @@ export async function clearDB() {
     // console.log(await prisma.model.findMany({}))
     // console.log(await prisma.user.findMany({}))
     // console.log(await prisma.print.findMany({}))
+
+    revalidatePath('/')
     
 }
 
