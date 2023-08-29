@@ -10,6 +10,13 @@ export async function GET() {
         orderBy: {
             TimeStamp: 'asc'
         },
+        include: {
+            Model: {
+                include: {
+                    User: true
+                }
+            }
+        },
         take: 3
     })
     const response = NextResponse.json(searchResults)

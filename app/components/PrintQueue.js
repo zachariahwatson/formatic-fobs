@@ -1,21 +1,29 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+//import { socket } from "../utils/io"
+import { io } from "socket.io-client"
 
 export default function PrintQueue() {
     const [printJobs, setPrintJobs] = useState([])
-
+    
     useEffect(() => {
-        console.log('hi')
+        const socket = io('http://localhost:3000')
         async function fetchData() {
-            const res = await fetch('./../api/getprintJobs')
+            const res = await fetch('./../api/getprintjobs')
             const printJobs = await res.json()
             console.log(printJobs)
             setPrintJobs(printJobs)
         }
         fetchData()
-    }, [])
-    
 
+        socket.on('printjobs', (jobs) => {
+            setPrintJobs(jobs)
+        })
+
+        return () => {
+            socket.disconnect()
+          }
+    }, [])
 
     return (
         <div className="h-full pt-20 pb-4">
@@ -32,9 +40,14 @@ export default function PrintQueue() {
                             transition={{ duration: .5, delay: .5 * i }}
                             key={job.ID}
                         >
-                            <div className="flex flex-col font-n27-extralight justify-around text-3xl w-full h-full">
-                                {job.ModelIDs.map((id) => {
-                                    return (<p key={id}>{id}</p>)
+                            <div className="flex flex-col font-n27-extralight justify-around text-3xl w-full h-full uppercase">
+                                {job.Model.map((model) => {
+                                    return (
+                                        <p className="w-full flex" key={model.User.ID}>
+                                            <span className="w-1/2 truncate">@{model.User.ContactInfo}</span>
+                                            <span className="w-1/2 text-right">TYPE_<span className="font-n27-regular">{model.Params.type}</span></span>
+                                        </p>
+                                    )
                                 })}
                             </div>
                         </motion.div>

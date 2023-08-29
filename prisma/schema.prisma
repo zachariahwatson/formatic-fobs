@@ -10,7 +10,6 @@ datasource db {
 model Model {
   ID             Int      @id @default(autoincrement())
   UserID         Int
-  Type           String?
   Params         Json?    @db.Json
   STLPath        String?
   GCODEPath      String?
@@ -28,7 +27,6 @@ model Print {
   Status    String?
   Progress  Float    @default(0)
   TimeStamp DateTime @default(now()) @db.Timestamptz(6)
-  ModelIDs  Int[]
   Model     Model[]
 }
 

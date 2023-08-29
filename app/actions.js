@@ -5,59 +5,56 @@ import { spawn } from 'child_process'
 import { revalidatePath } from 'next/cache'
 const fs = require('fs')
 import { useRouter } from 'next/navigation'
+import { socket } from './utils/io'
+//import { io } from 'socket.io-client'
 
 export async function handleTwitterSubmit(formData) {
-    //create user entry
+    //create user entry and create a model under that user
     const user = await prisma.user.create({
         data: {
-            ContactInfo: formData.get('twitterAccount')
+            ContactInfo: formData.get('twitterAccount'),
+            Model: {
+                create: {
+                }
+            }
+        },
+        include : {
+            Model: true
         }
     })
 
-    //create model entry
-    const model = await prisma.model.create({
-        data: {
-            UserID: user.ID,
-        }
-    })
-
-    console.log(user)
-    console.log(model)
+    console.log('user and model created:\n', user)
 }
 
 export async function saveToOutputs(fileContents, modelParams) {
+    //const socket = io('http://localhost:3000')
     //creates .stl file of model in the outputs folder
-
+    
     //query to find the latest model created that is also the current model
-    const searchResults = await prisma.model.findMany({
+    let model = await prisma.model.findFirst({
         where: { 
             IsCurrentModel: true      
         },     
         orderBy: {
             TimeStamp: 'desc'
-        },
-        take: 1
+        }
     })
-    let model = searchResults[0]
 
-    //attach model to print job
-    const printJobs = await prisma.print.findMany({
-        where: {
-            Status: 'filling'
+    //find the latest print job or create one if all are full
+    let printJob = await prisma.print.findFirst({
+        where: { 
+            Status: 'filling' 
         },
-        orderBy: {
-            TimeStamp: 'asc'
-        },
-        take: 1
+        orderBy: { 
+            TimeStamp: 'asc' 
+        }
+    }) || await prisma.print.create({ 
+        data: { 
+            Status: 'filling' 
+        }
     })
-    let printJob = printJobs.length == 0 ? 
-        await prisma.print.create({
-            data: {
-                Status: 'filling',
-            }
-        }) : printJobs[0]
 
-    //update specified model's STL path and add print job ID
+    //update created model's STL path and add print job ID
     model = await prisma.model.update({
         where: { ID: model.ID },
         data: {
@@ -72,28 +69,30 @@ export async function saveToOutputs(fileContents, modelParams) {
         },
     })
 
-    //add model ID to print job
+    console.log('added .stl to model:\n', model)
+    
+    //update print job and check if it is full
     printJob = await prisma.print.update({
         where: { ID: printJob.ID },
         data: {
-            ModelIDs: {
-                push: model.ID
+            Status: {
+                set: (
+                    await prisma.model.count({ //query count of models in the print job to be used for comparison
+                        where: { PrintID: printJob.ID }
+                    })
+                ) >= 4 ? 'full' : 'filling'
             }
         },
+        include: { //includes model but only the model ID because of the select thingy
+            Model: {
+                select: {
+                    ID: true
+                }
+            }
+        }
     })
 
-    //check to see if print job is full (4 models) and set to full if it is
-    if (printJob.ModelIDs.length >= 4) {
-        printJob = await prisma.print.update({
-            where: { ID: printJob.ID },
-            data: {
-                Status: 'full'
-            },
-        })
-    }
-
-    console.log(printJob)
-    console.log(model)
+    console.log('print job created or updated:\n', printJob)
 
     //create .stl file
     fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, fileContents, (err) => {
@@ -104,7 +103,26 @@ export async function saveToOutputs(fileContents, modelParams) {
         }
     })
 
-    revalidatePath('/')
+    //send printjobs to update print queue
+    const sendPrintJobs = await prisma.print.findMany({
+        where: { 
+            Progress: 0     
+        },     
+        orderBy: {
+            TimeStamp: 'asc'
+        },
+        include: { //includes the model as well as the user attached to it
+            Model: {
+                include: {
+                    User: true
+                }
+            }
+        },
+        take: 3
+    })
+    console.log(sendPrintJobs[0].Model)
+
+    socket.emit('printjobs', sendPrintJobs)
 }
 
 export async function clearDB() {
@@ -115,8 +133,6 @@ export async function clearDB() {
     // console.log(await prisma.model.findMany({}))
     // console.log(await prisma.user.findMany({}))
     // console.log(await prisma.print.findMany({}))
-
-    revalidatePath('/')
     
 }
 
