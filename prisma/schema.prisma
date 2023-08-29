@@ -32,7 +32,7 @@ model Print {
 
 model User {
   ID          Int      @id @default(autoincrement())
-  ContactInfo String?
+  ContactInfo String?  @unique(map: "ContactInfo_unique")
   TimeStamp   DateTime @default(now()) @db.Timestamptz(6)
   Model       Model[]
 }
