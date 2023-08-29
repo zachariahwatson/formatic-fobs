@@ -9,9 +9,17 @@ import { socket } from './utils/io'
 //import { io } from 'socket.io-client'
 
 export async function handleTwitterSubmit(formData) {
-    //create user entry and create a model under that user
-    const user = await prisma.user.create({
-        data: {
+    const user = await prisma.user.upsert({
+        where: {
+          ContactInfo: formData.get('twitterAccount')
+        },
+        update: {
+            Model: {
+                create: {
+                }
+            }
+        },
+        create: {
             ContactInfo: formData.get('twitterAccount'),
             Model: {
                 create: {
@@ -23,10 +31,10 @@ export async function handleTwitterSubmit(formData) {
         }
     })
 
-    console.log('user and model created:\n', user)
+    console.log('model created for given user:\n', user)
 }
 
-export async function saveToOutputs(fileContents, modelParams) {
+export async function saveToOutputs(STLstring, modelParams) {
     //const socket = io('http://localhost:3000')
     //creates .stl file of model in the outputs folder
     
@@ -95,7 +103,7 @@ export async function saveToOutputs(fileContents, modelParams) {
     console.log('print job created or updated:\n', printJob)
 
     //create .stl file
-    fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, fileContents, (err) => {
+    fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, STLstring, (err) => {
         if (err) {
             console.error('error creating file:', err)
         } else {
