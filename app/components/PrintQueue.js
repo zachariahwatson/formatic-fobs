@@ -9,7 +9,7 @@ export default function PrintQueue() {
     useEffect(() => {
         const socket = io('http://localhost:3000')
         async function fetchData() {
-            const res = await fetch('./../api/getprintjobs')
+            const res = await fetch('/api/getprintjobs')
             const printJobs = await res.json()
             console.log(printJobs)
             setPrintJobs(printJobs)

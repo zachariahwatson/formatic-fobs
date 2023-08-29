@@ -48,21 +48,6 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, params })
         //create STL file in specified location
         saveToOutputs(STLstring, modelParams)
       })
-      // async function postData() {
-      //   const res = await fetch('./../api/savetooutputs/', {
-      //     method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json'
-      // },
-      //     body: JSON.stringify({STLstring, modelParams})
-      //   })
-
-      //   if (!res.ok) {
-      //     // handle error
-      //     throw new Error(res.statusText)
-      //   }
-      // }
-      // postData()
       gl.dispose()
       router.push('/')
     }

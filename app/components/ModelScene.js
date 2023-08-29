@@ -10,10 +10,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 export default function ModelScene({MIDIdata, params}) {
   const [modelID, setModelID] = useState('0')
   
-
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('./../../api/getmodel')
+      const res = await fetch('/api/getmodel')
       const model = await res.json()
       setModelID(model.ID)
     }
