@@ -51,16 +51,12 @@ export async function saveToOutputs(STLstring, modelParams) {
     //find the latest print job or create one if all are full
     let printJob = await prisma.print.findFirst({
         where: { 
-            Status: 'filling' 
+            Status: 'PENDING' 
         },
         orderBy: { 
             TimeStamp: 'asc' 
         }
-    }) || await prisma.print.create({ 
-        data: { 
-            Status: 'filling' 
-        }
-    })
+    }) || await prisma.print.create({})
 
     //update created model's STL path and add print job ID
     model = await prisma.model.update({
@@ -88,7 +84,7 @@ export async function saveToOutputs(STLstring, modelParams) {
                     await prisma.model.count({ //query count of models in the print job to be used for comparison
                         where: { PrintID: printJob.ID }
                     })
-                ) >= 4 ? 'full' : 'filling'
+                ) >= 4 ? 'QUEUED' : 'PENDING'
             }
         },
         include: { //includes model but only the model ID because of the select thingy

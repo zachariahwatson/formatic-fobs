@@ -23,10 +23,10 @@ model Model {
 }
 
 model Print {
-  ID        Int      @id @default(autoincrement())
-  Status    String?
-  Progress  Float    @default(0)
-  TimeStamp DateTime @default(now()) @db.Timestamptz(6)
+  ID        Int         @id @default(autoincrement())
+  Progress  Float       @default(0)
+  TimeStamp DateTime    @default(now()) @db.Timestamptz(6)
+  Status    StatusFlags @default(PENDING)
   Model     Model[]
 }
 
@@ -35,4 +35,12 @@ model User {
   ContactInfo String?  @unique(map: "ContactInfo_unique")
   TimeStamp   DateTime @default(now()) @db.Timestamptz(6)
   Model       Model[]
+}
+
+enum StatusFlags {
+  PENDING
+  QUEUED
+  PRINTING
+  COMPLETED
+  ERROR
 }
