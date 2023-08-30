@@ -3,8 +3,7 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env') })
 const { createServer } = require("http")
 const { Server } = require("socket.io")
 const printer = require('./printer')
-const prisma = require('../app/utils/prisma').prisma
-const printQueue = require('./../app/utils/queue')
+const prisma = require('./../next/app/utils/prisma').prisma
 
 const httpServer = createServer()
 const io = new Server(httpServer)
