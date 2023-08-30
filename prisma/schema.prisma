@@ -12,7 +12,6 @@ model Model {
   UserID         Int
   Params         Json?    @db.Json
   STLPath        String?
-  GCODEPath      String?
   TimeStamp      DateTime @default(now()) @db.Timestamptz(6)
   PrintID        Int?
   IsCurrentModel Boolean  @default(true)
@@ -27,6 +26,7 @@ model Print {
   Progress  Float       @default(0)
   TimeStamp DateTime    @default(now()) @db.Timestamptz(6)
   Status    StatusFlags @default(PENDING)
+  GCODEPath String?
   Model     Model[]
 }
 
