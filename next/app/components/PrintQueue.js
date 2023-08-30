@@ -51,13 +51,20 @@ export default function PrintQueue() {
                             exit={{ opacity: 0}}
                             key={job.ID}
                         >
-                            <div className="flex flex-col font-n27-extralight justify-around text-3xl w-full h-full uppercase">
+                            <div className="flex flex-col-reverse font-n27-extralight justify-around text-3xl w-full h-full uppercase">
                                 {job.Model.map((model) => {
                                     return (
-                                        <p className="w-full flex" key={model.User.ID}>
+                                        <motion.p 
+                                            className="w-full flex" 
+                                            initial={{ opacity: 0, y: -25 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: .5}}
+                                            exit={{ opacity: 0}}
+                                            key={model.User.ID}
+                                        >
                                             <span className="w-1/2 truncate">@{model.User.ContactInfo}</span>
                                             <span className="w-1/2 text-right">TYPE_<span className="font-n27-regular">{model.Params.type}</span></span>
-                                        </p>
+                                        </motion.p>
                                     )
                                 })}
                             </div>
