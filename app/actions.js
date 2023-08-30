@@ -73,6 +73,15 @@ export async function saveToOutputs(STLstring, modelParams) {
         },
     })
 
+    //create .stl file
+    fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, STLstring, (err) => {
+        if (err) {
+            console.error('error creating file:', err)
+        } else {
+            console.log('file created successfully.')
+        }
+    })
+
     console.log('added .stl to model:\n', model)
     
     //update print job and check if it is full
@@ -87,30 +96,24 @@ export async function saveToOutputs(STLstring, modelParams) {
                 ) >= 4 ? 'QUEUED' : 'PENDING'
             }
         },
-        include: { //includes model but only the model ID because of the select thingy
-            Model: {
-                select: {
-                    ID: true
-                }
-            }
+        include: { //include model
+            Model: true
         }
     })
 
     console.log('print job created or updated:\n', printJob)
 
-    //create .stl file
-    fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, STLstring, (err) => {
-        if (err) {
-            console.error('error creating file:', err)
-        } else {
-            console.log('file created successfully.')
-        }
-    })
+    //check to see if the print job is full, and if so, slice all models
+    if (printJob.Status == 'QUEUED') {
+        await slice(printJob)
+    }
 
-    //send printjobs to update print queue
+    //send printjobs to update print queue on the client
     const sendPrintJobs = await prisma.print.findMany({
         where: { 
-            Progress: 0     
+            Status: {
+                in: ['PENDING', 'QUEUED']
+            }      
         },     
         orderBy: {
             TimeStamp: 'asc'
@@ -124,7 +127,7 @@ export async function saveToOutputs(STLstring, modelParams) {
         },
         take: 3
     })
-    console.log(sendPrintJobs[0].Model)
+    //console.log(sendPrintJobs[0].Model)
 
     socket.emit('printjobs', sendPrintJobs)
 }
@@ -140,7 +143,7 @@ export async function clearDB() {
     
 }
 
-export async function slice(meshIDs) {
+export async function slice(printJob) {
     //will be different for mac
     const command = process.env.PRUSA_CLI_PATH
     const args = [
@@ -149,10 +152,11 @@ export async function slice(meshIDs) {
         `--load`, `./../cfg/test1.ini`,
         `--load`, `./../cfg/test2.ini`, 
         `--load`, `./../cfg/test3.ini`,
+        `--output`, `${printJob.ID}.gcode`
     ]
 
-    meshIDs.forEach((meshID) => {
-        args.push(`${meshID}.stl`)
+    printJob.Model.forEach((model) => {
+        args.push(`${model.ID}.stl`)
     })
 
     //programatically add these later
@@ -176,9 +180,22 @@ export async function slice(meshIDs) {
         console.error(`failed to start child process: ${err}`)
     })
 
-    childProcess.on('close', (code) => {
+    childProcess.on('close', async (code) => {
     if (code === 0) {
         console.log('child process exited successfully')
+
+        //add gcode path to print Job
+        const updatedPrintJob = await prisma.print.update({
+            where: { ID: printJob.ID },
+            data: {
+                GCODEPath: `${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`
+            }
+        })
+
+        console.log('gcode added to print job:\n', updatedPrintJob)
+
+        socket.emit('addjob', updatedPrintJob)
+
     } else {
         console.error(`child process exited with code ${code}`)
     }

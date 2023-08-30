@@ -5,7 +5,9 @@ export async function GET() {
     //query to find the latest model created that is also the current model
     const searchResults = await prisma.print.findMany({
         where: { 
-            Progress: 0     
+            Status: {
+                in: ['PENDING', 'QUEUED']
+            }    
         },     
         orderBy: {
             TimeStamp: 'asc'
