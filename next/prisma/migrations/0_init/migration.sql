@@ -1,0 +1,48 @@
+-- CreateEnum
+CREATE TYPE "StatusFlags" AS ENUM ('PENDING', 'QUEUED', 'PRINTING', 'COMPLETED', 'ERROR');
+
+-- CreateTable
+CREATE TABLE "Model" (
+    "ID" SERIAL NOT NULL,
+    "UserID" INTEGER NOT NULL,
+    "Params" JSON,
+    "STLPath" TEXT,
+    "TimeStamp" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "PrintID" INTEGER,
+    "IsCurrentModel" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "Model_pkey" PRIMARY KEY ("ID")
+);
+
+-- CreateTable
+CREATE TABLE "Print" (
+    "ID" SERIAL NOT NULL,
+    "Progress" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "TimeStamp" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "Status" "StatusFlags" NOT NULL DEFAULT 'PENDING',
+    "GCODEPath" TEXT,
+
+    CONSTRAINT "Print_pkey" PRIMARY KEY ("ID")
+);
+
+-- CreateTable
+CREATE TABLE "User" (
+    "ID" SERIAL NOT NULL,
+    "ContactInfo" TEXT,
+    "TimeStamp" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("ID")
+);
+
+-- CreateIndex
+CREATE INDEX "fki_PrintID" ON "Model"("PrintID");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ContactInfo_unique" ON "User"("ContactInfo");
+
+-- AddForeignKey
+ALTER TABLE "Model" ADD CONSTRAINT "PrintID" FOREIGN KEY ("PrintID") REFERENCES "Print"("ID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "Model" ADD CONSTRAINT "UserID" FOREIGN KEY ("UserID") REFERENCES "User"("ID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
