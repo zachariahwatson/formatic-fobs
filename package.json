@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "dev": "concurrently -n \"next,server,docker\" -c \"bgWhite.bold.black,bgGreen.bold.black,bgCyan.bold.white\" \"cd ./next && npm run dev\" \"cd ./server && nodemon server.js\" \"docker compose up --build\""
+    },
+    "devDependencies": {
+        "chalk": "^5.3.0",
+        "concurrently": "^8.2.1"
+    },
+    "dependencies": {
+        "dotenv": "^16.3.1"
+    }
+}
