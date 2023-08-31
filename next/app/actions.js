@@ -7,6 +7,7 @@ const fs = require('fs')
 import { useRouter } from 'next/navigation'
 import { socket } from './utils/io'
 //import { io } from 'socket.io-client'
+import { printQueue } from './utils/queue'
 
 export async function handleTwitterSubmit(formData) {
     const user = await prisma.user.upsert({
@@ -181,23 +182,72 @@ export async function slice(printJob) {
     })
 
     childProcess.on('close', async (code) => {
-    if (code === 0) {
-        console.log('child process exited successfully')
+        if (code === 0) {
+            console.log('child process exited successfully')
 
-        //add gcode path to print Job
-        const updatedPrintJob = await prisma.print.update({
-            where: { ID: printJob.ID },
-            data: {
-                GCODEPath: `${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`
+            //add gcode path to print Job
+            const updatedPrintJob = await prisma.print.update({
+                where: { ID: printJob.ID },
+                data: {
+                    GCODEPath: `${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`
+                }
+            })
+
+            console.log('gcode added to print job:\n', updatedPrintJob)
+
+            const isPrinting = await prisma.print.count({
+                where: {
+                Status: 'PRINTING'
+                }
+            })
+        
+            if (isPrinting == 0) {
+                //update print job status to printing
+                const currentPrintJob = await prisma.print.update({
+                    where: { ID: printJob.ID },
+                    data: {
+                        Status: 'PRINTING'
+                    },
+                    include: { //includes the model as well as the user attached to it
+                        Model: {
+                            include: {
+                                User: true
+                            }
+                        }
+                    },
+                })
+        
+                socket.emit('currentjob', currentPrintJob)
+        
+                //update print jobs on the client
+                const updatedPrintJobs = await prisma.print.findMany({
+                    where: { 
+                        Status: {
+                        in: ['PENDING', 'QUEUED']
+                        }     
+                    },     
+                    orderBy: {
+                        TimeStamp: 'asc'
+                    },
+                    include: { //includes the model as well as the user attached to it
+                        Model: {
+                            include: {
+                                User: true
+                            }
+                        }
+                    },
+                    take: 3
+                })
+                socket.emit('printjobs', updatedPrintJobs)
+        
+                console.log('printing job:\n', currentPrintJob)
+                //socket.emit('printjob', currentPrintJob)
+                const job = await printQueue.add(currentPrintJob.ID, currentPrintJob)
+                console.log(job)
             }
-        })
 
-        console.log('gcode added to print job:\n', updatedPrintJob)
-
-        socket.emit('addjob', updatedPrintJob)
-
-    } else {
-        console.error(`child process exited with code ${code}`)
-    }
+        } else {
+            console.error(`child process exited with code ${code}`)
+        }
     })
 }

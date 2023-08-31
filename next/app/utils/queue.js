@@ -1,5 +1,6 @@
-const Queue = require('bull')
+import { Queue } from "bullmq"
 
-const printQueue = new Queue('printQueue', {})
-
-module.exports = printQueue
+export const printQueue = new Queue('print-queue', { connection: {
+    host: 'localhost',
+    port: 6379
+  }})

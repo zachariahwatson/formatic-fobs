@@ -1,6 +1,8 @@
+require('dotenv').config()
 const { createServer } = require("http")
 const { Server } = require("socket.io")
 const printer = require('./printer')
+const { Worker } = require('bullmq')
 
 const httpServer = createServer()
 const io = new Server(httpServer)
@@ -18,10 +20,22 @@ io.on("connection", (socket) => {
   })
 
   //print printjob if there's no job printing
-  socket.on('printjob', (printJob) => {
-    //print printjob
-    printer.printPrintJob(printJob)
-  })
+  // socket.on('printjob', (printJob) => {
+  //   //print printjob
+  //   printer.printPrintJob(printJob)
+  // })
 })
+
+const printWorker = new Worker('print-queue', async (job)=>{
+  await printer.printPrintJob(job.data)
+}, 
+{ 
+  connection: {
+    host: 'localhost',
+    port: 6379
+  }
+})
+
+console.log(printWorker)
 
 httpServer.listen(3000)
