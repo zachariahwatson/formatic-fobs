@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls} from '@react-three/drei'
 import Cube from './models/Cube'
 import Cone from './models/Cone'
-import { dataHandler } from '../utils/dataHandler'
+import { DataHandler } from '../utils/DataHandler'
 import { motion as motion3d } from 'framer-motion-3d'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -34,7 +34,7 @@ export default function ModelScene({MIDIdata, params}) {
     4000
   ]
 
-  const {printButtonHit, shapeData} = dataHandler(MIDIdata)
+  const {printButtonHit, shapeData} = DataHandler(MIDIdata)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
 
   useEffect(() => {

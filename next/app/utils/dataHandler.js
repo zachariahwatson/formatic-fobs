@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export function dataHandler(MIDIdata) {
+export function DataHandler(MIDIdata) {
     const [type, setType] = useState('cube')
     const [printButtonHit, setprintButtonHit] = useState(false)
 
