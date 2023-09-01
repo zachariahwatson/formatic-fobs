@@ -1,51 +1,47 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-next/node_modules
-server/node_modules
 node_modules
-next/.pnp
-next/.pnp.js
+.pnp
+.pnp.js
 
 # testing
-next/coverage
+coverage
 
 # next.js
-next/.next/
-next/out/
+.next/
+out/
 
 # production
-next/build
+build
 
 # misc
-next/.DS_Store
-next/*.pem
-next/fontsscript.js
+.DS_Store
+*.pem
+fontsscript.js
 
 # debug
-next/npm-debug.log*
-next/yarn-debug.log*
-next/yarn-error.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # local env files
-next/.env*.local
-next/.env
-server/.env*.local
-server/.env
+.env*.local
+.env
 
 # vercel
-next/.vercel
+.vercel
 
 # typescript
-next/*.tsbuildinfo
-next/next-env.d.ts
+*.tsbuildinfo
+next-env.d.ts
 
 #model & cfg files
 /outputs
 /cfg
 
 #fonts
-next/public/fonts/
+public/fonts/
 
 #database data
 /db-data
