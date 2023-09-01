@@ -54,7 +54,7 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, params })
   }, [STLstring])
 
   return (
-    <Text3D ref={textRef} position={[0, 0, 0]} font={'/fonts/Saira_Condensed_Light_Regular.json'} size={5} height={.2} visible={false}>
+    <Text3D ref={textRef} position={[0, 0, 0]} font={'/fonts/Saira_Condensed_Light_Regular.json'} size={10} height={.2} visible={false}>
       @{params.id.toUpperCase()}
     </Text3D>
   )

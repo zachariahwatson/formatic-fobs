@@ -6,6 +6,8 @@ import { io } from "socket.io-client"
 export default function PrintQueue() {
     const [printJobs, setPrintJobs] = useState([])
     const [currentJob, setcurrentJob] = useState([])
+    const [stats, setStats] = useState({progress: 0})
+
     
     useEffect(() => {
         const socket = io('http://localhost:3000')
@@ -32,6 +34,12 @@ export default function PrintQueue() {
         socket.on('currentjob', (job) => {
             setcurrentJob(job)
         })
+
+        socket.on('stats', (stats) => {
+            setStats(stats)
+            console.log(stats)
+        })
+
 
         return () => {
             socket.disconnect()

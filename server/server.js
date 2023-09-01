@@ -19,6 +19,10 @@ io.on("connection", (socket) => {
     socket.broadcast.emit('currentjob',job)
   })
 
+  socket.on('stats', (stats) => {
+    socket.broadcast.emit('stats',stats)
+  })
+
   //print printjob if there's no job printing
   // socket.on('printjob', (printJob) => {
   //   //print printjob
@@ -34,6 +38,19 @@ const printWorker = new Worker('print-queue', async (job)=>{
     host: 'localhost',
     port: 6379
   }
+})
+
+printWorker.on('completed', async (job) => {
+  // const res = await fetch('http://localhost/api/jobdone', {
+  //     method: 'POST',
+  //     headers: {
+  //         'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(job.data),
+  // })
+  // const updatedPrintJob = await res.json()
+  // socket.broadcast.emit('currentjob', updatedPrintJob)
+  console.log('joe mama')
 })
 
 console.log(printWorker)

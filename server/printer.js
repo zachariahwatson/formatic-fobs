@@ -4,7 +4,6 @@ const fs = require('fs')
 const { io } = require('socket.io-client')
 const socket = io('http://localhost:3000')
 
-
 let port
 let parser
 
@@ -36,7 +35,7 @@ const serialWrite = (message) => {
     })
 }
 
-const printPrintJob = async (printJob) => { //for testing
+const printPrintJob = async (printJob) => {
     console.log('starting print...')
 
     let gcodeQueueIndex = 0
@@ -63,7 +62,7 @@ const printPrintJob = async (printJob) => { //for testing
         //create array of lines
         let gcode = data.split('\n')
         const totalLength = gcode.length-1
-        let progress = 0
+        let progress = -1
         let prev = progress
 
         //get total time from gcode comments
@@ -86,7 +85,10 @@ const printPrintJob = async (printJob) => { //for testing
             gcodeQueueIndex++
             prev = progress
             progress = Math.floor((gcodeQueueIndex/totalLength) * 100)
-            if (prev != progress) console.log(progress)
+            if (prev != progress) {
+                console.log(progress)
+                socket.emit('stats', {progress: progress})
+            }
         }
         console.log('done!')
 
