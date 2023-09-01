@@ -1,12 +1,39 @@
 {
-    "scripts": {
-        "dev": "concurrently -n \"next,server,docker\" -c \"bgWhite.bold.black,bgGreen.bold.black,bgCyan.bold.white\" \"cd ./next && npm run dev\" \"cd ./server && nodemon server.js\" \"docker compose up --build\""
-    },
-    "devDependencies": {
-        "chalk": "^5.3.0",
-        "concurrently": "^8.2.1"
-    },
-    "dependencies": {
-        "dotenv": "^16.3.1"
-    }
+  "name": "formatic-fobs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 80",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.1.1",
+    "@react-three/drei": "^9.80.3",
+    "@react-three/fiber": "^8.13.7",
+    "autoprefixer": "10.4.14",
+    "bufferutil": "^4.0.7",
+    "bullmq": "^4.8.0",
+    "dotenv": "^16.3.1",
+    "eslint": "8.47.0",
+    "eslint-config-next": "13.4.13",
+    "framer-motion": "^10.16.0",
+    "framer-motion-3d": "^10.16.1",
+    "jsbarcode": "^3.11.5",
+    "next": "^13.4.19",
+    "nodemon": "^3.0.1",
+    "postcss": "8.4.27",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "simplex-noise": "^4.0.1",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "tailwindcss": "3.3.3",
+    "three": "^0.155.0",
+    "utf-8-validate": "^5.0.10"
+  },
+  "devDependencies": {
+    "prisma": "^5.1.1"
+  }
 }
