@@ -45,7 +45,12 @@ export default function Page() {
             exit={{opacity: 1}}
             transition={{ duration: 1}}
             className="flex justify-center h-full w-full items-center">
-                <form action={handleTwitterSubmit} onSubmit={(e) => {router.push('model/' + (e.target.elements.twitterAccount.value).replace(/^@/, ''))}} className="flex flex-col gap-2">
+                <form action="/api/handletwittersubmit" method="POST" onSubmit={(e) => {
+                        e.preventDefault()
+                        // router.push('model/' + (e.target.elements.twitterAccount.value).replace(/^@/, ''))
+                    }} 
+                    className="flex flex-col gap-2"
+                    >
                     <label className="mb-2 text-5xl">
                         <span className="font-n27-extralight">TWITTER_</span><span className="font-n27-regular">USERNAME:</span>
                     </label>
