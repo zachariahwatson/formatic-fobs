@@ -1,8 +1,8 @@
 const { SerialPort } = require('serialport')
 const { ReadlineParser} = require('@serialport/parser-readline')
 const fs = require('fs')
-const { io } = require('socket.io-client')
-const socket = io('http://localhost:3000')
+// const { io } = require('socket.io-client')
+// const socket = io()
 
 
 let port
