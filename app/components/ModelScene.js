@@ -13,7 +13,7 @@ export default function ModelScene({MIDIdata, params}) {
   useEffect(() => {
     async function fetchData() {
       const res = await fetch('/api/getmodel')
-      console.log(res)
+      //console.log(res)
       const model = await res.json()
       setModelID(model.ID)
     }

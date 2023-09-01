@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-//import { socket } from "../utils/io"
-import { io } from "socket.io-client"
+import { socket } from "../utils/io"
+//import { io } from "socket.io-client"
 
 export default function PrintQueue() {
     const [printJobs, setPrintJobs] = useState([])
     const [currentJob, setcurrentJob] = useState([])
     
     useEffect(() => {
-        const socket = io('http://localhost:3000')
+        //const socket = io('http://localhost:3000')
         async function fetchData() {
             const res = await fetch('/api/getprintjobs')
             const printJobs = await res.json()
-            console.log(printJobs)
+            //console.log(printJobs)
             setPrintJobs(printJobs)
         }
         fetchData()
@@ -20,7 +20,7 @@ export default function PrintQueue() {
         async function fetchCurrentJob() {
             const res = await fetch('/api/getcurrentjob')
             const currentJob = await res.json()
-            console.log(currentJob)
+            //console.log(currentJob)
             setcurrentJob(currentJob)
         }
         fetchCurrentJob()
