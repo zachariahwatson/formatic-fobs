@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        serverActions: false,
+        serverActions: true,
         serverActionsBodySizeLimit: '10mb',
         serverComponentsExternalPackages: ['bullmq']
     },

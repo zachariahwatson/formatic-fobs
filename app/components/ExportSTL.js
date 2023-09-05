@@ -44,10 +44,24 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, params })
 
   useEffect(() => {
     if (STLstring) {
-      startTransition(() => {
-        //create STL file in specified location
-        saveToOutputs(STLstring, modelParams)
-      })
+      // startTransition(() => {
+      //   //create STL file in specified location
+      //   saveToOutputs(STLstring, modelParams)
+      // })
+      async function postData() {
+          const res = await fetch("/api/savetooutputs", {
+            method: "POST", // or 'PUT'
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({STLstring: STLstring, modelParams: modelParams}),
+          })
+          if (!res.ok) {
+            console.error('save to outputs error: ', res.status)
+          }
+      }
+      postData()
+      
       gl.dispose()
       router.push('/')
     }

@@ -1,3 +1,9 @@
-import { io } from "socket.io-client"
+const { io } = require('socket.io-client')
 
-export const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
+let socket
+
+if (!socket) {
+    socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
+}
+
+module.exports = socket

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { socket } from "../utils/io"
-//import { io } from "socket.io-client"
+//import  socket  from '../utils/io'
+import { io } from "socket.io-client"
 
 export default function PrintQueue() {
     const [printJobs, setPrintJobs] = useState([])
     const [currentJob, setcurrentJob] = useState([])
     
     useEffect(() => {
-        //const socket = io('http://localhost:3000')
+        const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
         async function fetchData() {
             const res = await fetch('/api/getprintjobs')
             const printJobs = await res.json()
@@ -25,15 +25,18 @@ export default function PrintQueue() {
         }
         fetchCurrentJob()
 
-        socket.on('printjobs', (jobs) => {
-            setPrintJobs(jobs)
+        socket.on('printjobs', () => {
+            console.log('printjobs received')
+            fetchData()
         })
 
-        socket.on('currentjob', (job) => {
-            setcurrentJob(job)
+        socket.on('currentjob', () => {
+            console.log('currentjob received')
+            fetchCurrentJob()
         })
 
         return () => {
+            console.log('disconnected')
             socket.disconnect()
         }
     }, [])
@@ -60,7 +63,7 @@ export default function PrintQueue() {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: .5}}
                                             exit={{ opacity: 0}}
-                                            key={model.User.ID}
+                                            key={model.ID}
                                         >
                                             <span className="w-1/2 truncate">@{model.User.ContactInfo}</span>
                                             <span className="w-1/2 text-right">TYPE_<span className="font-n27-regular">{model.Params.type}</span></span>
@@ -79,10 +82,11 @@ export default function PrintQueue() {
                 exit={{ opacity: 0}}
                 transition={{ duration: .5}}
             >
+                <div>{currentJob && currentJob.Status}</div>
                 <div className="flex flex-col font-n27-extralight justify-around text-3xl w-full h-full uppercase">
                     {currentJob && currentJob.Model && currentJob.Model.map((model) => {
                         return (
-                            <p className="w-full flex" key={model.User.ID}>
+                            <p className="w-full flex" key={model.ID}>
                                 <span className="w-1/2 truncate">@{model.User.ContactInfo}</span>
                                 <span className="w-1/2 text-right">TYPE_<span className="font-n27-regular">{model.Params.type}</span></span>
                             </p>

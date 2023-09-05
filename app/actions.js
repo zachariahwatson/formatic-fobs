@@ -5,7 +5,7 @@
 // import { revalidatePath } from 'next/cache'
 // const fs = require('fs')
 // import { useRouter } from 'next/navigation'
-// import { socket } from './utils/io'
+// import socket from './utils/io'
 // //import { io } from 'socket.io-client'
 // import { printQueue } from './utils/queue'
 

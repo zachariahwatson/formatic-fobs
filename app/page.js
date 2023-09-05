@@ -32,6 +32,19 @@ export default function Page() {
     const router = useRouter()
     const inputRef = useRef()
 
+    const handleTwitterSubmit = async (e) => {
+        e.preventDefault()
+        const res = await fetch('/api/handletwittersubmit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(new FormData(e.target))
+        })
+        const data = await res.json()
+        router.push(data.redirectUrl)
+    }
+
     useEffect(() => {
         inputRef.current.focus()
     }, [])
@@ -45,12 +58,7 @@ export default function Page() {
             exit={{opacity: 1}}
             transition={{ duration: 1}}
             className="flex justify-center h-full w-full items-center">
-                <form action="/api/handletwittersubmit" method="POST" onSubmit={(e) => {
-                        e.preventDefault()
-                        // router.push('model/' + (e.target.elements.twitterAccount.value).replace(/^@/, ''))
-                    }} 
-                    className="flex flex-col gap-2"
-                    >
+                <form onSubmit={handleTwitterSubmit} className="flex flex-col gap-2">
                     <label className="mb-2 text-5xl">
                         <span className="font-n27-extralight">TWITTER_</span><span className="font-n27-regular">USERNAME:</span>
                     </label>
@@ -65,3 +73,8 @@ export default function Page() {
         </>
   )
 }
+
+// onSubmit={(e) => {
+//     //e.preventDefault()
+//     //router.push('model/' + (e.target.elements.twitterAccount.value).replace(/^@/, ''))
+// }}
