@@ -4,19 +4,20 @@ const next = require('next')
 const { createServer } = require("http")
 const { Server } = require("socket.io")
 const printer = require('./printer')
-const prisma = require('./../app/utils/prisma')
+const { PrismaClient } = require('@prisma/client')
 const fs = require('fs')
 //const socket = require('./../app/utils/io')
 const { io } = require('socket.io-client')
 const queue = require('./queue')
 const port = process.env.NEXT_PUBLIC_PORT
+const prisma = new PrismaClient()
 
 // creating the app either in production or dev mode 
 const app = next({ dev: true })
 const handle = app.getRequestHandler()
 const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
 
-const bedCount = 6
+const bedCount = 4
 
 // running the app, async operation 
 app.prepare().then(() => {
