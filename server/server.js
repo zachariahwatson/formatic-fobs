@@ -310,6 +310,7 @@ const express = require("express")
 const { createServer } = require("http")
 const { Server } = require("socket.io")
 const printer = require('./printer')
+const queue = require('./queue')
 
 const app = express()
 const httpServer = createServer(app)
@@ -321,13 +322,21 @@ app.use(express.json())
 io.on("connection", (socket) => {
   console.log(`${socket.id} connected, current clients: ${io.engine.clientsCount}`)
   socket.on('printjobs', () => {
-    console.log('PRINTJOBS CALLED')
-    socket.broadcast.emit('printjobs')
+    try {
+      console.log('PRINTJOBS CALLED')
+      socket.broadcast.emit('printjobs')
+    } catch (error) {
+      console.error('error handling printjobs:', error)
+    }
   })
 
   socket.on('currentjob', () => {
-    console.log('CURRENTJOB CALLED')
-    socket.broadcast.emit('currentjob')
+    try {
+      console.log('CURRENTJOB CALLED')
+      socket.broadcast.emit('currentjob')
+    } catch (error) {
+      console.error('error handling printjobs:', error)
+    }
   })
 })
 
@@ -342,5 +351,33 @@ app.post('/slice', (req, res) => {
       res.sendStatus(500)
     })
 })
+
+app.post('/clearjobqueue', async (req, res) => {
+  await queue.printQueue.obliterate().catch(err => {
+    console.error('error obliterating queue: ', err)
+    res.sendStatus(500)
+  })
+  res.sendStatus(200)
+})
+
+app.post('/addjob', async (req, res) => {
+  const data = req.body
+  await queue.printQueue.add(data.ID, data, { delay: 5000 }).catch(err => {
+    console.error('error adding job to queue: ', err)
+    res.sendStatus(500)
+  })
+  console.log('job queued')
+  res.sendStatus(200)
+})
+
+app.use((err, req, res, next) => {
+  console.error('express error handler:', err)
+  res.status(500).send('Internal Server Error')
+})
+
+// queue.worker.on('completed', async (job) => {
+//   console.log('worker said its done')
+  
+// })
 
 httpServer.listen(3000)

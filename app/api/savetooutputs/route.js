@@ -2,7 +2,7 @@ import { prisma } from './../../utils/prisma'
 import { socket } from './../../utils/io'
 import { NextResponse } from 'next/server'
 const fs = require('fs')
-const bedCount = 6
+const bedCount = 4
 
 export async function POST(req) {
     //creates .stl file of model in the outputs folder
@@ -93,7 +93,7 @@ export async function POST(req) {
         })
         if (!res.ok) {
             console.error('save to outputs error: ', res.status)
-        } else {console.log(res.status)}
+        }
 
         //add gcode path to print Job
         const updatedPrintJob = await prisma.print.update({
@@ -106,32 +106,41 @@ export async function POST(req) {
         console.log('gcode added to print job')
         //console.log('gcode added to print job:\n', updatedPrintJob)
 
-        const isPrinting = await prisma.print.count({
-            where: {
-                Status: 'PRINTING'
-            }
+        // const isPrinting = await prisma.print.count({
+        //     where: {
+        //         Status: 'PRINTING'
+        //     }
+        // })
+
+        // if (isPrinting == 0) {
+        //     //update print job status to printing
+        //     const currentPrintJob = await prisma.print.update({
+        //         where: { ID: printJob.ID },
+        //         data: {
+        //             Status: 'PRINTING'
+        //         }
+        //     })
+        //     socket.emit('currentjob')
+        //     socket.emit('printjobs')
+        //     console.log('printing job')
+        //     //console.log('printing job:\n', currentPrintJob)
+        //     //socket.emit('printjob', currentPrintJob)
+        //     //const job = await queue.printQueue.add(currentPrintJob.ID, currentPrintJob)
+        //     //console.log(job)
+        // }
+        const jobRes = await fetch('http://localhost:3000/addjob', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedPrintJob)
         })
-
-        if (isPrinting == 0) {
-            //update print job status to printing
-            const currentPrintJob = await prisma.print.update({
-                where: { ID: printJob.ID },
-                data: {
-                    Status: 'PRINTING'
-                }
-            })
-            socket.emit('currentjob')
-            socket.emit('printjobs')
-
-            console.log('printing job')
-            //console.log('printing job:\n', currentPrintJob)
-            //socket.emit('printjob', currentPrintJob)
-            //const job = await queue.printQueue.add(currentPrintJob.ID, currentPrintJob)
-            //console.log(job)
+        if (!jobRes.ok) {
+            console.error('add job queue error: ', jobRes.status)
         }
     }
 
     //send printjobs to update print queue on the client
     socket.emit('printjobs')
-    return NextResponse.json({message: 'saved to outputs successfully'})
+    return NextResponse.json({ message: 'saved to outputs successfully' })
 }

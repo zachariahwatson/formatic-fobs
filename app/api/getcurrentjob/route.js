@@ -5,7 +5,11 @@ export async function GET() {
     //query to find the latest model created that is also the current model
     const searchResults = await prisma.print.findFirst({
         where: {
-            Status: 'PRINTING'
+            OR: [
+                { Status: 'PRINTING' },
+                { Status: 'COMPLETED' },
+                { Status: 'ERROR' }
+            ]
         },
         include: {
             Model: {
@@ -20,6 +24,9 @@ export async function GET() {
                 }
             }
         },
+        orderBy: {
+            TimeStamp: 'desc'
+        }
     })
     return NextResponse.json(searchResults)
 }

@@ -7,14 +7,6 @@ const { spawn } = require('child_process')
 // const { io } = require('socket.io-client')
 // const socket = io()
 
-//debug
-const readline = require("readline");
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-})
-
-
 let port
 let parser
 
@@ -46,7 +38,7 @@ const serialWrite = (message) => {
     })
 }
 
-const printPrintJob = (printJob) => {
+const printPrintJob = (printJob, callback) => {
 
     console.log('starting print...')
 
@@ -70,6 +62,7 @@ const printPrintJob = (printJob) => {
     fs.readFile(gcodePath, 'utf8', async (err, data) => {
         if (err) {
             console.error(err)
+            callback(err)
         }
         //create array of lines
         let gcode = data.split('\n')
@@ -81,29 +74,44 @@ const printPrintJob = (printJob) => {
         // totalTime = gcode.find(item => item.includes('estimated printing time')).split('=')[1].trim()
         // totalSeconds = parseInt(totalTime.split(' ')[0].replace(/\D/g, ''))*60 + parseInt(totalTime.split(' ')[1].replace(/\D/g, ''))
 
-        //wait for user input
-        //serialWrite('M0 Click to continue')
-        // rl.question("Enter to continue: ", () => {
-        //     rl.close()
-        // })
 
-        while (gcodeQueueIndex <= gcode.length - 1) {
-            //making sure gcode line is a valid command
-            let line = gcode[gcodeQueueIndex].split(';')[0]
-            if (line != "" && line != "\n") {
-                //write to printer
-                //console.log(line)
-                await sleep(5)
-                //serialWrite(line)
-                //wait for 'ok' command using promise
+
+        while (gcodeQueueIndex <= gcode.length) {
+            //at the end of the print, wait for user to set up printer for next print
+            if (gcodeQueueIndex == gcode.length) {
+                const res = await fetch('http://localhost/api/setjobstatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ jobID: printJob.ID, status: 'COMPLETED' })
+                })
+                if (!res.ok) {
+                    console.error('finish job error: ', res.status)
+                }
+                //wait for user input
+                //serialWrite('M0 Click to begin next print')
                 //await waitForOK()
+            } else {
+                //making sure gcode line is a valid command
+                let line = gcode[gcodeQueueIndex].split(';')[0]
+                if (line != "" && line != "\n") {
+                    //write to printer
+                    //console.log(line)
+                    await sleep(5)
+                    //serialWrite(line)
+                    //wait for 'ok' command using promise
+                    //await waitForOK()
+                }
             }
+
             gcodeQueueIndex++
             prev = progress
             progress = Math.floor((gcodeQueueIndex / totalLength) * 100)
             if (prev != progress) console.log(progress)
         }
         console.log('done!')
+        callback(null)
 
         //keep temps up between prints
         //serialWrite('M104 F S120')

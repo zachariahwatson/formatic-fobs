@@ -42,5 +42,6 @@ enum StatusFlags {
   QUEUED
   PRINTING
   COMPLETED
+  ARCHIVED
   ERROR
 }

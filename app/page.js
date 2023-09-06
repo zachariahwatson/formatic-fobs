@@ -42,6 +42,9 @@ export default function Page() {
             },
             body: JSON.stringify({twitterAccount: formData.get('twitterAccount')})
         })
+        if (!res.ok) {
+            console.error('handle twitter submit error: ', res.status)
+        }
         const data = await res.json()
         router.push(data.redirectUrl)
     }
