@@ -2,7 +2,7 @@ import { prisma } from './../../utils/prisma'
 import { socket } from './../../utils/io'
 import { NextResponse } from 'next/server'
 const fs = require('fs')
-const bedCount = 4
+const bedCount = 1
 
 export async function POST(req) {
     //creates .stl file of model in the outputs folder
