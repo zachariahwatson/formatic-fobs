@@ -20,13 +20,40 @@ export default function Page() {
         })
     }
 
+    const removeActiveJob = async () => {
+        await fetch('http://localhost:3000/removeactivejob', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+    }
+
+    const restartActiveJob = async () => {
+        await fetch('/api/restartactivejob', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+    }
+
+    // const runPrinterInit = async () => {
+    //     await fetch('http://localhost:3000/runprinterinit', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //     })
+    // }
+
     return (
         <>
             <h1 className="mx-4 mt-36 font-n27-bold">ADMIN PAGE</h1>
             <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearDB()}>clear db</button>
             <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearJobQueue()}>clear job queue</button>
-            <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearJobQueue()}>remove active job</button>
-            <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearJobQueue()}>restart active job</button>
+            <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => removeActiveJob()}>remove active job</button>
+            <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => restartActiveJob()}>restart active job</button>
         </>
     )
 }
@@ -34,3 +61,4 @@ export default function Page() {
 //clear db
 //start printer temp maintain
 {/* <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={setTemps()}>set init printer temp</button> */}
+{/* <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => runPrinterInit()}>run printer init</button> */}
