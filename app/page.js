@@ -34,12 +34,13 @@ export default function Page() {
 
     const handleTwitterSubmit = async (e) => {
         e.preventDefault()
+        const formData = new FormData(e.target)
         const res = await fetch('/api/handletwittersubmit', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
-            body: new URLSearchParams(new FormData(e.target))
+            body: JSON.stringify({twitterAccount: formData.get('twitterAccount')})
         })
         const data = await res.json()
         router.push(data.redirectUrl)

@@ -49,10 +49,10 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, params })
       //   saveToOutputs(STLstring, modelParams)
       // })
       async function postData() {
-          const res = await fetch("/api/savetooutputs", {
-            method: "POST", // or 'PUT'
+          const res = await fetch('/api/savetooutputs', {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({STLstring: STLstring, modelParams: modelParams}),
           })

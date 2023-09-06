@@ -4,7 +4,10 @@ export default function Page() {
 
     const clearDB = async () => {
         await fetch('/api/cleardb', {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         })
     }
 
