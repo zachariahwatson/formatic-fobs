@@ -1,7 +1,8 @@
+require('dotenv').config()
 const { SerialPort } = require('serialport')
 const { ReadlineParser } = require('@serialport/parser-readline')
 const fs = require('fs')
-const printQueue = require('./../app/utils/io')
+//const printQueue = require('./../app/utils/io').default
 const { spawn } = require('child_process')
 // const { io } = require('socket.io-client')
 // const socket = io()
