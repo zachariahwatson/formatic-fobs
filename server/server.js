@@ -357,12 +357,50 @@ app.post('/clearjobqueue', async (req, res) => {
     console.error('error obliterating queue: ', err)
     res.sendStatus(500)
   })
+  console.log('cleared job queue')
   res.sendStatus(200)
 })
 
+app.post('/removeactivejob', async (req, res) => {
+  const activeJobs = await queue.printQueue.getJobs(['active']).catch(err => {
+    console.error('error removing active job: ', err)
+    res.sendStatus(500)
+  })
+  if (activeJobs.length > 0) {
+    for (const job of activeJobs) {
+      await job.remove()
+      console.log(`removed active job with ID ${job.id}`)
+    }
+  } else {
+    console.log('no active jobs found')
+  }
+  res.sendStatus(200)
+})
+
+app.post('/restartactivejob', async (req, res) => {
+  const data = req.body
+  await queue.printQueue.add(data.ID, data, {priority: 1}).catch(err => {
+    console.error('error adding job to queue: ', err)
+    res.sendStatus(500)
+  })
+  console.log('job restarted')
+  res.sendStatus(200)
+})
+
+// app.post('/runprinterinit', async (req, res) => {
+//   try {
+//     printer.init()
+//   } catch (err) {
+//     console.error('error initializing printer:', err)
+//     res.sendStatus(500)
+//   }
+//   console.log('printer initialized')
+//   res.sendStatus(200)
+// })
+
 app.post('/addjob', async (req, res) => {
   const data = req.body
-  await queue.printQueue.add(data.ID, data, { delay: 5000 }).catch(err => {
+  await queue.printQueue.add(data.ID, data).catch(err => {
     console.error('error adding job to queue: ', err)
     res.sendStatus(500)
   })
@@ -375,9 +413,9 @@ app.use((err, req, res, next) => {
   res.status(500).send('Internal Server Error')
 })
 
-// queue.worker.on('completed', async (job) => {
-//   console.log('worker said its done')
-  
-// })
+queue.worker.on('completed', async (job) => {
+  console.log('worker said its done')
+
+})
 
 httpServer.listen(3000)
