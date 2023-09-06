@@ -1,9 +1,7 @@
-const { io } = require('socket.io-client')
+import { io } from 'socket.io-client'
 
-let socket
+const globalForSocket = globalThis
 
-if (!socket) {
-    socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
-}
+export const socket = globalForSocket.socket || io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
 
-module.exports = socket
+if (process.env.NODE_ENV !== 'production') globalForSocket.socket = socket
