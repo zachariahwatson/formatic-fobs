@@ -1,4 +1,4 @@
-const { Queue, Worker, Job } = require('bullmq')
+const { Queue, Worker} = require('bullmq')
 const printer = require('./printer')
 
 printer.init()
@@ -20,7 +20,7 @@ const worker = new Worker('print-queue', async (job) => {
         body: JSON.stringify({ jobID: job.data.ID, status: 'PRINTING' })
     })
     if (!res.ok) {
-        console.error('start printing job error: ', res.status)
+        console.error('set job status error: ', res.status)
     }
     return new Promise((resolve, reject) => {
         printer.printPrintJob(job.data, async (err) => {
@@ -34,6 +34,8 @@ const worker = new Worker('print-queue', async (job) => {
                 })
                 if (!res.ok) {
                     console.error('error changing status to error: ', res.status)
+                } else {
+                    console.error('printer error: ', err)
                 }
                 reject(err)
             } else {

@@ -9,6 +9,7 @@ const { spawn } = require('child_process')
 
 let port
 let parser
+let disconnectError = null
 
 const init = () => {
     if (!port) {
@@ -24,21 +25,33 @@ const init = () => {
         parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
     }
     //keep temps up between prints
-    serialWrite('M104 F S120')
-    serialWrite('M140 S60')
+    serialWrite('M104 F S120', () => {})
+    serialWrite('M140 S60', () => {})
 }
 
 
 //send commands to 3d printer
-const serialWrite = (message) => {
+const serialWrite = (message, callback) => {
+    console.log(message)
     port.write(message + '\n', function (err) {
         if (err) {
-            return console.log('Error when writing to serial port: ', err.message)
+            callback(err)
         }
     })
 }
 
 const printPrintJob = (printJob, callback) => {
+
+    const handleErr = function(err) {
+        port.off('close', handleErr)
+        if (err.disconnected == true) {
+            callback(err)
+        } else {
+            console.log('port closed')
+        }
+    }
+
+    port.on('close', handleErr)
 
     console.log('starting print...')
 
@@ -48,6 +61,7 @@ const printPrintJob = (printJob, callback) => {
     const waitForOK = () => new Promise((resolve) => {
         const dataCheck = (data) => {
             if (data == 'ok') {
+                console.log('ok')
                 //once the printer sends an 'ok', unmount the event listener so there aren't multiple instances from calling waitForOK() multiple times
                 parser.off('data', dataCheck)
                 resolve(data)
@@ -73,9 +87,7 @@ const printPrintJob = (printJob, callback) => {
         //get total time from gcode comments
         // totalTime = gcode.find(item => item.includes('estimated printing time')).split('=')[1].trim()
         // totalSeconds = parseInt(totalTime.split(' ')[0].replace(/\D/g, ''))*60 + parseInt(totalTime.split(' ')[1].replace(/\D/g, ''))
-
-
-
+        
         while (gcodeQueueIndex <= gcode.length) {
             //at the end of the print, wait for user to set up printer for next print
             if (gcodeQueueIndex == gcode.length) {
@@ -90,18 +102,19 @@ const printPrintJob = (printJob, callback) => {
                     console.error('finish job error: ', res.status)
                 }
                 //wait for user input
-                //serialWrite('M0 Click to begin next print')
-                //await waitForOK()
+                serialWrite('M0 Click to begin next print', (err) => {callback(err)})
+                serialWrite('G4 S1', (err) => {callback(err)})
+                await waitForOK()
             } else {
                 //making sure gcode line is a valid command
                 let line = gcode[gcodeQueueIndex].split(';')[0]
                 if (line != "" && line != "\n") {
                     //write to printer
                     //console.log(line)
-                    await sleep(5)
-                    //serialWrite(line)
+                    //await sleep(5)
+                    serialWrite(line, (err) => {callback(err)})
                     //wait for 'ok' command using promise
-                    //await waitForOK()
+                    await waitForOK()
                 }
             }
 
@@ -110,12 +123,12 @@ const printPrintJob = (printJob, callback) => {
             progress = Math.floor((gcodeQueueIndex / totalLength) * 100)
             if (prev != progress) console.log(progress)
         }
-        console.log('done!')
-        callback(null)
-
         //keep temps up between prints
-        //serialWrite('M104 F S120')
-        //serialWrite('M140 S60')
+        serialWrite('M104 F S120', (err) => {callback(err)})
+        serialWrite('M140 S60', (err) => {callback(err)})
+        console.log('done!')
+        port.off('close', handleErr)
+        callback(null)
     })
 }
 

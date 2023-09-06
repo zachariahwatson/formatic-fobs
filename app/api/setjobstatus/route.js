@@ -10,7 +10,7 @@ export async function POST(req) {
         const searchResults = await prisma.print.updateMany({
             where: {
                 Status: {
-                    equals: 'COMPLETED',
+                    equals: 'COMPLETED'
                 }
             },
             data: {
@@ -41,6 +41,8 @@ export async function POST(req) {
 
     socket.emit('currentjob')
     socket.emit('printjobs')
+
+    console.log('job status set')
 
     return NextResponse.json({ message: 'changed job status successfully' })
 }
