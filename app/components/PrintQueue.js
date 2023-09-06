@@ -54,7 +54,7 @@ export default function PrintQueue() {
                             exit={{ opacity: 0}}
                             key={job.ID}
                         >
-                            <div className="flex flex-col-reverse font-n27-extralight justify-around text-3xl w-full h-full uppercase">
+                            <div className="flex flex-col-reverse font-n27-extralight justify-around text-2xl w-full h-full uppercase">
                                 {job.Model.map((model) => {
                                     return (
                                         <motion.p 
@@ -76,7 +76,7 @@ export default function PrintQueue() {
                 })}
             </div>
             <motion.div 
-                className="w-full h-2/5 rounded-3xl text-4xl outline-none shadow-lg shadow-white border border-white mt-4 p-4"
+                className="w-full h-2/5 rounded-3xl text-4xl outline-none shadow-lg shadow-white border border-white mt-4 p-4 pb-12"
                 initial={{ opacity: 0}}
                 animate={{ opacity: 1}}
                 exit={{ opacity: 0}}
