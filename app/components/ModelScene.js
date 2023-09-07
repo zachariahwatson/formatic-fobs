@@ -1,18 +1,20 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls} from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import Cube from './models/Cube'
 import Cone from './models/Cone'
 import { DataHandler } from '../utils/DataHandler'
 import { motion as motion3d } from 'framer-motion-3d'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export default function ModelScene({MIDIdata, params}) {
+export default function ModelScene({ MIDIdata, params }) {
   const [modelID, setModelID] = useState('0')
-  
+
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('/api/getmodel')
+      const res = await fetch('/api/getmodel').catch(err => {
+        console.error(err)
+      })
       //console.log(res)
       const model = await res.json()
       setModelID(model.ID)
@@ -26,7 +28,7 @@ export default function ModelScene({MIDIdata, params}) {
     "PRESS THE ‘PRINT’ BUTTON ONCE YOU’RE SATISFIED TO MAKE IT A REALITY.",
     'YOUR BASE MODEL WILL BE PRESENTED SHORTLY.',
   ]
-  
+
   const lineTimes = [
     3000,
     4000,
@@ -34,7 +36,7 @@ export default function ModelScene({MIDIdata, params}) {
     4000
   ]
 
-  const {printButtonHit, shapeData} = DataHandler(MIDIdata)
+  const { printButtonHit, shapeData } = DataHandler(MIDIdata)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
 
   useEffect(() => {
@@ -45,14 +47,14 @@ export default function ModelScene({MIDIdata, params}) {
       return () => clearTimeout(timeoutId)
     }
   }, [currentLineIndex])
-  
+
   return (
     <>
       <div className="h-full w-full relative">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{
-            opacity: [0,.2,0,.4,0,.4,0,.8,.2,.6,.6,.2,1,.2,.3,.4,.5,.6,.7,.8,.9,1],
+            opacity: [0, .2, 0, .4, 0, .4, 0, .8, .2, .6, .6, .2, 1, .2, .3, .4, .5, .6, .7, .8, .9, 1],
             transition: { duration: 1, delay: 18 }
           }}
         >
@@ -83,20 +85,20 @@ export default function ModelScene({MIDIdata, params}) {
       <div className="w-full h-full rounded-3xl absolute top-0 left-0">
         <Canvas
           orthographic
-          camera={{zoom: 37.5, position: [-20, 20, 20] }}
+          camera={{ zoom: 37.5, position: [-20, 20, 20] }}
           className="rounded-3xl"
         >
           <ambientLight />
           <directionalLight intensity={3} position={[40, 30, 20]} />
           <motion3d.group
-            animate={{y: [5,2,0], z: [-50,0,0], rotateX: [Math.PI/8, -Math.PI/8, 0]}}
+            animate={{ y: [5, 2, 0], z: [-50, 0, 0], rotateX: [Math.PI / 8, -Math.PI / 8, 0] }}
             transition={{
               duration: 2,
               delay: 17
             }}
           >
-            {(shapeData.type == 'cube') && <Cube position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params}/>}
-            {(shapeData.type == 'cone') && <Cone position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params}/>}
+            {(shapeData.type == 'cube') && <Cube position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params} />}
+            {(shapeData.type == 'cone') && <Cone position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params} />}
           </motion3d.group>
           <OrbitControls />
         </Canvas>
@@ -107,7 +109,7 @@ export default function ModelScene({MIDIdata, params}) {
 
 //<Cube position={[0, 0, 0]} MIDIdata={MIDIdata} />
 
-{/* <div className="absolute w-screen h-screen left-0 top-0 -z-10"></div> */}
+{/* <div className="absolute w-screen h-screen left-0 top-0 -z-10"></div> */ }
 
 {/* <motion3d.group
             animate={{y: [-50,0]}}

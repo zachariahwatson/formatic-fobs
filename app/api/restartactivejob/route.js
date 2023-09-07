@@ -19,6 +19,8 @@ export async function POST() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(errorJob)
+        }).catch(err => {
+            console.error(err)
         })
         if (!res.ok) {
             console.error('restart job error: ', res.status)

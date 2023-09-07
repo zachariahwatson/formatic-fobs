@@ -10,7 +10,9 @@ export default function PrintQueue() {
     useEffect(() => {
         const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
         async function fetchData() {
-            const res = await fetch('/api/getprintjobs')
+            const res = await fetch('/api/getprintjobs').catch(err => {
+                console.error(err)
+            })
             const printJobs = await res.json()
             //console.log(printJobs)
             setPrintJobs(printJobs)
@@ -18,7 +20,9 @@ export default function PrintQueue() {
         fetchData()
 
         async function fetchCurrentJob() {
-            const res = await fetch('/api/getcurrentjob')
+            const res = await fetch('/api/getcurrentjob').catch(err => {
+                console.error(err)
+            })
             const currentJob = await res.json()
             //console.log(currentJob)
             setcurrentJob(currentJob)

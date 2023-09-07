@@ -90,6 +90,8 @@ export async function POST(req) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(printJob)
+        }).catch(err => {
+            console.error(err)
         })
         if (!res.ok) {
             console.error('save to outputs error: ', res.status)
@@ -134,6 +136,8 @@ export async function POST(req) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedPrintJob)
+        }).catch(err => {
+            console.error(err)
         })
         if (!jobRes.ok) {
             console.error('add job queue error: ', jobRes.status)

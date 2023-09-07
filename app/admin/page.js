@@ -8,6 +8,8 @@ export default function Page() {
             headers: {
                 'Content-Type': 'application/json',
             },
+        }).catch(err => {
+            console.error(err)
         })
     }
 
@@ -17,6 +19,8 @@ export default function Page() {
             headers: {
                 'Content-Type': 'application/json',
             },
+        }).catch(err => {
+            console.error(err)
         })
     }
 
@@ -26,6 +30,8 @@ export default function Page() {
             headers: {
                 'Content-Type': 'application/json',
             },
+        }).catch(err => {
+            console.error(err)
         })
     }
 
@@ -35,6 +41,8 @@ export default function Page() {
             headers: {
                 'Content-Type': 'application/json',
             },
+        }).catch(err => {
+            console.error(err)
         })
     }
 

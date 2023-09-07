@@ -42,6 +42,8 @@ export default function Page() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({twitterAccount: formData.get('twitterAccount')})
+        }).catch(err => {
+            console.error(err)
         })
         if (!res.ok) {
             console.error('handle twitter submit error: ', res.status)

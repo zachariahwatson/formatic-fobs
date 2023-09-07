@@ -27,7 +27,7 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, params })
       //compute bounding box to center text
       textRef.current.geometry.computeBoundingBox()
       const tBox = textRef.current.geometry.boundingBox
-      const matrix = new THREE.Matrix4().makeTranslation(-((Math.abs(tBox.min.x)+Math.abs(tBox.max.x))/2), box.min.y-10, box.min.z)
+      const matrix = new THREE.Matrix4().makeTranslation(-((Math.abs(tBox.min.x) + Math.abs(tBox.max.x)) / 2), box.min.y - 10, box.min.z)
       const gText = textRef.current.geometry.clone()
       gText.applyMatrix4(matrix)
 
@@ -49,19 +49,21 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, params })
       //   saveToOutputs(STLstring, modelParams)
       // })
       async function postData() {
-          const res = await fetch('/api/savetooutputs', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({STLstring: STLstring, modelParams: modelParams}),
-          })
-          if (!res.ok) {
-            console.error('save to outputs error: ', res.status)
-          }
+        const res = await fetch('/api/savetooutputs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ STLstring: STLstring, modelParams: modelParams }),
+        }).catch(err => {
+          console.error(err)
+        })
+        if (!res.ok) {
+          console.error('save to outputs error: ', res.status)
+        }
       }
       postData()
-      
+
       gl.dispose()
       router.push('/')
     }
