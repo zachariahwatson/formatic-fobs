@@ -6,6 +6,7 @@ import { io } from "socket.io-client"
 export default function PrintQueue() {
     const [printJobs, setPrintJobs] = useState([])
     const [currentJob, setcurrentJob] = useState([])
+    const [progress, setProgress] = useState(0)
 
     useEffect(() => {
         const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
@@ -37,6 +38,11 @@ export default function PrintQueue() {
         socket.on('currentjob', () => {
             console.log('socket: currentjob received')
             fetchCurrentJob()
+        })
+
+        socket.on('progress', (progress) => {
+            console.log('socket: progress received')
+            setProgress(progress)
         })
 
         return () => {
@@ -90,6 +96,7 @@ export default function PrintQueue() {
                     transition={{ duration: .5 }}
                 >
                     <div>{currentJob && currentJob.Status}</div>
+                    <div>{currentJob && progress}</div>
                     <div className="flex flex-col font-n27-extralight justify-around text-3xl w-full h-full uppercase">
                         {currentJob && currentJob.Model && currentJob.Model.map((model) => {
                             return (
