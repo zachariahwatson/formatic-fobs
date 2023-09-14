@@ -58,8 +58,8 @@ const worker = new Worker('print-queue', async (job) => {
             throw err
         })
     } catch (err) {
-        // await printQueue.pause()
-        // console.log('queue: paused queue')
+        await printQueue.pause()
+        console.log('queue: paused queue')
         throw err
     }
 })
