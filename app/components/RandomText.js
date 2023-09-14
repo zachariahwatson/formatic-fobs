@@ -31,7 +31,7 @@ export default function RandomText({ text, isSwitching }) {
         const newWord = Math.random() < .5 ? word.toLowerCase() : word.toUpperCase()
         // randomize font family
         const fontFamily = fonts[Math.floor(Math.random() * fonts.length)]
-        console.log(fontFamily)
+        //console.log(fontFamily)
 
         return (
           <span key={word} className={fontFamily}>

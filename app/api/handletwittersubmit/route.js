@@ -25,7 +25,7 @@ export async function POST(req) {
       }
     })
     
-    console.log('model created for given user')
+    console.log('prisma: model created for given user')
     //console.log('model created for given user:\n', user)
 
     return NextResponse.json({ redirectUrl: `/model/${twitter}` })

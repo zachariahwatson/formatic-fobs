@@ -7,13 +7,13 @@ export async function POST() {
     const errorJob = await prisma.print.findFirst({
         where: {
             Status: {
-                equals: 'ERROR'
+                in: ['ERROR', 'PRINTING']
             }
         },
     })
 
     if (errorJob) {
-        const res = await fetch('http://localhost:3000/restartactivejob', {
+        const res = await fetch('http://localhost:3000/restartfailedjob', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export async function POST() {
             console.error('restart job error: ', res.status)
         }
     } else {
-        console.log('no error job found')
+        console.log('prisma: no error or printing job found')
     }
 
     return NextResponse.json({ message: 'restarting job' })

@@ -50,11 +50,11 @@ export async function POST(req) {
         if (err) {
             console.error('error creating file:', err)
         } else {
-            console.log('file created successfully.')
+            console.log('fs: file created successfully.')
         }
     })
 
-    console.log('added .stl to model')
+    console.log('prisma: added .stl to model')
     //console.log('added .stl to model:\n', model)
 
     //update print job and check if it is full
@@ -78,7 +78,7 @@ export async function POST(req) {
         }
     })
 
-    console.log('print job created or updated')
+    console.log('prisma: print job created or updated')
     //console.log('print job created or updated:\n', printJob)
 
     //check to see if the print job is full, and if so, slice all models
@@ -105,7 +105,7 @@ export async function POST(req) {
             }
         })
 
-        console.log('gcode added to print job')
+        console.log('prisma: gcode added to print job')
         //console.log('gcode added to print job:\n', updatedPrintJob)
 
         // const isPrinting = await prisma.print.count({

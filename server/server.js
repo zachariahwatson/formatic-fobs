@@ -2,8 +2,8 @@ const express = require("express")
 const { createServer } = require("http")
 const { Server } = require("socket.io")
 const printer = require('./printer')
-printer.init()
 const queue = require('./queue')
+//console.log(queue.printQueue.getFailed())
 const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, { cors: '*' })
@@ -14,7 +14,7 @@ io.on("connection", (socket) => {
   console.log(`${socket.id} connected, current clients: ${io.engine.clientsCount}`)
   socket.on('printjobs', () => {
     try {
-      console.log('sending print jobs')
+      console.log('socket: sending print jobs')
       socket.broadcast.emit('printjobs')
     } catch (err) {
       console.error('error handling printjobs:', err)
@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
 
   socket.on('currentjob', () => {
     try {
-      console.log('sending current job')
+      console.log('socket: sending current job')
       socket.broadcast.emit('currentjob')
     } catch (err) {
       console.error('error handling printjobs:', err)
@@ -45,37 +45,40 @@ app.post('/clearjobqueue', async (req, res) => {
     console.error('error obliterating queue: ', err)
     res.sendStatus(500)
   })
-  console.log('cleared job queue')
+  console.log('queue: cleared job queue')
   res.sendStatus(200)
 })
 
 app.post('/removeactivejob', async (req, res) => {
   const activeJobs = await queue.printQueue.getJobs(['active']).catch(err => {
     console.error('error removing active job: ', err)
-    
+
     res.sendStatus(500)
   })
   if (activeJobs.length > 0) {
     for (const job of activeJobs) {
       await job.remove()
-      console.log(`removed active job with ID ${job.id}`)
+      console.log(`queue: removed active job with ID ${job.id}`)
     }
   } else {
-    console.log('no active jobs found')
+    console.log('queue: no active jobs found')
   }
   res.sendStatus(200)
 })
 
-app.post('/restartactivejob', async (req, res) => {
+app.post('/restartfailedjob', async (req, res) => {
+  console.log('worker: attempting job restart...')
   const data = req.body
-  await printer.init(true)
-  await queue.printQueue.add(data.ID, data, { priority: 1 }).catch(err => {
+  console.log('worker: checking printer port')
+  await printer.checkPort().catch(err => {
+    console.error('check port error: ', err)
+    throw err
+  })
+  await queue.printQueue.add(data.ID, { ...data, currentLine: 0, targetExtruderTemp: 0, targetBedTemp: 0 }, { priority: 1 }).catch(err => {
     console.error('error adding job to queue: ', err)
     res.sendStatus(500)
   })
-  console.log('job restarted')
-  await queue.printQueue.resume()
-  console.log('queue resumed')
+  console.log('queue: job restarted: ', data.ID)
   res.sendStatus(200)
 })
 
@@ -92,11 +95,11 @@ app.post('/restartactivejob', async (req, res) => {
 
 app.post('/addjob', async (req, res) => {
   const data = req.body
-  await queue.printQueue.add(data.ID, data).catch(err => {
+  await queue.printQueue.add(data.ID, { ...data, currentLine: 0, targetExtruderTemp: 0, targetBedTemp: 0 }).catch(err => {
     console.error('error adding job to queue: ', err)
     res.sendStatus(500)
   })
-  console.log('job queued')
+  console.log('queue: job queued')
   res.sendStatus(200)
 })
 
@@ -105,14 +108,28 @@ app.use((err, req, res, next) => {
   res.status(500).send('Internal Server Error')
 })
 
-queue.worker.on('completed', async (job) => {
-  console.log('worker said its done')
+if (queue.worker) {
+  queue.worker.on('completed', async (job) => {
+    console.log('worker: job completed')
+  })
 
-})
+  queue.worker.on('failed', async (job) => {
+    //await job.remove()
+    console.log('worker: job failed')
+    // const res = await fetch('http://localhost:3000/restartfailedjob', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(job.data)
+    // }).catch(err => {
+    //   console.error(err)
+    // })
+    // if (!res.ok) {
+    //   console.error('restart job error: ', res.status)
+    // }
+  })
+}
 
-queue.worker.on('error', async (job) => {
-  console.log('worker error')
-
-})
 
 httpServer.listen(3000)

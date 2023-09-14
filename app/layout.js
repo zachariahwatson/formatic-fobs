@@ -75,7 +75,7 @@ export default function RootLayout({ children }) {
               <line x1="19" y1="0" x2="19" y2="100%" stroke="#fff" strokeWidth="1.5" strokeDasharray="2,3" markerEnd="url(#arrow)" markerStart="url(#arrow)" />
             </svg>
           </div>
-          <div className="w-1/4 rounded-3xl p-5 bg-black text-4xl outline-none shadow-lg shadow-white border border-white relative">
+          <div className="w-1/4 rounded-3xl p-5 bg-black text-4xl outline-none shadow-lg shadow-white border border-white relative pt-32">
             <div className="w-full h-28 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
               <p className="text-6xl mb-px px-6 pb-2 pt-6"><span className="font-n27-extralight">PRINT_</span><span className="font-n27-regular">QUEUE</span></p>
               <svg className="w-full h-10">

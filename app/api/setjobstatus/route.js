@@ -42,7 +42,7 @@ export async function POST(req) {
     socket.emit('currentjob')
     socket.emit('printjobs')
 
-    console.log('job status set')
+    console.log('prisma: job status set')
 
     return NextResponse.json({ message: 'changed job status successfully' })
 }

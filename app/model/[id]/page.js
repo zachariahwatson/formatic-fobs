@@ -12,7 +12,7 @@ export default function Page({ params }) {
     //set up MIDI functionality
     navigator.requestMIDIAccess()
       .then((midiAccess) => {
-        console.log('MIDI access request succeeded')
+        console.log('navitagor: MIDI access request succeeded')
         const midiInput = midiAccess.inputs.values().next().value
         midiInput.onmidimessage = handleMIDIMessage
         //handle MIDI messages and process data before emitting

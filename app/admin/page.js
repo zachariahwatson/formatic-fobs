@@ -35,8 +35,8 @@ export default function Page() {
         })
     }
 
-    const restartActiveJob = async () => {
-        await fetch('/api/restartactivejob', {
+    const restartFailedJob = async () => {
+        await fetch('/api/restartfailedjob', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ export default function Page() {
             <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearDB()}>clear db</button>
             <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearJobQueue()}>clear job queue</button>
             <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => removeActiveJob()}>remove active job</button>
-            <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => restartActiveJob()}>restart active job</button>
+            <button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => restartFailedJob()}>restart failed job</button>
         </>
     )
 }
