@@ -29,6 +29,15 @@ io.on("connection", (socket) => {
       console.error('error handling printjobs:', err)
     }
   })
+
+  socket.on('progress', (progress) => {
+    try {
+      console.log('socket: sending progress')
+      socket.broadcast.emit('progress', progress)
+    } catch (err) {
+      console.error('error emitting progress:', err)
+    }
+  })
 })
 
 app.post('/slice', async (req, res) => {
@@ -108,28 +117,97 @@ app.use((err, req, res, next) => {
   res.status(500).send('Internal Server Error')
 })
 
-if (queue.worker) {
-  queue.worker.on('completed', async (job) => {
-    console.log('worker: job completed')
+// if (queue.worker) {
+queue.worker.on('completed', async (job) => {
+  console.log('worker: job completed, setting status to ARCHIVED')
+  const res = await fetch('http://localhost/api/setjobstatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ jobID: job.data.ID, status: 'ARCHIVED' })
+  }).catch(err => {
+    console.error(err)
+    throw err
   })
+  if (!res.ok) {
+    console.error('re-queueing failed job error: ', res.status)
+    throw new Error(res.status)
+  }
+  job.updateData({...job.data, Status: 'ARCHIVED'})
+})
 
-  queue.worker.on('failed', async (job) => {
-    //await job.remove()
-    console.log('worker: job failed')
-    // const res = await fetch('http://localhost:3000/restartfailedjob', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(job.data)
-    // }).catch(err => {
-    //   console.error(err)
-    // })
-    // if (!res.ok) {
-    //   console.error('restart job error: ', res.status)
-    // }
+queue.worker.on('failed', async (job) => {
+  //await job.remove()
+  console.log('worker: job failed, setting status to QUEUED')
+  const res = await fetch('http://localhost/api/setjobstatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ jobID: job.data.ID, status: 'QUEUED' })
+  }).catch(err => {
+    console.error(err)
+    throw err
   })
-}
+  if (!res.ok) {
+    console.error('re-queueing failed job error: ', res.status)
+    throw new Error(res.status)
+  }
+  job.updateData({...job.data, Status: 'QUEUED'})
+})
+
+queue.worker.on('waiting', async (job) => {
+  console.log('worker: job waiting, setting status to QUEUED')
+  const res = await fetch('http://localhost/api/setjobstatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ jobID: job.data.ID, status: 'QUEUED' })
+  }).catch(err => {
+    console.error(err)
+    throw err
+  })
+  if (!res.ok) {
+    console.error('setting job status to QUEUED error: ', res.status)
+    throw new Error(res.status)
+  }
+  job.updateData({...job.data, Status: 'QUEUED'})
+})
+
+queue.worker.on('stalled', async (jobID) => {
+  const job = await queue.printQueue.getJob(jobID).catch(err => {
+    console.error('error getting stalled job from job id: ', err)
+  })
+  console.log('worker: job stalled, setting status to QUEUED')
+  const res = await fetch('http://localhost/api/setjobstatus', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ jobID: job.data.ID, status: 'QUEUED' })
+  }).catch(err => {
+    console.error(err)
+    throw err
+  })
+  if (!res.ok) {
+    console.error('setting job status to stalled error: ', res.status)
+    throw new Error(res.status)
+  }
+  job.updateData({...job.data, Status: 'QUEUED'})
+})
+
+queue.worker.on('error', async (job) => {
+  console.log('worker: job error')
+  job.updateData({...job.data, Status: 'ERROR'})
+})
+
+queue.worker.on('active', async (job) => {
+  console.log('worker: job active')
+  job.updateData({...job.data, Status: 'PRINTING'})
+})
+// }
 
 
 httpServer.listen(3000)
