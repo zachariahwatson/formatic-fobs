@@ -4,8 +4,8 @@ const { ReadlineParser } = require('@serialport/parser-readline')
 const { readFile } = require('node:fs/promises')
 //const printQueue = require('./../app/utils/io').default
 const { spawn } = require('child_process')
-// const { io } = require('socket.io-client')
-// const socket = io()
+const { io } = require('socket.io-client')
+const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
 
 let port
 let parser
@@ -73,6 +73,7 @@ const printPrintJob = async (printJob) => {
         const totalLength = gcode.length - 1
         let progress = 0
         let prev = progress
+        socket.emit('progress', progress)
 
         //get total time from gcode comments
         // totalTime = gcode.find(item => item.includes('estimated printing time')).split('=')[1].trim()
@@ -119,6 +120,7 @@ const printPrintJob = async (printJob) => {
             if (prev != progress) {
                 console.log(progress)
                 await printJob.updateProgress(progress)
+                socket.emit('progress', progress)
             }
         }
 
