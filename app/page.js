@@ -2,7 +2,7 @@
   [x] set up stl export on button press
   [x] implement db
   [x] create one big midi handler js helper file
-  [ ] create print queue that waits for user input on the 3d printer screen before printing next print job
+  [x] create print queue that waits for user input on the 3d printer screen before printing next print job
   [x] buy extra buildplate?
   [x] create print queue component that contains print job components with a preview of the model
   [x] create slicing process that puts multiple models on the same buildplate (use --marge header in prusaslicer cli)
@@ -15,7 +15,7 @@
   [ ] create ufo model
   [ ] create cactus model
   [ ] create landscape model
-  [ ] do exhibit simulation test
+  [x] do exhibit simulation test
   [ ] test on tvs
   [ ] calibrate 3d printer
   [ ] generate .ini file for prusaslicer cli
