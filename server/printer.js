@@ -267,11 +267,7 @@ const slice = async (printJob) => {
             `--export-gcode`,
             `--merge`,
             `--load`,
-            `./../cfg/test1.ini`,
-            `--load`,
-            `./../cfg/test2.ini`,
-            `--load`,
-            `./../cfg/test3.ini`,
+            `./../cfg/${process.env.PRUSA_INI}`,
             `--output`,
             `${printJob.ID}.gcode`,
         ]
