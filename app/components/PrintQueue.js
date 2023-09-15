@@ -7,7 +7,7 @@ import ProgressBar from './ProgressBar'
 export default function PrintQueue() {
     const [printJobs, setPrintJobs] = useState([])
     const [currentJob, setcurrentJob] = useState([])
-    const [progress, setProgress] = useState(50)
+    const [progress, setProgress] = useState(0)
 
     useEffect(() => {
         const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
