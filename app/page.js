@@ -21,64 +21,107 @@
   [ ] generate .ini file for prusaslicer cli
   [ ] static cmd info panel
 */
-'use client'
+"use client"
 
-import { handleTwitterSubmit } from './actions'
-import {useRouter} from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useRef } from 'react'
+import { handleTwitterSubmit } from "./actions"
+import { useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
 // import RandomText from './components/RandomText'
 
 export default function Page() {
-    const router = useRouter()
-    const inputRef = useRef()
+	const router = useRouter()
+	const inputRef = useRef()
+	const [printModel, setPrintModel] = useState(true)
 
-    const handleTwitterSubmit = async (e) => {
-        e.preventDefault()
-        const formData = new FormData(e.target)
-        const res = await fetch('/api/handletwittersubmit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({twitterAccount: formData.get('twitterAccount')})
-        }).catch(err => {
-            console.error(err)
-        })
-        if (!res.ok) {
-            console.error('handle twitter submit error: ', res.status)
-        }
-        const data = await res.json()
-        router.push(data.redirectUrl)
-    }
+	const handleTwitterSubmit = async (e) => {
+		e.preventDefault()
+		const formData = new FormData(e.target)
+		const res = await fetch("/api/handletwittersubmit", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				twitterAccount: formData.get("twitterAccount"),
+				printModel: printModel,
+			}),
+		}).catch((err) => {
+			console.error(err)
+		})
+		if (!res.ok) {
+			console.error("handle twitter submit error: ", res.status)
+		}
+		const data = await res.json()
+		router.push(data.redirectUrl)
+	}
 
-    useEffect(() => {
-        inputRef.current.focus()
-    }, [])
+	useEffect(() => {
+		inputRef.current.focus()
 
-    //component that prompts user for twitter name and then executes handleTwitterSubmit() server action as well as redirects to dynamic model route for the specified user
-    return (
-        <>
-            <motion.div
-            initial={{ opacity: 0}}
-            animate={{ opacity: 1}}
-            exit={{opacity: 1}}
-            transition={{ duration: 1}}
-            className="flex justify-center h-full w-full items-center">
-                <form onSubmit={handleTwitterSubmit} className="flex flex-col gap-2">
-                    <label className="mb-2 text-5xl">
-                        <span className="font-n27-extralight">TWITTER_</span><span className="font-n27-regular">USERNAME:</span>
-                    </label>
-                    <input
-                        type="text"
-                        name="twitterAccount"
-                        className={`rounded-2xl p-2 bg-black text-3xl outline-none shadow-lg shadow-white border border-white font-n27-regular lowercase`}
-                        ref={inputRef}
-                        />
-                </form>
-            </motion.div>
-        </>
-  )
+		const handleKeyDown = (event) => {
+			if (event.key === "F1") {
+				setPrintModel(true)
+			} else if (event.key === "F2") {
+				setPrintModel(false)
+			}
+		}
+
+		window.addEventListener("keydown", handleKeyDown)
+
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown)
+		}
+	}, [])
+
+	//component that prompts user for twitter name and then executes handleTwitterSubmit() server action as well as redirects to dynamic model route for the specified user
+	return (
+		<>
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				exit={{ opacity: 1 }}
+				transition={{ duration: 1 }}
+				className="flex justify-center h-full w-full items-center"
+			>
+				<form onSubmit={handleTwitterSubmit} className="flex flex-col gap-2">
+					<label className="mb-2 text-5xl">
+						<span className="font-n27-extralight">TWITTER_</span>
+						<span className="font-n27-regular">USERNAME:</span>
+					</label>
+					<input
+						type="text"
+						name="twitterAccount"
+						className={`rounded-2xl p-2 bg-black text-3xl outline-none shadow-lg shadow-white border border-white font-n27-regular lowercase`}
+						ref={inputRef}
+					/>
+					<label className="mt-6 text-3xl text-center">
+						<span className="font-n27-extralight">PRINT MODEL?</span>
+						<span className="flex justify-evenly">
+							<p
+								className={
+									printModel
+										? "font-n27-regular"
+										: "font-n27-extralight text-neutral-500"
+								}
+							>
+								F1 -&gt; YES
+							</p>
+							<p
+								className={
+									printModel
+										? "font-n27-extralight text-neutral-500"
+										: "font-n27-regular"
+								}
+							>
+								F2 -&gt; NO
+							</p>
+						</span>
+					</label>
+				</form>
+			</motion.div>
+		</>
+	)
 }
 
 // onSubmit={(e) => {
