@@ -4,9 +4,9 @@ import ExportSTL from "../ExportSTL"
 import map from "./../../utils/map"
 
 export default function Ufo({
-	shapeData,
 	printButtonHit,
 	MIDIinterface,
+	printModel,
 	params,
 }) {
 	const mesh = useRef()
@@ -36,6 +36,11 @@ export default function Ufo({
 			},
 		},
 	}
+
+	// Extract .val properties from boxInterface and set modelParams
+	const modelParams = Object.fromEntries(
+		Object.entries(boxInterface).map(([key, value]) => [key, value.val])
+	)
 
 	const colors = [
 		new THREE.Color("rgb(255, 190, 11)"),
@@ -86,8 +91,9 @@ export default function Ufo({
 			</mesh>
 			<ExportSTL
 				printButtonHit={printButtonHit}
-				modelParams={shapeData}
+				modelParams={modelParams}
 				mesh={mesh}
+				printModel={printModel}
 				params={params}
 			/>
 		</>

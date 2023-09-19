@@ -8,7 +8,7 @@ import { DataHandler } from "../utils/DataHandler"
 import { motion as motion3d } from "framer-motion-3d"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function ModelScene({ MIDIdata, params }) {
+export default function ModelScene({ MIDIdata, printModel, params }) {
 	const [modelID, setModelID] = useState("0")
 
 	useEffect(() => {
@@ -110,7 +110,12 @@ export default function ModelScene({ MIDIdata, params }) {
 					className="rounded-3xl"
 				>
 					{/* <ambientLight /> */}
-					<directionalLight intensity={1} position={[0, 30, 10]} />
+					<directionalLight
+						intensity={0.5}
+						position={[0, 35, 10]}
+						castShadow
+						color="#fcebc9"
+					/>
 					<motion3d.group
 						animate={{
 							y: [5, 2, 0],
@@ -130,6 +135,9 @@ export default function ModelScene({ MIDIdata, params }) {
 							printButtonHit={printButtonHit}
 							MIDIinterface={MIDIinterface}
 							params={params}
+							printModel={printModel}
+							receiveShadow // Enable shadow receiving
+							castShadow // Enable shadow casting
 						/>
 					</motion3d.group>
 					<OrbitControls />

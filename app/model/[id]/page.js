@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react"
 import ModelScene from "./../../components/ModelScene"
 import { motion } from "framer-motion"
+import { useSearchParams } from "next/navigation"
 // import RandomText from '@/app/components/RandomText';
 
 export default function Page({ params }) {
 	const [MIDIdata, setMidiData] = useState([0, 0])
+	const searchParams = useSearchParams()
+	const printModel = searchParams.get("printModel")
 
 	useEffect(() => {
 		let midiInput = null
@@ -39,7 +42,7 @@ export default function Page({ params }) {
 
 	return (
 		<>
-			<ModelScene MIDIdata={MIDIdata} params={params} />
+			<ModelScene MIDIdata={MIDIdata} params={params} printModel={printModel} />
 		</>
 	)
 }
