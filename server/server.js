@@ -85,10 +85,16 @@ app.post("/restartfailedjob", async (req, res) => {
 		console.error("check port error: ", err)
 		throw err
 	})
-	// await queue.printQueue.add(data.ID, { ...data, currentLine: 0, targetExtruderTemp: 0, targetBedTemp: 0 }, { priority: 1 }).catch(err => {
-	//   console.error('error adding job to queue: ', err)
-	//   res.sendStatus(500)
-	// })
+	await queue.printQueue
+		.add(
+			data.ID,
+			{ ...data, currentLine: 0, targetExtruderTemp: 0, targetBedTemp: 0 },
+			{ priority: 1 }
+		)
+		.catch((err) => {
+			console.error("error adding job to queue: ", err)
+			res.sendStatus(500)
+		})
 	console.log("queue: job restarted: ", data.ID)
 	res.sendStatus(200)
 })
@@ -106,10 +112,17 @@ app.post("/restartfailedjob", async (req, res) => {
 
 app.post("/addjob", async (req, res) => {
 	const data = req.body
-	// await queue.printQueue.add(data.ID, { ...data, currentLine: 0, targetExtruderTemp: 0, targetBedTemp: 0 }).catch(err => {
-	//   console.error('error adding job to queue: ', err)
-	//   res.sendStatus(500)
-	// })
+	await queue.printQueue
+		.add(data.ID, {
+			...data,
+			currentLine: 0,
+			targetExtruderTemp: 0,
+			targetBedTemp: 0,
+		})
+		.catch((err) => {
+			console.error("error adding job to queue: ", err)
+			res.sendStatus(500)
+		})
 	console.log("queue: job queued")
 	res.sendStatus(200)
 })
