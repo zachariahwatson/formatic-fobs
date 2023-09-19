@@ -1,5 +1,5 @@
 # Use postgres/example user/password credentials
-version: '3.1'
+version: "3.1"
 
 services:
   db:
@@ -16,6 +16,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+    environment:
+      ADMINER_DESIGN: dracula
   redis:
     image: redis
     restart: always
