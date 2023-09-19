@@ -22,12 +22,12 @@ export function DataHandler(MIDIdata) {
 	}, [MIDIdata])
 
 	useEffect(() => {
-		if (MIDIdata && MIDIdata.id !== undefined) {
+		if (MIDIdata && MIDIdata.id !== undefined && MIDIdata.id <= 15) {
 			const isRandomButton = MIDIdata.id >= 8
 			const id = isRandomButton ? MIDIdata.id - 8 : MIDIdata.id
 
-			if (isRandomButton && MIDIdata.val === 1) {
-				if (!MIDIinterface[id].isRandom) {
+			if (isRandomButton === true && MIDIdata.val === 1) {
+				if (MIDIinterface[id].isRandom === false) {
 					MIDIinterface[id].isRandom = true
 					let rand1 = Math.random() * 10
 					let rand2 = Math.random()
@@ -48,7 +48,7 @@ export function DataHandler(MIDIdata) {
 
 					intervalMap.current[id] = interval
 				}
-			} else if (isRandomButton && MIDIdata.val === 0) {
+			} else if (isRandomButton === true && MIDIdata.val === 0) {
 				setMIDIinterface((prev) => ({
 					...prev,
 					[id]: {
