@@ -22,11 +22,12 @@ model Model {
 }
 
 model Print {
-  ID        Int         @id @default(autoincrement())
-  TimeStamp DateTime    @default(now()) @db.Timestamptz(6)
-  Status    StatusFlags @default(PENDING)
-  GCODEPath String?
-  Model     Model[]
+  ID            Int         @id @default(autoincrement())
+  TimeStamp     DateTime    @default(now()) @db.Timestamptz(6)
+  Status        StatusFlags @default(PENDING)
+  EstimatedTime Int?
+  GCODEPath     String?
+  Model         Model[]
 }
 
 model User {
