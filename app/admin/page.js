@@ -2,7 +2,7 @@
 
 export default function Page() {
 	const clearDB = async () => {
-		await fetch("/api/cleardb", {
+		const res = await fetch("/api/cleardb", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -10,10 +10,13 @@ export default function Page() {
 		}).catch((err) => {
 			console.error(err)
 		})
+		if (!res.ok) {
+			console.error("clear db error: ", res.status)
+		}
 	}
 
 	const clearJobQueue = async () => {
-		await fetch("http://localhost:3000/clearjobqueue", {
+		const res = await fetch("http://localhost:3000/clearjobqueue", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -21,10 +24,13 @@ export default function Page() {
 		}).catch((err) => {
 			console.error(err)
 		})
+		if (!res.ok) {
+			console.error("clear job queue error: ", res.status)
+		}
 	}
 
 	const removeActiveJob = async () => {
-		await fetch("http://localhost:3000/removeactivejob", {
+		const res = await fetch("http://localhost:3000/removeactivejob", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -32,10 +38,13 @@ export default function Page() {
 		}).catch((err) => {
 			console.error(err)
 		})
+		if (!res.ok) {
+			console.error("remove active job error: ", res.status)
+		}
 	}
 
 	const restartFailedJob = async () => {
-		await fetch("/api/restartfailedjob", {
+		const res = await fetch("/api/restartfailedjob", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -43,10 +52,13 @@ export default function Page() {
 		}).catch((err) => {
 			console.error(err)
 		})
+		if (!res.ok) {
+			console.error("restart failed job error: ", res.status)
+		}
 	}
 
 	const repopulateQueue = async () => {
-		await fetch("/api/repopulatequeue", {
+		const res = await fetch("/api/repopulatequeue", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -54,6 +66,9 @@ export default function Page() {
 		}).catch((err) => {
 			console.error(err)
 		})
+		if (!res.ok) {
+			console.error("repopulate queue error: ", res.status)
+		}
 	}
 
 	// const runPrinterInit = async () => {
