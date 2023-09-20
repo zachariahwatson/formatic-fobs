@@ -1,7 +1,6 @@
 import { useState, useEffect, useTransition, useRef } from "react"
 import * as THREE from "three"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter"
-import { saveToOutputs } from "../actions"
 import { useRouter } from "next/navigation"
 import { useThree } from "@react-three/fiber"
 import { Text3D } from "@react-three/drei"
@@ -75,11 +74,17 @@ export default function ExportSTL({
 				if (!res.ok) {
 					console.error("save to outputs error: ", res.status)
 				}
+				const data = await res.json()
+
+				if (data.message === "queue time exceeds end time") {
+					gl.dispose()
+					router.push("/timesup")
+				} else {
+					gl.dispose()
+					router.push("/")
+				}
 			}
 			postData()
-
-			gl.dispose()
-			router.push("/")
 		}
 	}, [STLstring])
 
