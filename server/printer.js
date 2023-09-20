@@ -3,7 +3,6 @@ const { SerialPort } = require("serialport")
 const { ReadlineParser } = require("@serialport/parser-readline")
 const { readFile } = require("node:fs/promises")
 //const printQueue = require('./../app/utils/io').default
-const queue = require("./queue")
 const { spawn } = require("child_process")
 const { io } = require("socket.io-client")
 const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
@@ -14,7 +13,7 @@ let interval
 
 const connectToPort = () =>
 	new Promise((resolve) => {
-		const attemptConnect = () => {
+		const attemptConnect = async () => {
 			if (!port) {
 				// Create a serial port instance
 				port = new SerialPort(
@@ -38,9 +37,23 @@ const connectToPort = () =>
 				)
 			} else if (!port.isOpen) {
 				// Attempt to open the port
-				port.open((err) => {
+				port.open(async (err) => {
 					if (!err) {
 						console.log("serialport: port has been reconnected.")
+
+						console.log("resuming queue")
+						const res = await fetch("http://localhost:3000/resumequeue", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+						}).catch((err) => {
+							console.error(err)
+						})
+						if (!res.ok) {
+							console.error("resume queue error: ", res.status)
+						}
+
 						clearInterval(interval)
 						resolve()
 						// Add any additional initialization or resuming logic here
@@ -48,15 +61,35 @@ const connectToPort = () =>
 				})
 
 				console.log("pausing queue")
-				queue.pause()
+				const res = await fetch("http://localhost:3000/pausequeue", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}).catch((err) => {
+					console.error(err)
+				})
+				if (!res.ok) {
+					console.error("pause queue error: ", res.status)
+				}
 
-				process.stdout.write("\rserialport: waiting for printer to turn on...")
+				console.log("serialport: waiting for printer to turn on...")
 			} else {
 				clearInterval(interval)
 				console.log("serialport: printer connected!")
 
 				console.log("resuming queue")
-				queue.resume()
+				const res = await fetch("http://localhost:3000/resumequeue", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}).catch((err) => {
+					console.error(err)
+				})
+				if (!res.ok) {
+					console.error("resume queue error: ", res.status)
+				}
 
 				resolve()
 			}
@@ -103,36 +136,25 @@ const printPrintJob = async (printJob) => {
 					...printJob.data,
 					currentLine: gcodeQueueIndex,
 				})
-				if (line.includes("M104")) {
-					if (line.includes("120")) {
-						await printJob.updateData({
-							...printJob.data,
-							targetExtruderTemp: 120,
-						})
-					} else if (line.includes("210")) {
-						await printJob.updateData({
-							...printJob.data,
-							targetExtruderTemp: 210,
-						})
-					} else if (line.includes("205")) {
-						await printJob.updateData({
-							...printJob.data,
-							targetExtruderTemp: 205,
-						})
-					} else {
-						await printJob.updateData({
-							...printJob.data,
-							targetExtruderTemp: 0,
-						})
-					}
+				const vals = line.split(" ").map((part) => part.slice(1))
+
+				if (line.includes("M104") || line.includes("M109")) {
+					await printJob.updateData({
+						...printJob.data,
+						targetExtruderTemp: vals[1],
+					})
+				} else if (line.includes("M140") || line.includes("M190")) {
+					await printJob.updateData({
+						...printJob.data,
+						targetBedTemp: vals[1],
+					})
+				} else if (line.includes("G1 Z")) {
+					await printJob.updateData({
+						...printJob.data,
+						zPosition: [vals[1], vals[2]],
+					})
 				}
-				if (line.includes("M140")) {
-					if (line.includes("60")) {
-						await printJob.updateData({ ...printJob.data, targetBedTemp: 60 })
-					} else {
-						await printJob.updateData({ ...printJob.data, targetBedTemp: 0 })
-					}
-				}
+
 				//write to printer
 				//console.log(line)
 				//await sleep(5)
@@ -187,15 +209,43 @@ const serialWriteAndOK = (job, message) =>
 
 			const handleDisconnect = async () => {
 				//port.off('close', handleDisconnect)
+				parser.off("data", dataCheck)
 				await checkPort()
+				console.log("serialport: use absolute coordinates")
+				await serialWrite("G90")
+				await waitForOK()
+				console.log("serialport: extruder relative mode")
+				await serialWrite("M83")
+				await waitForOK()
+				console.log("serialport: setting Z to 20")
+				await serialWrite("G1 Z20 F1500")
+				await waitForOK()
+				console.log("serialport: homing x and y axis")
+				await serialWrite("G28 X Y")
+				await waitForOK()
+				console.log("serialport: homing z axis")
+				await serialWrite("G30 X40")
+				await waitForOK()
+				console.log("serialport: parking extruder")
+				await serialWrite("G27")
+				await waitForOK()
 				console.log("serialport: resetting last target temperatures")
 				await serialWrite(`M109 S${job.data.targetExtruderTemp}`)
 				await waitForOK()
 				await serialWrite(`M190 S${job.data.targetBedTemp}`)
 				await waitForOK()
-				console.log("serialport: resending serialWrite")
-				await serialWrite(message)
+				if (job.data.zPosition) {
+					console.log("serialport: setting Z position")
+					await serialWrite(
+						`G1 Z${job.data.zPosition[0]} F${
+							job.data.zPosition[1] && job.data.zPosition[1]
+						}`
+					)
+				}
 				await waitForOK()
+				console.log("serialport: resending serialWrite")
+				parser.on("data", dataCheck)
+				await serialWrite(message)
 			}
 
 			parser.on("data", dataCheck)
@@ -336,6 +386,7 @@ const slice = async (printJob) => {
 			parseInt(totalTime.split(" ")[0].replace(/\D/g, "")) * 60 +
 			parseInt(totalTime.split(" ")[1].replace(/\D/g, ""))
 		const totalMinutes = Math.ceil(totalSeconds / 60)
+		const totalMillis = totalSeconds * 1000
 
 		const res = await fetch("http://localhost/api/addestimatedtime", {
 			method: "POST",
@@ -344,7 +395,7 @@ const slice = async (printJob) => {
 			},
 			body: JSON.stringify({
 				jobID: printJob.ID,
-				totalMinutes: totalMinutes,
+				estimatedTime: totalMillis,
 			}),
 		}).catch((err) => {
 			console.error(err)
