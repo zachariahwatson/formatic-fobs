@@ -8,7 +8,7 @@ export async function POST(req) {
 	const currentPrintJob = await prisma.print.update({
 		where: { ID: data.jobID },
 		data: {
-			EstimatedTime: data.totalMinutes,
+			EstimatedTime: data.estimatedTime,
 		},
 	})
 
