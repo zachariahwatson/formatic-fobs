@@ -57,14 +57,13 @@ export default function PrintQueue() {
 			<div className="w-full h-4/6 flex flex-col-reverse justify-start">
 				{printJobs.map((job, i) => {
 					return (
-						<div className="h-1/3 pb-4">
+						<div className="h-1/3 pb-4" key={job.ID}>
 							<motion.div
 								className="h-full rounded-3xl text-3xl outline-none shadow-lg shadow-white border border-white relative flex justify-around p-4 pt-14"
 								initial={{ opacity: 0, y: -100 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ duration: 0.5, delay: 0.5 * i }}
 								exit={{ opacity: 0 }}
-								key="1"
 							>
 								<div className="w-full bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
 									<p className="text-2xl px-4 pt-2">
