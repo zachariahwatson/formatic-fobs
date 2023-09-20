@@ -7,6 +7,8 @@ import Barcode from "./components/Barcode"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, Grid } from "@react-three/drei"
 import Link from "next/link"
+import Image from "next/image"
+import formfinityLogo from "./../public/fonts/formfinityLogo.svg"
 
 export const metadata = {
 	title: "Formatic Fobs",
@@ -34,10 +36,18 @@ export default function RootLayout({ children }) {
 					>
 						<div className="w-full h-28 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
 							<Link href="/">
-								<p className="text-7xl px-6 pt-4 pb-2">
-									<span className="font-copula">formatic</span>
-									<span className="font-waffold">FOBS</span>
-								</p>
+								<div className="flex flex-row justify-start">
+									<Image
+										className="w-24 h-24 p-2 pt-5 pl-8"
+										src={formfinityLogo}
+										alt="formfinity logo"
+									/>
+
+									<p className="text-7xl px-6 pt-4 pb-2">
+										<span className="font-copula">formatic</span>
+										<span className="font-waffold">FOBS</span>
+									</p>
+								</div>
 							</Link>
 							<Barcode value="zchwtsn.com" />
 							<svg className="w-full h-10">
