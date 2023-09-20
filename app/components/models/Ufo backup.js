@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react"
 import * as THREE from "three"
 import ExportSTL from "../ExportSTL"
-import map from "./../../utils/map"
+import map from "../../utils/map"
 
 export default function Ufo({
 	printButtonHit,
