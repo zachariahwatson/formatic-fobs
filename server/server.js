@@ -3,10 +3,12 @@ const { createServer } = require("http")
 const { Server } = require("socket.io")
 const printer = require("./printer")
 const queue = require("./queue")
-//console.log(queue.printQueue.getFailed())
 const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, { cors: "*" })
+let state = {
+	timesUp: false,
+}
 
 app.use(express.json())
 
@@ -40,6 +42,20 @@ io.on("connection", (socket) => {
 			console.error("error emitting progress:", err)
 		}
 	})
+
+	socket.on("timesup", async () => {
+		try {
+			if (state.timesUp === false) {
+				console.log("socket: received times up")
+				console.log("queue: closing worker...")
+				queue.worker.close()
+				state.timesUp = true
+				console.log("timesup: ", state.timesUp)
+			}
+		} catch (err) {
+			console.error("error in timesup socket listener:", err)
+		}
+	})
 })
 
 app.post("/slice", async (req, res) => {
@@ -57,6 +73,24 @@ app.post("/clearjobqueue", async (req, res) => {
 		res.sendStatus(500)
 	})
 	console.log("queue: cleared job queue")
+	res.sendStatus(200)
+})
+
+app.post("/pausequeue", async (req, res) => {
+	await queue.printQueue.pause().catch((err) => {
+		console.error("error pausing queue: ", err)
+		res.sendStatus(500)
+	})
+	console.log("queue: paused queue")
+	res.sendStatus(200)
+})
+
+app.post("/resumequeue", async (req, res) => {
+	await queue.printQueue.resume().catch((err) => {
+		console.error("error resuming queue: ", err)
+		res.sendStatus(500)
+	})
+	console.log("queue: resuming queue")
 	res.sendStatus(200)
 })
 
@@ -88,7 +122,13 @@ app.post("/restartfailedjob", async (req, res) => {
 	await queue.printQueue
 		.add(
 			data.ID,
-			{ ...data, currentLine: 0, targetExtruderTemp: 0, targetBedTemp: 0 },
+			{
+				...data,
+				currentLine: 0,
+				targetExtruderTemp: 0,
+				targetBedTemp: 0,
+				zPosition: null,
+			},
 			{ priority: 1 }
 		)
 		.catch((err) => {
@@ -97,6 +137,15 @@ app.post("/restartfailedjob", async (req, res) => {
 		})
 	console.log("queue: job restarted: ", data.ID)
 	res.sendStatus(200)
+})
+
+app.get("/timesup", (req, res) => {
+	try {
+		res.json({ timesUp: state.timesUp })
+	} catch (err) {
+		console.error(err)
+		res.status(500).json({ message: "Server error" })
+	}
 })
 
 // app.post('/runprinterinit', async (req, res) => {
@@ -118,6 +167,7 @@ app.post("/addjob", async (req, res) => {
 			currentLine: 0,
 			targetExtruderTemp: 0,
 			targetBedTemp: 0,
+			zPosition: null,
 		})
 		.catch((err) => {
 			console.error("error adding job to queue: ", err)
@@ -154,13 +204,13 @@ queue.worker.on("completed", async (job) => {
 
 queue.worker.on("failed", async (job) => {
 	//await job.remove()
-	console.log("worker: job failed, setting status to QUEUED")
+	console.log("worker: job failed, setting status to ERROR")
 	const res = await fetch("http://localhost/api/setjobstatus", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ jobID: job.data.ID, status: "QUEUED" }),
+		body: JSON.stringify({ jobID: job.data.ID, status: "ERROR" }),
 	}).catch((err) => {
 		console.error(err)
 		throw err
@@ -169,7 +219,14 @@ queue.worker.on("failed", async (job) => {
 		console.error("re-queueing failed job error: ", res.status)
 		throw new Error(res.status)
 	}
-	job.updateData({ ...job.data, Status: "QUEUED" })
+	job.updateData({
+		...job.data,
+		Status: "ERROR",
+		currentLine: 0,
+		targetExtruderTemp: 0,
+		targetBedTemp: 0,
+		zPosition: null,
+	})
 })
 
 queue.worker.on("waiting", async (job) => {
@@ -188,7 +245,14 @@ queue.worker.on("waiting", async (job) => {
 		console.error("setting job status to QUEUED error: ", res.status)
 		throw new Error(res.status)
 	}
-	job.updateData({ ...job.data, Status: "QUEUED" })
+	job.updateData({
+		...job.data,
+		Status: "QUEUED",
+		currentLine: 0,
+		targetExtruderTemp: 0,
+		targetBedTemp: 0,
+		zPosition: null,
+	})
 })
 
 queue.worker.on("stalled", async (jobID) => {
@@ -210,12 +274,26 @@ queue.worker.on("stalled", async (jobID) => {
 		console.error("setting job status to stalled error: ", res.status)
 		throw new Error(res.status)
 	}
-	job.updateData({ ...job.data, Status: "QUEUED" })
+	job.updateData({
+		...job.data,
+		Status: "QUEUED",
+		currentLine: 0,
+		targetExtruderTemp: 0,
+		targetBedTemp: 0,
+		zPosition: null,
+	})
 })
 
 queue.worker.on("error", async (job) => {
 	console.log("worker: job error")
-	job.updateData({ ...job.data, Status: "ERROR" })
+	job.updateData({
+		...job.data,
+		Status: "ERROR",
+		currentLine: 0,
+		targetExtruderTemp: 0,
+		targetBedTemp: 0,
+		zPosition: null,
+	})
 })
 
 queue.worker.on("active", async (job) => {
