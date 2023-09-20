@@ -1,15 +1,16 @@
 import { prisma } from "./../../utils/prisma"
 import { socket } from "./../../utils/io"
 import { NextResponse } from "next/server"
+import { bedCount, exhibitEndTime } from "./../../utils/settings"
 const fs = require("fs")
-const bedCount = 4
 
 export async function POST(req) {
 	//creates .stl file of model in the outputs folder
 	const data = await req.json()
 	const STLstring = data.STLstring
 	const modelParams = data.modelParams
-	const printModel = data.printModel === "true"
+	let printModel = data.printModel === "true"
+	let message = "saved to outputs successfully"
 
 	//query to find the latest model created that is also the current model
 	let model = await prisma.model.findFirst({
@@ -21,17 +22,40 @@ export async function POST(req) {
 		},
 	})
 	let printJob
+
 	if (printModel === true) {
-		//find the latest print job or create one if all are full
-		printJob =
-			(await prisma.print.findFirst({
+		// Find the first pending print job
+		printJob = await prisma.print.findFirst({
+			where: {
+				Status: "PENDING",
+			},
+			orderBy: {
+				TimeStamp: "desc",
+			},
+		})
+
+		// If there's no pending print job, try to create a new one
+		if (!printJob) {
+			const lastPrintJob = await prisma.print.findFirst({
 				where: {
-					Status: "PENDING",
+					OR: [{ Status: "PRINTING" }, { Status: "QUEUED" }],
 				},
 				orderBy: {
-					TimeStamp: "asc",
+					TimeStamp: "desc",
 				},
-			})) || (await prisma.print.create({}))
+			})
+
+			if (
+				lastPrintJob &&
+				lastPrintJob.EstimatedTime + Date.now() > exhibitEndTime.getTime()
+			) {
+				printModel = false
+				message = "queue time exceeds end time"
+			} else {
+				console.log("prisma: new print job")
+				printJob = await prisma.print.create({})
+			}
+		}
 	}
 
 	//update created model's STL path and add print job ID
@@ -165,5 +189,5 @@ export async function POST(req) {
 		socket.emit("printjobs")
 	}
 
-	return NextResponse.json({ message: "saved to outputs successfully" })
+	return NextResponse.json({ message: message })
 }
