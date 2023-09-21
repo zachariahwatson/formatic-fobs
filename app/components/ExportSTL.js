@@ -6,13 +6,7 @@ import { useThree } from "@react-three/fiber"
 import { Text3D } from "@react-three/drei"
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js"
 
-export default function ExportSTL({
-	printButtonHit,
-	modelParams,
-	mesh,
-	printModel,
-	params,
-}) {
+export default function ExportSTL({ printButtonHit, modelParams, mesh, printModel, params }) {
 	const { gl } = useThree()
 	const router = useRouter()
 	const [STLstring, setSTLstring] = useState("")
@@ -25,7 +19,7 @@ export default function ExportSTL({
 			//clone meshes to do translations and rotations because Prusaslicer's orientations are different from THREE.js (x,z,y) vs (x,y,z)
 			const g = mesh.current.geometry.clone().toNonIndexed()
 			//rotate to correct orientation
-			g.rotateX(Math.PI / 2)
+			//g.rotateX(Math.PI / 2)
 			//compute bounding box to position text
 			g.computeBoundingBox()
 			const box = g.boundingBox
