@@ -59,7 +59,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 			}, lineTimes[currentLineIndex])
 			return () => clearTimeout(timeoutId)
 		}
-	}, [currentLineIndex])
+	}, [currentLineIndex, lines.length])
 
 	return (
 		<>

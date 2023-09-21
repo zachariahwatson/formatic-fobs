@@ -30,7 +30,7 @@ export default function Page() {
 			}
 		}
 		fetchTimesUp()
-	}, [])
+	}, [router])
 
 	return (
 		<motion.div
@@ -41,8 +41,7 @@ export default function Page() {
 			transition={{ duration: 1 }}
 		>
 			<h1 className="mx-4 mt-36 font-n27-regular w-3/5 text-center">
-				UNFORTUNATELY, PRINTING THIS MODEL WOULD EXCEED THE TIME AVAILABLE FOR
-				THIS ACTIVATION. (sorry)
+				UNFORTUNATELY, PRINTING THIS MODEL WOULD EXCEED THE TIME AVAILABLE FOR THIS ACTIVATION. (sorry)
 			</h1>
 		</motion.div>
 	)
