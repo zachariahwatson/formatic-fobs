@@ -93,11 +93,8 @@ export default function Page() {
 				transition={{ duration: 1 }}
 				className="flex justify-center h-full w-full items-center"
 			>
-				<form
-					onSubmit={handleTwitterSubmit}
-					className="flex flex-col gap-2 w-1/3"
-				>
-					<label className="mb-2 text-5xl">
+				<form onSubmit={handleTwitterSubmit} className="flex flex-col gap-2 w-1/3">
+					<label className="mb-2 text-5xl flex justify-center">
 						<span className="font-n27-extralight">TWITTER_</span>
 						<span className="font-n27-regular">USERNAME:</span>
 					</label>
@@ -111,31 +108,14 @@ export default function Page() {
 						<label className="mt-6 text-3xl text-center">
 							<span className="font-n27-extralight">PRINT MODEL?</span>
 							<span className="flex justify-evenly">
-								<p
-									className={
-										printModel
-											? "font-n27-regular"
-											: "font-n27-extralight text-neutral-500"
-									}
-								>
-									F1 -&gt; YES
-								</p>
-								<p
-									className={
-										printModel
-											? "font-n27-extralight text-neutral-500"
-											: "font-n27-regular"
-									}
-								>
-									F2 -&gt; NO
-								</p>
+								<p className={printModel ? "font-n27-regular" : "font-n27-extralight text-neutral-500"}>F1 -&gt; YES</p>
+								<p className={printModel ? "font-n27-extralight text-neutral-500" : "font-n27-regular"}>F2 -&gt; NO</p>
 							</span>
 						</label>
 					)) || (
 						<label className="mt-6 text-3xl text-center">
 							<span className="font-n27-extralight">
-								FYI: THE QUEUE IS FULL AND YOUR MODEL WILL NOT BE PRINTED BY THE
-								END OF THIS ACTIVATION (sorry)
+								FYI: THE QUEUE IS FULL AND YOUR MODEL WILL NOT BE PRINTED BY THE END OF THIS ACTIVATION (sorry)
 							</span>
 						</label>
 					)}
