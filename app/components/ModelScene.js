@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import Cube from "./models/Cube"
@@ -7,7 +7,6 @@ import Ufo from "./models/Ufo"
 import { DataHandler } from "../utils/DataHandler"
 import { motion as motion3d } from "framer-motion-3d"
 import { motion, AnimatePresence } from "framer-motion"
-
 export default function ModelScene({ MIDIdata, printModel, params }) {
 	const [modelID, setModelID] = useState("0")
 
@@ -28,6 +27,16 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 		"USE THE KNOBS AND BUTTONS BEFORE YOU TO FORMULATE A FOB.",
 		"PRESS THE ‘PRINT’ BUTTON ONCE YOU’RE SATISFIED TO MAKE IT A REALITY.",
 		"YOUR BASE MODEL WILL BE PRESENTED SHORTLY.",
+	]
+	const ufoParams = [
+		"COCKPIT_TYPE",
+		"COCKPIT_WDTH",
+		"COCKPIT_HGHT",
+		"HULL_TYPE",
+		"HULL_WDTH",
+		"HULL_HGHT",
+		"MODULE_TYPE",
+		"WINDOWS_TYPE",
 	]
 
 	// const lineTimes = [
@@ -58,10 +67,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 				<motion.div
 					initial={{ opacity: 0 }}
 					animate={{
-						opacity: [
-							0, 0.2, 0, 0.4, 0, 0.4, 0, 0.8, 0.2, 0.6, 0.6, 0.2, 1, 0.2, 0.3,
-							0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1,
-						],
+						opacity: [0, 0.2, 0, 0.4, 0, 0.4, 0, 0.8, 0.2, 0.6, 0.6, 0.2, 1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
 						transition: { duration: 1, delay: /*18*/ 0 },
 					}}
 				>
@@ -77,11 +83,11 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 						{Object.values(MIDIinterface).map((knob, index) => {
 							return (
 								<p key={index}>
-									<span className="font-n27-extralight">PARAM{index + 1}_</span>
+									<span className="font-n27-extralight">
+										{index + 1}_{ufoParams[index]}_
+									</span>
 									<span className="font-n27-regular">
-										{knob.isRandom
-											? "RANDOM"
-											: ((knob.val / 127) * 100).toFixed(0)}
+										{knob.isRandom ? "RND" : ((knob.val / 127) * 100).toFixed(0)}
 									</span>
 								</p>
 							)
@@ -104,18 +110,9 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 				</AnimatePresence>
 			</div>
 			<div className="w-full h-full rounded-3xl absolute top-0 left-0">
-				<Canvas
-					orthographic
-					camera={{ zoom: 37.5, position: [-20, 20, 20] }}
-					className="rounded-3xl"
-				>
-					{/* <ambientLight /> */}
-					<directionalLight
-						intensity={0.5}
-						position={[0, 35, 10]}
-						castShadow
-						color="#fcebc9"
-					/>
+				<Canvas orthographic camera={{ zoom: 30, position: [0, 20, 0] }} className="rounded-3xl">
+					<ambientLight />
+					<directionalLight intensity={5} position={[0, 35, 10]} castShadow color="#fcebc9" />
 					<motion3d.group
 						animate={{
 							y: [5, 2, 0],
