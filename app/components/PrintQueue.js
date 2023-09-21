@@ -69,12 +69,8 @@ export default function PrintQueue() {
 									<p className="text-2xl px-4 pt-2">
 										<span className="font-n27-extralight">STATUS_</span>
 										<span className="font-n27-regular">{job.Status}</span>
-										<span className="font-n27-regular float-right pt-1">
-											{job.ID}
-										</span>
-										<span className="font-n27-extralight float-right pt-1">
-											ID_
-										</span>
+										<span className="font-n27-regular float-right pt-1">{job.ID}</span>
+										<span className="font-n27-extralight float-right pt-1">ID_</span>
 									</p>
 									<svg className="w-full h-10">
 										<defs>
@@ -114,14 +110,10 @@ export default function PrintQueue() {
 												exit={{ opacity: 0 }}
 												key={model.ID}
 											>
-												<span className="w-1/2 truncate">
-													@{model.User.ContactInfo}
-												</span>
+												<span className="w-1/2 truncate">@{model.User.ContactInfo}</span>
 												<span className="w-1/2 text-right">
 													TYPE_
-													<span className="font-n27-regular">
-														{model.Params.type}
-													</span>
+													<span className="font-n27-regular">{model.Params.hull.type}</span>
 												</span>
 											</motion.p>
 										)
@@ -144,9 +136,7 @@ export default function PrintQueue() {
 						<p className="text-4xl mb-px px-4 pb-2 pt-4">
 							<span className="font-n27-extralight">STATUS_</span>
 							<span className="font-n27-regular">
-								{currentJob && currentJob.Status
-									? currentJob.Status
-									: "WAITING"}
+								{currentJob && currentJob.Status ? currentJob.Status : "WAITING"}
 							</span>
 							<span className="font-n27-regular float-right pt-1">
 								{currentJob && currentJob.ID ? currentJob.ID : "NULL"}
@@ -186,14 +176,10 @@ export default function PrintQueue() {
 							currentJob.Model.map((model) => {
 								return (
 									<p className="w-full flex" key={model.ID}>
-										<span className="w-1/2 truncate">
-											@{model.User.ContactInfo}
-										</span>
+										<span className="w-1/2 truncate">@{model.User.ContactInfo}</span>
 										<span className="w-1/2 text-right">
 											TYPE_
-											<span className="font-n27-regular">
-												{model.Params.type}
-											</span>
+											<span className="font-n27-regular">{model.Params.hull.type}</span>
 										</span>
 									</p>
 								)
