@@ -58,7 +58,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				return map(MIDIinterface[5].val, 0, 127, 10, 15)
 			},
 		},
-		module: {
+		tech: {
 			get type() {
 				switch (Math.floor(map(MIDIinterface[6].val, 0, 127, 0, 7))) {
 					case 0:
@@ -105,8 +105,6 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 	}
 
 	const ufoParts = {
-		maxModulesWidth: 25,
-
 		cockpit: {
 			round(maxHullTopWidth) {
 				const roundShape = new THREE.Shape()
@@ -236,7 +234,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				}
 			},
 		},
-		module: {
+		tech: {
 			round() {
 				const roundShape = new THREE.Shape()
 				const w = 5
@@ -382,16 +380,16 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 			})
 			return geometry
 		},
-		buildModule(maxHullBottomWidth) {
-			switch (ufoInterface.module.type) {
+		buildTech(maxHullBottomWidth) {
+			switch (ufoInterface.tech.type) {
 				case "SINGLE_PROBE":
-					return ufoParts.module.round()
+					return ufoParts.tech.round()
 				// case 1:
 				// 	return "TRI_PROBE"
 				// case 2:
 				// 	return "THRUSTER"
 				case "COMPARTMENT":
-					return ufoParts.module.trapezoid(maxHullBottomWidth)
+					return ufoParts.tech.trapezoid(maxHullBottomWidth)
 				// case 4:
 				// 	return "LANDING_LEGS"
 				// case 5:
@@ -399,7 +397,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				// case "NONE":
 				// 	return new THREE.Geometry()
 				default:
-					return ufoParts.module.trapezoid(maxHullBottomWidth)
+					return ufoParts.tech.trapezoid(maxHullBottomWidth)
 			}
 		},
 		buildWindows(maxHullMiddleWidth) {
@@ -427,8 +425,8 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 			const windows = this.buildWindows(hullParams.maxHullMiddleWidth)
 			const hull = this.buildHull(hullParams.shape, windows)
 			const cockpit = this.buildCockpit(hullParams.maxHullTopWidth)
-			const module = this.buildModule(hullParams.maxHullBottomWidth)
-			const ufo = BufferGeometryUtils.mergeGeometries([cockpit, hull, module])
+			const tech = this.buildTech(hullParams.maxHullBottomWidth)
+			const ufo = BufferGeometryUtils.mergeGeometries([cockpit, hull, tech])
 			return ufo
 		},
 	}
