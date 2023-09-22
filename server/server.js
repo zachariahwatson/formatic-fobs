@@ -13,9 +13,7 @@ let state = {
 app.use(express.json())
 
 io.on("connection", (socket) => {
-	console.log(
-		`${socket.id} connected, current clients: ${io.engine.clientsCount}`
-	)
+	console.log(`${socket.id} connected, current clients: ${io.engine.clientsCount}`)
 	socket.on("printjobs", () => {
 		try {
 			console.log("socket: sending print jobs")
@@ -141,6 +139,7 @@ app.post("/restartfailedjob", async (req, res) => {
 
 app.get("/timesup", (req, res) => {
 	try {
+		console.log("hello")
 		res.json({ timesUp: state.timesUp })
 	} catch (err) {
 		console.error(err)

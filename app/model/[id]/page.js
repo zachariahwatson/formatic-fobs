@@ -18,6 +18,7 @@ export default function Page({ params }) {
 		navigator
 			.requestMIDIAccess()
 			.then((midiAccess) => {
+				console.log(midiAccess)
 				console.log("navitagor: MIDI access request succeeded")
 				midiInput = midiAccess.inputs.values().next().value
 				midiInput.onmidimessage = handleMIDIMessage
@@ -39,6 +40,8 @@ export default function Page({ params }) {
 				console.error("MIDI access request failed: " + err)
 			})
 	}, [])
+
+	console.log(MIDIdata)
 
 	return (
 		<>

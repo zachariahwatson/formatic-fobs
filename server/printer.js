@@ -6,6 +6,7 @@ const { readFile } = require("node:fs/promises")
 const { spawn } = require("child_process")
 const { io } = require("socket.io-client")
 const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
+const fs = require("fs").promises
 
 let port
 let parser
@@ -16,17 +17,11 @@ const connectToPort = () =>
 		const attemptConnect = async () => {
 			if (!port) {
 				// Create a serial port instance
-				port = new SerialPort(
-					{ path: process.env.COM, baudRate: 112500 },
-					function (err) {
-						if (err) {
-							console.error(
-								"error creating a serial port instance: ",
-								err.message
-							)
-						}
+				port = new SerialPort({ path: process.env.COM, baudRate: 112500 }, function (err) {
+					if (err) {
+						console.error("error creating a serial port instance: ", err.message)
 					}
-				)
+				})
 
 				parser = port.pipe(
 					new ReadlineParser({ delimiter: "\n" }, function (err) {
@@ -236,11 +231,7 @@ const serialWriteAndOK = (job, message) =>
 				await waitForOK()
 				if (job.data.zPosition) {
 					console.log("serialport: setting Z position")
-					await serialWrite(
-						`G1 Z${job.data.zPosition[0]} F${
-							job.data.zPosition[1] && job.data.zPosition[1]
-						}`
-					)
+					await serialWrite(`G1 Z${job.data.zPosition[0]} F${job.data.zPosition[1] && job.data.zPosition[1]}`)
 				}
 				await waitForOK()
 				console.log("serialport: resending serialWrite")
@@ -339,23 +330,35 @@ const completePrint = async (printJob) => {
 
 const slice = async (printJob) => {
 	try {
-		const command = process.env.PRUSA_CLI_PATH
+		let content = `#!/bin/bash\ncd ${process.env.PRUSA_CLI_PATH} && ./PrusaSlicer --export-gcode --merge --load ${process.env.CFG_PATH}${process.env.PRUSA_INI} --output ${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`
+
+		printJob.Model.forEach((model) => {
+			//content.push(` ${model.ID}.stl`)
+			content += ` ${process.env.OUTPUTS_PATH}${model.ID}.stl`
+		})
+
+		await fs.writeFile("./slice.sh", content, (err) => {
+			if (err) {
+				console.error(err)
+			}
+			// file written successfully
+		})
+
+		const command = "./slice.sh"
 		const args = [
 			`--export-gcode`,
 			`--merge`,
 			`--load`,
-			`./../cfg/${process.env.PRUSA_INI}`,
+			`${process.env.CFG_PATH}${process.env.PRUSA_INI}`,
 			`--output`,
-			`${printJob.ID}.gcode`,
+			`${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`,
 		]
 
-		printJob.Model.forEach((model) => {
-			args.push(`${model.ID}.stl`)
-		})
-
-		const childProcess = spawn(command, args, {
-			cwd: process.env.OUTPUTS_PATH,
-		})
+		const childProcess = spawn(
+			command /*, args, {
+			cwd: process.env.PRUSA_CLI_PATH,
+		}*/
+		)
 
 		await new Promise((resolve, reject) => {
 			childProcess.on("error", (err) => {
@@ -383,8 +386,7 @@ const slice = async (printJob) => {
 			.split("=")[1]
 			.trim()
 		const totalSeconds =
-			parseInt(totalTime.split(" ")[0].replace(/\D/g, "")) * 60 +
-			parseInt(totalTime.split(" ")[1].replace(/\D/g, ""))
+			parseInt(totalTime.split(" ")[0].replace(/\D/g, "")) * 60 + parseInt(totalTime.split(" ")[1].replace(/\D/g, ""))
 		const totalMinutes = Math.ceil(totalSeconds / 60)
 		const totalMillis = totalSeconds * 1000
 

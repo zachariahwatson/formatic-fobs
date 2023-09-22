@@ -37,6 +37,7 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			const merged = BufferGeometryUtils.mergeGeometries([g, gText])
 
 			//console.log(merged)
+			console.log("teststststs")
 
 			//create STL text from model
 			const newMesh = new THREE.Mesh(merged, mesh.current.material)
@@ -52,6 +53,7 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			//   saveToOutputs(STLstring, modelParams)
 			// })
 			async function postData() {
+				console.log("hellooooooooooooooooooooooo")
 				const res = await fetch("/api/savetooutputs", {
 					method: "POST",
 					headers: {
