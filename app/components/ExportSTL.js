@@ -53,7 +53,6 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			//   saveToOutputs(STLstring, modelParams)
 			// })
 			async function postData() {
-				console.log("hellooooooooooooooooooooooo")
 				const res = await fetch("/api/savetooutputs", {
 					method: "POST",
 					headers: {

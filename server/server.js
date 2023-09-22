@@ -139,7 +139,6 @@ app.post("/restartfailedjob", async (req, res) => {
 
 app.get("/timesup", (req, res) => {
 	try {
-		console.log("hello")
 		res.json({ timesUp: state.timesUp })
 	} catch (err) {
 		console.error(err)
