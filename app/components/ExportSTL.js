@@ -44,7 +44,7 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			const exporter = new STLExporter()
 			setSTLstring(exporter.parse(newMesh))
 		}
-	}, [printButtonHit])
+	}, [printButtonHit, mesh])
 
 	useEffect(() => {
 		if (STLstring) {
@@ -81,7 +81,7 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			}
 			postData()
 		}
-	}, [STLstring])
+	}, [STLstring, gl, modelParams, printModel, router])
 
 	return (
 		<Text3D
