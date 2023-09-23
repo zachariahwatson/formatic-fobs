@@ -37,14 +37,13 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			const merged = BufferGeometryUtils.mergeGeometries([g, gText])
 
 			//console.log(merged)
-			console.log("teststststs")
 
 			//create STL text from model
 			const newMesh = new THREE.Mesh(merged, mesh.current.material)
 			const exporter = new STLExporter()
 			setSTLstring(exporter.parse(newMesh))
 		}
-	}, [printButtonHit, mesh])
+	}, [printButtonHit])
 
 	useEffect(() => {
 		if (STLstring) {
@@ -81,7 +80,7 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			}
 			postData()
 		}
-	}, [STLstring, gl, modelParams, printModel, router])
+	}, [STLstring])
 
 	return (
 		<Text3D

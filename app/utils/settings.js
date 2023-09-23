@@ -7,4 +7,4 @@ function createDate(year, month, day, hour, minute) {
 	return new Date(year, month - 1, day, hour - 1, minute)
 }
 
-export const exhibitEndTime = createDate(2023, 9, 21, 15, 50)
+export const exhibitEndTime = createDate(2023, 9, 23, 21)

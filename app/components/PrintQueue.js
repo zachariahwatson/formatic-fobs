@@ -133,7 +133,7 @@ export default function PrintQueue() {
 					transition={{ duration: 0.5 }}
 				>
 					<div className="w-full h-28 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
-						<p className="text-4xl mb-px px-4 pb-2 pt-4">
+						<p className="text-3xl mb-px px-4 pb-2 pt-4">
 							<span className="font-n27-extralight">STATUS_</span>
 							<span className="font-n27-regular">
 								{currentJob && currentJob.Status ? currentJob.Status : "WAITING"}

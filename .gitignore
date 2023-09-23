@@ -44,3 +44,5 @@ public/fonts/
 
 #database data
 /db-data
+
+slice.sh

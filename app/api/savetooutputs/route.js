@@ -56,7 +56,6 @@ export async function POST(req) {
 	}
 
 	//update created model's STL path and add print job ID
-	console.log("wtf")
 	//create .stl file
 	fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, STLstring, (err) => {
 		if (err) {

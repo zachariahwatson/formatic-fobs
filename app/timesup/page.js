@@ -30,7 +30,7 @@ export default function Page() {
 			}
 		}
 		fetchTimesUp()
-	}, [router])
+	}, [])
 
 	return (
 		<motion.div
