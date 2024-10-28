@@ -17,7 +17,7 @@ const connectToPort = () =>
 		const attemptConnect = async () => {
 			if (!port) {
 				// Create a serial port instance
-				port = new SerialPort({ path: process.env.COM, baudRate: 112500 }, function (err) {
+				port = new SerialPort({ path: process.env.COM, baudRate: 115200 }, function (err) {
 					if (err) {
 						console.error("error creating a serial port instance: ", err.message)
 					}
@@ -109,6 +109,8 @@ const printPrintJob = async (printJob) => {
 
 		let gcodeQueueIndex = printJob.data.currentLine
 
+		console.log(printJob)
+
 		const gcodePath = printJob.data.GCODEPath
 
 		const data = await readFile(gcodePath, "utf8")
@@ -120,8 +122,8 @@ const printPrintJob = async (printJob) => {
 		let prev = progress
 		socket.emit("progress", progress)
 
-		await serialWriteAndOK(`M109 S${printJob.data.targetExtruderTemp}`)
-		await serialWriteAndOK(`M190 S${printJob.data.targetBedTemp}`)
+		await serialWriteAndOK(printJob, `M109 S${printJob.data.targetExtruderTemp}`)
+		await serialWriteAndOK(printJob, `M190 S${printJob.data.targetBedTemp}`)
 
 		while (gcodeQueueIndex <= gcode.length - 1) {
 			//making sure gcode line is a valid command
@@ -170,9 +172,6 @@ const printPrintJob = async (printJob) => {
 
 		await completePrint(printJob)
 
-		//keep temps up between prints
-		await serialWrite("M104 F S120")
-		await serialWrite("M140 S60")
 		console.log("serialport: done!")
 	} catch (err) {
 		throw err
@@ -184,8 +183,8 @@ const serialWriteAndOK = (job, message) =>
 	new Promise(async (resolve, reject) => {
 		try {
 			const dataCheck = (data) => {
-				if (data == "ok") {
-					console.log("ok")
+				console.log("printer: ", data.toString())
+				if (data.includes("ok")) {
 					//once the printer sends an 'ok', unmount the event listener so there aren't multiple instances from calling waitForOK() multiple times
 					parser.off("data", dataCheck)
 					parser.off("error", handleError)
@@ -255,7 +254,7 @@ const serialWriteAndOK = (job, message) =>
 const serialWrite = async (message) => {
 	try {
 		await checkPort()
-		console.log(message)
+		console.log("sent: ", message)
 		await port.write(message + "\n", function (err) {
 			if (err) {
 				throw err
@@ -274,8 +273,8 @@ const waitForOK = () =>
 			await checkPort()
 			console.log("parser: waiting for ok")
 			const dataCheck = (data) => {
+				console.log("printer: ", data.toString())
 				if (data == "ok") {
-					console.log("ok")
 					//once the printer sends an 'ok', unmount the event listener so there aren't multiple instances from calling waitForOK() multiple times
 					parser.off("data", dataCheck)
 					parser.off("error", handleError)
@@ -319,6 +318,11 @@ const completePrint = async (printJob) => {
 			console.error("finish job error: ", res.status)
 			throw new Error(res.status)
 		}
+
+		//keep temps up between prints
+		await serialWrite("M104 F S120")
+		await serialWrite("M140 S60")
+
 		//wait for user input
 		await serialWriteAndOK(printJob, "M0 Click to begin next print")
 		//await waitForOK()
