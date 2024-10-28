@@ -1,2 +1,0 @@
-#!/bin/bash
-cd /Applications/PrusaSlicer.app/Contents/MacOS/ && ./PrusaSlicer --export-gcode --merge --load /Users/zach/Documents/formatic-fobs/cfg/sv06.ini --output /Users/zach/Documents/formatic-fobs/outputs/42.gcode /Users/zach/Documents/formatic-fobs/outputs/188.stl /Users/zach/Documents/formatic-fobs/outputs/189.stl /Users/zach/Documents/formatic-fobs/outputs/190.stl /Users/zach/Documents/formatic-fobs/outputs/191.stl
