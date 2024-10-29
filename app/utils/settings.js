@@ -1,4 +1,4 @@
-export const bedCount = 4
+export const bedCount = 6
 
 //export const exhibitEndTime = new Date("2023-09-22T14:00:00-05:00")
 //export const exhibitEndTime = new Date("2023-09-20T14:10:00-05:00")
