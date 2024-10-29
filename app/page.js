@@ -95,7 +95,7 @@ export default function Page() {
 			>
 				<form onSubmit={handleTwitterSubmit} className="flex flex-col gap-2 w-1/3">
 					<label className="mb-2 text-5xl flex justify-center">
-						<span className="font-n27-extralight">TWITTER_</span>
+						<span className="font-n27-extralight">X/TWITTER_</span>
 						<span className="font-n27-regular">USERNAME:</span>
 					</label>
 					<input
