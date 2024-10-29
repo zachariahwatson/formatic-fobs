@@ -1,12 +1,26 @@
+"use client"
+
 import React, { useRef, useEffect, useState } from "react"
 import * as THREE from "three"
 import ExportSTL from "../ExportSTL"
 import map from "./../../utils/map"
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js"
-import { MeshTransmissionMaterial } from "@react-three/drei"
+import { MeshTransmissionMaterial, useTexture } from "@react-three/drei"
+import { useThree } from "@react-three/fiber"
 
 export default function Ufo({ printButtonHit, MIDIinterface, printModel, params }) {
 	const mesh = useRef()
+
+	const matcap = useTexture("/matcap10.png")
+
+	const { camera } = useThree()
+
+	useEffect(() => {
+		if (MIDIinterface[16].val !== undefined) {
+			camera.zoom = map(MIDIinterface[16].val, 0, 127, 25, 50)
+			camera.updateProjectionMatrix() // Update camera projection matrix
+		}
+	}, [MIDIinterface[16].val])
 
 	const extrudeOptions = {
 		depth: 2,
@@ -883,9 +897,10 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 	return (
 		<>
 			<mesh ref={mesh} geometry={ufo.buildUfo()}>
-				<meshPhongMaterial color={"white"} />
+				{/* <meshPhongMaterial color={"white"} /> */}
 				{/* <MeshTransmissionMaterial transmissionSampler background={new THREE.Color("#FF0000")} /> */}
 				{/* <meshMatcapMaterial /> */}
+				<meshMatcapMaterial matcap={matcap} />
 			</mesh>
 			<ExportSTL
 				printButtonHit={printButtonHit}
