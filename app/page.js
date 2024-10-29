@@ -71,6 +71,9 @@ export default function Page() {
 			}
 			const data = await res.json()
 			setTimesUp(data.timesUp)
+			if (data.timesUp) {
+				setPrintModel(false)
+			}
 		}
 		fetchTimesUp()
 
