@@ -7,6 +7,7 @@ import Ufo from "./models/Ufo"
 import { DataHandler } from "../utils/DataHandler"
 import { motion as motion3d } from "framer-motion-3d"
 import { motion, AnimatePresence } from "framer-motion"
+import { introText } from "./../utils/settings"
 export default function ModelScene({ MIDIdata, printModel, params }) {
 	const [modelID, setModelID] = useState("0")
 
@@ -41,7 +42,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 		"WINDOWS_TYPE",
 	]
 
-	const lineTimes = [3000, 4000, 5000, 4000]
+	const lineTimes = introText ? [3000, 4000, 5000, 4000] : [0, 0, 0, 0]
 
 	//const lineTimes = [0, 0, 0, 0]
 
@@ -65,7 +66,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 					initial={{ opacity: 0 }}
 					animate={{
 						opacity: [0, 0.2, 0, 0.4, 0, 0.4, 0, 0.8, 0.2, 0.6, 0.6, 0.2, 1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-						transition: { duration: 1, delay: 17 },
+						transition: { duration: 1, delay: introText ? 17 : 0 },
 					}}
 				>
 					<p className="absolute px-4 py-2 left-0 top-28 text-3xl">
@@ -119,7 +120,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 						}}
 						transition={{
 							duration: 2,
-							delay: 16,
+							delay: introText ? 16 : 0,
 						}}
 					>
 						{/* {(shapeData.type == 'cube') && <Cube position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params} />}

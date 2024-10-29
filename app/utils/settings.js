@@ -1,7 +1,8 @@
 export const bedCount = 6
 
-//export const exhibitEndTime = new Date("2023-09-22T14:00:00-05:00")
-//export const exhibitEndTime = new Date("2023-09-20T14:10:00-05:00")
+export const printUserName = false
+
+export const introText = false
 
 function createDate(year, month, day, hour, minute) {
 	return new Date(year, month - 1, day, hour - 1, minute)

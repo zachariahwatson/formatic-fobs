@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useThree } from "@react-three/fiber"
 import { Text3D } from "@react-three/drei"
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js"
+import { printUserName } from "./../utils/settings"
 
 export default function ExportSTL({ printButtonHit, modelParams, mesh, printModel, params }) {
 	const { gl } = useThree()
@@ -34,7 +35,13 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 			const gText = textRef.current.geometry.clone()
 			gText.applyMatrix4(matrix)
 
-			const merged = BufferGeometryUtils.mergeGeometries([g, gText])
+			let merged
+
+			if (printUserName) {
+				merged = BufferGeometryUtils.mergeGeometries([g, gText])
+			} else {
+				merged = g
+			}
 
 			//console.log(merged)
 
