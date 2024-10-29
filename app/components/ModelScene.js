@@ -25,7 +25,9 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 	const lines = [
 		`WELCOME, @${params.id.toUpperCase()}`,
 		"USE THE KNOBS AND BUTTONS BEFORE YOU TO FORMULATE A FOB.",
-		"PRESS THE ‘PRINT’ BUTTON ONCE YOU’RE SATISFIED TO MAKE IT A REALITY.",
+		`PRESS THE ${printModel ? "‘PRINT’" : "ARCHIVE"} BUTTON ONCE YOU’RE SATISFIED TO ${
+			printModel ? "MAKE IT A REALITY" : "ADD IT TO THE ARCHIVES"
+		}.`,
 		"YOUR BASE MODEL WILL BE PRESENTED SHORTLY.",
 	]
 	const ufoParams = [
@@ -39,14 +41,9 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 		"WINDOWS_TYPE",
 	]
 
-	// const lineTimes = [
-	//   3000,
-	//   4000,
-	//   5000,
-	//   4000
-	// ]
+	const lineTimes = [3000, 4000, 5000, 4000]
 
-	const lineTimes = [0, 0, 0, 0]
+	//const lineTimes = [0, 0, 0, 0]
 
 	const { printButtonHit, shapeData, MIDIinterface } = DataHandler(MIDIdata)
 	const [currentLineIndex, setCurrentLineIndex] = useState(0)
@@ -68,7 +65,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 					initial={{ opacity: 0 }}
 					animate={{
 						opacity: [0, 0.2, 0, 0.4, 0, 0.4, 0, 0.8, 0.2, 0.6, 0.6, 0.2, 1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-						transition: { duration: 1, delay: /*18*/ 0 },
+						transition: { duration: 1, delay: 17 },
 					}}
 				>
 					<p className="absolute px-4 py-2 left-0 top-28 text-3xl">
@@ -79,17 +76,19 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 						<span className="font-n27-extralight">ID_</span>
 						<span className="font-n27-regular">{modelID}</span>
 					</p>
-					<div className="flex justify-between flex-row items-center absolute w-full bottom-0 gap-4 px-4 py-2 text-xl">
+					<div className="rounded-3xl bg-gradient-to-t from-black from-0% to-transparent flex justify-between flex-row items-center absolute w-full bottom-0 gap-4 px-4 py-2 text-xl z-10">
 						{Object.values(MIDIinterface).map((knob, index) => {
 							return (
-								<p key={index}>
-									<span className="font-n27-extralight">
-										{index + 1}_{ufoParams[index]}_
-									</span>
-									<span className="font-n27-regular">
-										{knob.isRandom ? "RND" : ((knob.val / 127) * 100).toFixed(0)}
-									</span>
-								</p>
+								index !== 8 && (
+									<p key={index}>
+										<span className="font-n27-extralight">
+											{index + 1}_{ufoParams[index]}_
+										</span>
+										<span className="font-n27-regular">
+											{knob.isRandom ? "RND" : ((knob.val / 127) * 100).toFixed(0)}
+										</span>
+									</p>
+								)
 							)
 						})}
 					</div>
@@ -112,7 +111,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 			<div className="w-full h-full rounded-3xl absolute top-0 left-0">
 				<Canvas orthographic camera={{ zoom: 37.5, position: [0, 20, 0] }} className="rounded-3xl">
 					<ambientLight />
-					<directionalLight intensity={5} position={[0, 35, 10]} castShadow color="#fcebc9" />
+					{/* <directionalLight intensity={5} position={[0, 35, 10]} castShadow color="#fcebc9" /> */}
 					<motion3d.group
 						animate={{
 							z: [-50, 2.5],
@@ -120,7 +119,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 						}}
 						transition={{
 							duration: 2,
-							delay: /*17*/ 0,
+							delay: 16,
 						}}
 					>
 						{/* {(shapeData.type == 'cube') && <Cube position={[0, 0, 0]} shapeData={shapeData} printButtonHit={printButtonHit} params={params} />}
