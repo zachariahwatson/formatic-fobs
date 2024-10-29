@@ -110,14 +110,13 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 				</AnimatePresence>
 			</div>
 			<div className="w-full h-full rounded-3xl absolute top-0 left-0">
-				<Canvas orthographic camera={{ zoom: 30, position: [0, 20, 0] }} className="rounded-3xl">
+				<Canvas orthographic camera={{ zoom: 37.5, position: [0, 20, 0] }} className="rounded-3xl">
 					<ambientLight />
 					<directionalLight intensity={5} position={[0, 35, 10]} castShadow color="#fcebc9" />
 					<motion3d.group
 						animate={{
-							y: [5, 2, 0],
-							z: [-50, 0, 0],
-							rotateX: [Math.PI / 8, -Math.PI / 8, 0],
+							z: [-50, 2.5],
+							rotateZ: [-Math.PI, 0],
 						}}
 						transition={{
 							duration: 2,
