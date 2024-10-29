@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
 					<div
 						className={`w-3/4 rounded-3xl text-4xl outline-none shadow-lg shadow-white border border-white relative`}
 					>
-						<div className="w-full h-28 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
+						<div className="w-full h-28 bg-gradient-to-b from-black from-0% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
 							<Link href="/">
 								<div className="flex flex-row justify-start pl-6">
 									<Image className="object-contain" src={formfinityLogo} width={64} height={64} alt="formfinity logo" />
@@ -74,7 +74,7 @@ export default function RootLayout({ children }) {
 									position={[0, -20, 0]}
 									sectionColor={"#666666"}
 									fadeDistance={100}
-									fadeStrength={3}
+									fadeStrength={4}
 								/>
 							</Canvas>
 						</div>
