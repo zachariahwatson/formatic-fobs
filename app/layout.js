@@ -27,8 +27,8 @@ export default function RootLayout({ children }) {
 					>
 						<div className="w-full h-28 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
 							<Link href="/">
-								<div className="flex flex-row justify-start">
-									<Image className="w-24 h-20 p-2 pt-5 pl-8" src={formfinityLogo} alt="formfinity logo" />
+								<div className="flex flex-row justify-start pl-6">
+									<Image className="object-contain" src={formfinityLogo} width={64} height={64} alt="formfinity logo" />
 
 									<p className="text-7xl px-6 pt-4 pb-2">
 										<span className="font-copula">formatic</span>
