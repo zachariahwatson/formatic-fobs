@@ -1,4 +1,4 @@
-export const bedCount = 6
+export const bedCount = 4
 
 export const printUserName = false
 
