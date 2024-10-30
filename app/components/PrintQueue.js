@@ -13,7 +13,7 @@ export default function PrintQueue() {
 		const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
 		async function fetchData() {
 			const res = await fetch("/api/getprintjobs").catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 			})
 			const printJobs = await res.json()
 			//console.log(printJobs)
@@ -23,7 +23,7 @@ export default function PrintQueue() {
 
 		async function fetchCurrentJob() {
 			const res = await fetch("/api/getcurrentjob").catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 			})
 			const currentJob = await res.json()
 			//console.log(currentJob)

@@ -8,10 +8,10 @@ export default function Page() {
 				"Content-Type": "application/json",
 			},
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("clear db error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "clear db error: ", res.status)
 		}
 	}
 
@@ -22,10 +22,10 @@ export default function Page() {
 				"Content-Type": "application/json",
 			},
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("clear job queue error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "clear job queue error: ", res.status)
 		}
 	}
 
@@ -36,10 +36,10 @@ export default function Page() {
 				"Content-Type": "application/json",
 			},
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("remove active job error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "remove active job error: ", res.status)
 		}
 	}
 
@@ -50,10 +50,10 @@ export default function Page() {
 				"Content-Type": "application/json",
 			},
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("restart failed job error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "restart failed job error: ", res.status)
 		}
 	}
 
@@ -64,10 +64,10 @@ export default function Page() {
 				"Content-Type": "application/json",
 			},
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("repopulate queue error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "repopulate queue error: ", res.status)
 		}
 	}
 
@@ -83,22 +83,13 @@ export default function Page() {
 	return (
 		<>
 			<h1 className="mx-4 mt-36 font-n27-bold">ADMIN PAGE</h1>
-			<button
-				className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2"
-				onClick={() => clearDB()}
-			>
+			<button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearDB()}>
 				clear db
 			</button>
-			<button
-				className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2"
-				onClick={() => clearJobQueue()}
-			>
+			<button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => clearJobQueue()}>
 				clear job queue
 			</button>
-			<button
-				className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2"
-				onClick={() => removeActiveJob()}
-			>
+			<button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => removeActiveJob()}>
 				remove active job
 			</button>
 			<button
@@ -107,10 +98,7 @@ export default function Page() {
 			>
 				restart failed job
 			</button>
-			<button
-				className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2"
-				onClick={() => repopulateQueue()}
-			>
+			<button className="mx-4 mt-8 border border-white font-n27-light rounded-md p-2" onClick={() => repopulateQueue()}>
 				repopulate queue
 			</button>
 		</>

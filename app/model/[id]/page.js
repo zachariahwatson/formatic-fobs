@@ -38,7 +38,7 @@ export default function Page({ params }) {
 				}
 			})
 			.catch((err) => {
-				console.error("MIDI access request failed: " + err)
+				console.error("\x1b[31m%s\x1b[0m", "MIDI access request failed: " + err)
 			})
 	}, [])
 

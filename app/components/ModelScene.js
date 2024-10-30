@@ -14,7 +14,7 @@ export default function ModelScene({ MIDIdata, printModel, params }) {
 	useEffect(() => {
 		async function fetchData() {
 			const res = await fetch("/api/getmodel").catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 			})
 			//console.log(res)
 			const model = await res.json()

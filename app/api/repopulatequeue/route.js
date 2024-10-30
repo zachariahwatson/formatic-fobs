@@ -22,10 +22,10 @@ export async function POST() {
 			},
 			body: JSON.stringify(job),
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("add job queue error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "add job queue error: ", res.status)
 		}
 	})
 

@@ -21,7 +21,7 @@ const worker = new Worker("print-queue", async (job) => {
 	try {
 		console.log("worker: checking port before next job...")
 		await printer.checkPort().catch((err) => {
-			console.error("check port error: ", err)
+			console.error("\x1b[31m%s\x1b[0m", "check port error: ", err)
 			throw err
 		})
 		console.log("worker: processing next job...")
@@ -33,11 +33,11 @@ const worker = new Worker("print-queue", async (job) => {
 			},
 			body: JSON.stringify({ jobID: job.data.ID, status: "PRINTING" }),
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 			throw err
 		})
 		if (!res.ok) {
-			console.error("set job status error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "set job status error: ", res.status)
 		}
 
 		await printer.printPrintJob(job).catch(async (err) => {
@@ -48,13 +48,13 @@ const worker = new Worker("print-queue", async (job) => {
 				},
 				body: JSON.stringify({ jobID: job.data.ID, status: "ERROR" }),
 			}).catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 				throw err
 			})
 			if (!res.ok) {
-				console.error("error changing status to error: ", res.status)
+				console.error("\x1b[31m%s\x1b[0m", "error changing status to error: ", res.status)
 			}
-			console.error("printer error: ", err)
+			console.error("\x1b[31m%s\x1b[0m", "printer error: ", err)
 			throw err
 		})
 	} catch (err) {

@@ -70,10 +70,10 @@ export default function ExportSTL({ printButtonHit, modelParams, mesh, printMode
 						printModel: printModel,
 					}),
 				}).catch((err) => {
-					console.error(err)
+					console.error("\x1b[31m%s\x1b[0m", err)
 				})
 				if (!res.ok) {
-					console.error("save to outputs error: ", res.status)
+					console.error("\x1b[31m%s\x1b[0m", "save to outputs error: ", res.status)
 				}
 				const data = await res.json()
 

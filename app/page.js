@@ -52,10 +52,10 @@ export default function Page() {
 				printModel: printModel,
 			}),
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("handle twitter submit error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "handle twitter submit error: ", res.status)
 		}
 		const data = await res.json()
 		router.push(data.redirectUrl)
@@ -64,10 +64,10 @@ export default function Page() {
 	useEffect(() => {
 		async function fetchTimesUp() {
 			const res = await fetch("http://localhost:3000/timesup").catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 			})
 			if (!res.ok) {
-				console.error("get timesUp error: ", res.status)
+				console.error("\x1b[31m%s\x1b[0m", "get timesUp error: ", res.status)
 			}
 			const data = await res.json()
 			setTimesUp(data.timesUp)

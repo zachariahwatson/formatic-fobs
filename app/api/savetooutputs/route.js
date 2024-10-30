@@ -59,7 +59,7 @@ export async function POST(req) {
 	//create .stl file
 	fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, STLstring, (err) => {
 		if (err) {
-			console.error("error creating file:", err)
+			console.error("\x1b[31m%s\x1b[0m", "error creating file:", err)
 		} else {
 			console.log("fs: file created successfully.")
 		}
@@ -124,10 +124,10 @@ export async function POST(req) {
 				},
 				body: JSON.stringify(printJob),
 			}).catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 			})
 			if (!res.ok) {
-				console.error("save to outputs error: ", res.status)
+				console.error("\x1b[31m%s\x1b[0m", "save to outputs error: ", res.status)
 			}
 
 			//add gcode path to print Job
@@ -170,10 +170,10 @@ export async function POST(req) {
 				},
 				body: JSON.stringify(updatedPrintJob),
 			}).catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 			})
 			if (!jobRes.ok) {
-				console.error("add job queue error: ", jobRes.status)
+				console.error("\x1b[31m%s\x1b[0m", "add job queue error: ", jobRes.status)
 			}
 		}
 
