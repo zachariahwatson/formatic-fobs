@@ -57,7 +57,7 @@ export default function PrintQueue() {
 			<div className="w-full h-4/6 flex flex-col-reverse justify-start">
 				{printJobs.map((job, i) => {
 					return (
-						<div className="h-1/3 pb-4" key={job.ID}>
+						<div className="h-5/12 pb-4" key={job.ID}>
 							<motion.div
 								className="h-full rounded-3xl text-3xl outline-none shadow-lg shadow-white border border-white relative flex justify-around p-4 pt-14"
 								initial={{ opacity: 0, y: -100 }}
@@ -99,11 +99,11 @@ export default function PrintQueue() {
 										/>
 									</svg>
 								</div>
-								<div className="flex flex-col-reverse font-n27-extralight justify-around text-2xl w-full h-full uppercase">
+								<div className="flex flex-col-reverse font-n27-extralight justify-around text-2xl w-full h-full uppercase pt-2">
 									{job.Model.map((model) => {
 										return (
 											<motion.p
-												className="w-full flex"
+												className="w-full flex text-sm"
 												initial={{ opacity: 0, y: -25 }}
 												animate={{ opacity: 1, y: 0 }}
 												transition={{ duration: 0.5 }}
@@ -139,9 +139,13 @@ export default function PrintQueue() {
 								{currentJob && currentJob.Status ? currentJob.Status : "WAITING"}
 							</span>
 							<span className="font-n27-regular float-right pt-1">
-								{currentJob && currentJob.ID ? currentJob.ID : "NULL"}
+								{currentJob && currentJob.TimeStamp && currentJob.EstimatedTime
+									? Math.floor(
+											(new Date(currentJob.TimeStamp).getTime() + currentJob.EstimatedTime - Date.now()) / 60000
+									  )
+									: "NULL"}
 							</span>
-							<span className="font-n27-extralight float-right pt-1">ID_</span>
+							<span className="font-n27-extralight float-right pt-1">ETA_</span>
 						</p>
 						<svg className="w-full h-10">
 							<defs>
@@ -170,12 +174,12 @@ export default function PrintQueue() {
 							/>
 						</svg>
 					</div>
-					<div className="flex flex-col font-n27-extralight justify-around text-3xl w-full h-3/4 uppercase">
+					<div className="flex flex-col flex-wrap font-n27-extralight justify-around text-3xl w-full h-5/6 uppercase py-2">
 						{currentJob &&
 							currentJob.Model &&
 							currentJob.Model.map((model) => {
 								return (
-									<p className="w-full flex" key={model.ID}>
+									<p className="w-full flex text-sm" key={model.ID}>
 										<span className="w-1/2 truncate">@{model.User.ContactInfo}</span>
 										<span className="w-1/2 text-right">
 											TYPE_
@@ -185,7 +189,7 @@ export default function PrintQueue() {
 								)
 							})}
 					</div>
-					<div className="h-1/4">
+					<div className="h-1/6">
 						<ProgressBar progress={progress} />
 					</div>
 				</motion.div>
