@@ -24,7 +24,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 	const extrudeOptions = {
 		depth: 1.6,
-		bevelSegments: 12,
+		bevelEnabled: false,
 	}
 
 	const ufoInterface = {
@@ -49,7 +49,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				return map(MIDIinterface[1].val, 0, 127, 25 / 2.67, ufoInterface.hull.w / 1.9)
 			},
 			get h() {
-				return map(MIDIinterface[2].val, 0, 127, 5, 10)
+				return map(MIDIinterface[2].val, 0, 127, 7, 10)
 			},
 		},
 		hull: {
@@ -84,7 +84,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 		},
 		tech: {
 			get type() {
-				switch (Math.floor(map(MIDIinterface[6].val, 0, 127, 0, 7))) {
+				switch (Math.floor(map(MIDIinterface[6].val, 0, 127, 0, 8))) {
 					case 0:
 						return "COMPARTMENT"
 					case 1:
@@ -101,7 +101,8 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 						return "LANDING_PEGS"
 					case 7:
 						return "LANDING_SPIKES"
-
+					case 8:
+						return "TRI_LANDING_SPIKES"
 					default:
 						return "COMPARTMENT"
 				}
@@ -129,6 +130,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 		cockpit: {
 			round(maxHullTopWidth) {
 				const roundShape = new THREE.Shape()
+				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const r = w / 2
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
@@ -149,18 +151,28 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					roundShape.lineTo(Math.cos(a) * (r - 2), h + Math.sin(a) * (r - 2))
 				}
 				// roundShape.lineTo(-r + 2, hullTop)
-
 				roundShape.closePath()
 
-				const geometry = new THREE.ExtrudeGeometry(roundShape, extrudeOptions)
+				//generate rounded corners for a stronger print
+				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
+				roundCorners.lineTo(-r + 2, hullTop)
+				roundCorners.lineTo(r - 2, hullTop)
+				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
+				roundCorners.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry([roundShape, roundCorners], extrudeOptions)
 
 				return geometry
 			},
 			roundRect(maxHullTopWidth) {
 				const roundRectShape = new THREE.Shape()
+				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
 				const h = hullTop + Number(ufoInterface.cockpit.h) + 2
+				const r = w / 2
 
 				roundRectShape.moveTo(-w / 2, hullTop)
 				roundRectShape.lineTo(-w / 2, h)
@@ -170,15 +182,24 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				roundRectShape.lineTo(w / 2 - 2, h - 2)
 				roundRectShape.bezierCurveTo(w / 4, h, -w / 4, h, -w / 2 + 2, h - 2)
 				roundRectShape.lineTo(-w / 2 + 2, hullTop)
-
 				roundRectShape.closePath()
 
-				const geometry = new THREE.ExtrudeGeometry(roundRectShape, extrudeOptions)
+				//generate rounded corners for a stronger print
+				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
+				roundCorners.lineTo(-r + 2, hullTop)
+				roundCorners.lineTo(r - 2, hullTop)
+				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
+				roundCorners.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry([roundRectShape, roundCorners], extrudeOptions)
 
 				return geometry
 			},
 			squishedRound(maxHullTopWidth) {
 				const roundShape = new THREE.Shape()
+				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const r = w / 2
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
@@ -199,19 +220,29 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					roundShape.lineTo(Math.cos(a) * (r - 2), h + (Math.sin(a) * (r - 2)) / 1.5)
 				}
 				// roundShape.lineTo(-r + 2, hullTop)
-
 				roundShape.closePath()
 
-				const geometry = new THREE.ExtrudeGeometry(roundShape, extrudeOptions)
+				//generate rounded corners for a stronger print
+				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
+				roundCorners.lineTo(-r + 2, hullTop)
+				roundCorners.lineTo(r - 2, hullTop)
+				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
+				roundCorners.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry([roundShape, roundCorners], extrudeOptions)
 
 				return geometry
 			},
 			trapezoid(maxHullTopWidth) {
 				const trapezoidShape = new THREE.Shape()
+				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
 				const h = hullTop + Number(ufoInterface.cockpit.h) + 1
 				const r = 1
+				const cR = w / 2 - 0.17
 
 				trapezoidShape.moveTo(-w / 2, hullTop)
 				trapezoidShape.lineTo(-w / 2.5, h)
@@ -221,20 +252,35 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				trapezoidShape.lineTo(w / 2.5, h)
 				trapezoidShape.lineTo(w / 2, hullTop)
 				trapezoidShape.lineTo(w / 2 - 2, hullTop)
-				trapezoidShape.lineTo(w / 2.5 - 1.5, h - 1.5)
-				trapezoidShape.lineTo(-w / 2.5 + 1.5, h - 1.5)
+
+				trapezoidShape.lineTo(w / 2.5 - 1.5, h - 2)
+				trapezoidShape.bezierCurveTo(w / 2.5 - 1.5, h - 1.75, w / 2.5 - 1.75, h - 1.5, w / 2.5 - 2, h - 1.5)
+
+				trapezoidShape.lineTo(-w / 2.5 + 2, h - 1.5)
+				trapezoidShape.bezierCurveTo(-w / 2.5 + 1.75, h - 1.5, -w / 2.5 + 1.5, h - 1.75, -w / 2.5 + 1.5, h - 2)
+
 				trapezoidShape.lineTo(-w / 2 + 2, hullTop)
 				// trapezoidShape.lineTo(w / 2 - 2, h - 2)
 				// trapezoidShape.lineTo(-w / 2 + 2, hullTop)
-
 				trapezoidShape.closePath()
 
-				const geometry = new THREE.ExtrudeGeometry(trapezoidShape, extrudeOptions)
+				//generate rounded corners for a stronger print
+				roundCorners.moveTo(-cR + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
+				roundCorners.lineTo(-cR + 1, ufoInterface.hull.h / 2 + 1.5)
+				roundCorners.lineTo(-cR, hullTop)
+				roundCorners.lineTo(cR, hullTop)
+				roundCorners.lineTo(cR - 1, ufoInterface.hull.h / 2 + 1.5)
+				roundCorners.arc(-2.5, 0, 1.5, 0, -Math.PI / 2, true)
+				roundCorners.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry([trapezoidShape, roundCorners], extrudeOptions)
 
 				return geometry
 			},
 			parabola(maxHullTopWidth) {
 				const roundShape = new THREE.Shape()
+				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const r = w / 2
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
@@ -255,10 +301,18 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					roundShape.lineTo(Math.cos(a) * (r - 2), h + Math.sin(a) * (r - 2) * 1.5)
 				}
 				// roundShape.lineTo(-r + 2, hullTop)
-
 				roundShape.closePath()
 
-				const geometry = new THREE.ExtrudeGeometry(roundShape, extrudeOptions)
+				//generate rounded corners for a stronger print
+				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
+				roundCorners.lineTo(-r + 2, hullTop)
+				roundCorners.lineTo(r - 2, hullTop)
+				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
+				roundCorners.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry([roundShape, roundCorners], extrudeOptions)
 
 				return geometry
 			},
@@ -427,7 +481,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const w = ufoInterface.hull.w
 				const h = ufoInterface.hull.h
 
-				const maxHullTopWidth = w / 2.25
+				const maxHullTopWidth = w
 				const maxHullMiddleWidth = w / 4
 				const maxHullBottomWidth = w / 2 + 0.75
 
@@ -454,7 +508,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const h = ufoInterface.hull.h
 
 				const maxHullTopWidth = w / 2
-				const maxHullMiddleWidth = w / 3.5
+				const maxHullMiddleWidth = w / 3.75
 				const maxHullBottomWidth = w / 2.5
 
 				discShape.moveTo(-w / 2 + 2, h / 16)
@@ -617,7 +671,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				triLandingLegsShape.lineTo(2, h)
 				triLandingLegsShape.lineTo(2, h + 1)
 				triLandingLegsShape.lineTo(1, h + 1)
-				triLandingLegsShape.lineTo(1, hullBottom)
+				triLandingLegsShape.lineTo(1, hullBottom - 0.5)
 
 				triLandingLegsShape.lineTo(w / 2 - 2, hullBottom - 0.5)
 				triLandingLegsShape.lineTo(w / 2 - 1, h + 1)
@@ -681,6 +735,30 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				landingSpikes.closePath()
 
 				const geometry = new THREE.ExtrudeGeometry(landingSpikes, extrudeOptions)
+
+				return geometry
+			},
+			triLandingSpikes(maxHullBottomWidth) {
+				const triLandingSpikes = new THREE.Shape()
+				const w = maxHullBottomWidth
+				const hullBottom = -Number(ufoInterface.hull.h) / 2 + 1.66
+				const h = hullBottom - 5
+
+				triLandingSpikes.moveTo(-w / 2, hullBottom)
+				triLandingSpikes.lineTo(-w / 2 - 1, h)
+				triLandingSpikes.lineTo(-w / 2 + 3, hullBottom - 0.5)
+
+				triLandingSpikes.moveTo(-1.5, hullBottom - 0.5)
+				triLandingSpikes.lineTo(0, h)
+				triLandingSpikes.lineTo(1.5, hullBottom - 0.5)
+
+				triLandingSpikes.lineTo(w / 2 - 3, hullBottom - 0.5)
+				triLandingSpikes.lineTo(w / 2 + 1, h)
+				triLandingSpikes.lineTo(w / 2, hullBottom)
+
+				triLandingSpikes.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry(triLandingSpikes, extrudeOptions)
 
 				return geometry
 			},
@@ -848,6 +926,8 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					return ufoParts.tech.landingPegs(maxHullBottomWidth)
 				case "LANDING_SPIKES":
 					return ufoParts.tech.landingSpikes(maxHullBottomWidth)
+				case "TRI_LANDING_SPIKES":
+					return ufoParts.tech.triLandingSpikes(maxHullBottomWidth)
 				case "COMPARTMENT_ROUND":
 					return ufoParts.tech.roundWide(maxHullBottomWidth)
 				default:
@@ -876,6 +956,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 			const tech = this.buildTech(hullParams.maxHullBottomWidth)
 			if (tech) {
 				const ufo = BufferGeometryUtils.mergeGeometries([cockpit, hull, tech])
+
 				return ufo
 			}
 
