@@ -3,7 +3,7 @@ const { SerialPort } = require("serialport")
 const { ReadlineParser } = require("@serialport/parser-readline")
 const { readFile } = require("node:fs/promises")
 //const printQueue = require('./../app/utils/io').default
-const { spawn } = require("child_process")
+const { spawn, exec } = require("child_process")
 const { io } = require("socket.io-client")
 const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
 const fs = require("fs").promises
@@ -19,14 +19,14 @@ const connectToPort = () =>
 				// Create a serial port instance
 				port = new SerialPort({ path: process.env.COM, baudRate: 115200 }, function (err) {
 					if (err) {
-						console.error("error creating a serial port instance: ", err.message)
+						console.error("\x1b[31m%s\x1b[0m", "error creating a serial port instance: ", err.message)
 					}
 				})
 
 				parser = port.pipe(
 					new ReadlineParser({ delimiter: "\n" }, function (err) {
 						if (err) {
-							console.error("error creating parser: ", err.message)
+							console.error("\x1b[31m%s\x1b[0m", "error creating parser: ", err.message)
 						}
 					})
 				)
@@ -43,10 +43,10 @@ const connectToPort = () =>
 								"Content-Type": "application/json",
 							},
 						}).catch((err) => {
-							console.error(err)
+							console.error("\x1b[31m%s\x1b[0m", err)
 						})
 						if (!res.ok) {
-							console.error("resume queue error: ", res.status)
+							console.error("\x1b[31m%s\x1b[0m", "resume queue error: ", res.status)
 						}
 
 						clearInterval(interval)
@@ -62,10 +62,10 @@ const connectToPort = () =>
 						"Content-Type": "application/json",
 					},
 				}).catch((err) => {
-					console.error(err)
+					console.error("\x1b[31m%s\x1b[0m", err)
 				})
 				if (!res.ok) {
-					console.error("pause queue error: ", res.status)
+					console.error("\x1b[31m%s\x1b[0m", "pause queue error: ", res.status)
 				}
 
 				console.log("serialport: waiting for printer to turn on...")
@@ -80,10 +80,10 @@ const connectToPort = () =>
 						"Content-Type": "application/json",
 					},
 				}).catch((err) => {
-					console.error(err)
+					console.error("\x1b[31m%s\x1b[0m", err)
 				})
 				if (!res.ok) {
-					console.error("resume queue error: ", res.status)
+					console.error("\x1b[31m%s\x1b[0m", "resume queue error: ", res.status)
 				}
 
 				resolve()
@@ -109,7 +109,7 @@ const printPrintJob = async (printJob) => {
 
 		let gcodeQueueIndex = printJob.data.currentLine
 
-		console.log(printJob)
+		//console.log(printJob)
 
 		const gcodePath = printJob.data.GCODEPath
 
@@ -150,24 +150,15 @@ const printPrintJob = async (printJob) => {
 						...printJob.data,
 						zPosition: [vals[1], vals[2]],
 					})
+				} else if (line.includes("M73")) {
+					await printJob.updateProgress(vals[1])
+					socket.emit("progress", vals[1])
 				}
 
-				//write to printer
-				//console.log(line)
-				//await sleep(5)
 				await serialWriteAndOK(printJob, line)
-				//wait for 'ok' command using promise
-				//await waitForOK()
 			}
 
 			gcodeQueueIndex++
-			prev = progress
-			progress = Math.floor((gcodeQueueIndex / totalLength) * 100)
-			if (prev != progress) {
-				console.log(progress)
-				await printJob.updateProgress(progress)
-				socket.emit("progress", progress)
-			}
 		}
 
 		await completePrint(printJob)
@@ -197,7 +188,7 @@ const serialWriteAndOK = (job, message) =>
 				parser.off("data", dataCheck)
 				parser.off("error", handleError)
 				port.off("close", handleDisconnect)
-				console.error("error when parsing data:", err.message)
+				console.error("\x1b[31m%s\x1b[0m", "error when parsing data:", err.message)
 				reject(err)
 			}
 
@@ -261,7 +252,7 @@ const serialWrite = async (message) => {
 			}
 		})
 	} catch (err) {
-		console.error("error writing to serial: ", err.message)
+		console.error("\x1b[31m%s\x1b[0m", "error writing to serial: ", err.message)
 		throw err
 	}
 }
@@ -285,7 +276,7 @@ const waitForOK = () =>
 			const handleError = (err) => {
 				parser.off("data", dataCheck)
 				parser.off("error", handleError)
-				console.error("error when parsing data:", err.message)
+				console.error("\x1b[31m%s\x1b[0m", "error when parsing data:", err.message)
 				reject(err)
 			}
 
@@ -297,7 +288,7 @@ const waitForOK = () =>
 			parser.on("error", handleError)
 			port.on("close", handleDisconnect)
 		} catch (err) {
-			console.error("error while waiting for OK: ", err.message)
+			console.error("\x1b[31m%s\x1b[0m", "error while waiting for OK: ", err.message)
 			throw err
 		}
 	})
@@ -311,11 +302,11 @@ const completePrint = async (printJob) => {
 			},
 			body: JSON.stringify({ jobID: printJob.data.ID, status: "COMPLETED" }),
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 			throw err
 		})
 		if (!res.ok) {
-			console.error("finish job error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "finish job error: ", res.status)
 			throw new Error(res.status)
 		}
 
@@ -327,56 +318,40 @@ const completePrint = async (printJob) => {
 		await serialWriteAndOK(printJob, "M0 Click to begin next print")
 		//await waitForOK()
 	} catch (err) {
-		console.error("error while completing print: ", err.message)
+		console.error("\x1b[31m%s\x1b[0m", "error while completing print: ", err.message)
 		throw err
 	}
 }
 
 const slice = async (printJob) => {
 	try {
-		let content = `#!/bin/bash\ncd ${process.env.PRUSA_CLI_PATH} && ./PrusaSlicer --export-gcode --merge --load ${process.env.CFG_PATH}${process.env.PRUSA_INI} --output ${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`
+		let content = `
+		#!/bin/bash
+		cd ${process.env.PRUSA_CLI_PATH} && ./PrusaSlicer --export-gcode --merge --load ${process.env.CFG_PATH}${process.env.PRUSA_INI} --output ${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`
 
 		printJob.Model.forEach((model) => {
-			//content.push(` ${model.ID}.stl`)
 			content += ` ${process.env.OUTPUTS_PATH}${model.ID}.stl`
 		})
 
-		await fs.writeFile("./slice.sh", content, (err) => {
-			if (err) {
-				console.error(err)
-			}
-			// file written successfully
-		})
+		await fs.writeFile("./slice.sh", content, { mode: 0o755 })
 
 		const command = "./slice.sh"
-		const args = [
-			`--export-gcode`,
-			`--merge`,
-			`--load`,
-			`${process.env.CFG_PATH}${process.env.PRUSA_INI}`,
-			`--output`,
-			`${process.env.OUTPUTS_PATH}${printJob.ID}.gcode`,
-		]
 
-		const childProcess = spawn(
-			command /*, args, {
-			cwd: process.env.PRUSA_CLI_PATH,
-		}*/
-		)
+		const childProcess = spawn(command, { shell: true })
 
 		await new Promise((resolve, reject) => {
 			childProcess.on("error", (err) => {
-				console.error(`failed to start child process: ${err}`)
+				console.error("\x1b[31m%s\x1b[0m", `slice: failed to start child process: ${err}`)
 				reject(err)
 			})
 
 			childProcess.on("close", (code) => {
 				if (code === 0) {
-					console.log("child process exited successfully")
+					console.log("slice: child process exited successfully")
 					resolve()
 				} else {
-					console.error(`child process exited with code ${code}`)
-					reject(new Error(`Child process exited with code ${code}`))
+					console.error("\x1b[31m%s\x1b[0m", `slice: child process exited with code ${code}`)
+					reject(new Error(`slice: Child process exited with code ${code}`))
 				}
 			})
 		})
@@ -390,7 +365,8 @@ const slice = async (printJob) => {
 			.split("=")[1]
 			.trim()
 		const totalSeconds =
-			parseInt(totalTime.split(" ")[0].replace(/\D/g, "")) * 60 + parseInt(totalTime.split(" ")[1].replace(/\D/g, ""))
+			parseInt(totalTime.split(" ")[0].replace(/\D/g, "") + 2) * 60 +
+			parseInt(totalTime.split(" ")[1].replace(/\D/g, ""))
 		const totalMinutes = Math.ceil(totalSeconds / 60)
 		const totalMillis = totalSeconds * 1000
 
@@ -404,15 +380,15 @@ const slice = async (printJob) => {
 				estimatedTime: totalMillis,
 			}),
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("add job queue error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "add job queue error: ", res.status)
 		}
 
 		console.log("added estimated job time")
 	} catch (err) {
-		console.error("error slicing: ", err.message)
+		console.error("\x1b[31m%s\x1b[0m", "error slicing: ", err.message)
 	}
 }
 
