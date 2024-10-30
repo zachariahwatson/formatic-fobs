@@ -365,8 +365,8 @@ const slice = async (printJob) => {
 			.split("=")[1]
 			.trim()
 		const totalSeconds =
-			parseInt(totalTime.split(" ")[0].replace(/\D/g, "") + 2) * 60 +
-			parseInt(totalTime.split(" ")[1].replace(/\D/g, "") + 30)
+			(parseInt(totalTime.split(" ")[0].replace(/\D/g, "")) + 2) * 60 +
+			(parseInt(totalTime.split(" ")[1].replace(/\D/g, "")) + 30)
 		const totalMinutes = Math.ceil(totalSeconds / 60)
 		const totalMillis = totalSeconds * 1000
 
