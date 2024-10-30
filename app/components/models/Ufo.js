@@ -23,7 +23,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 	}, [MIDIinterface[16].val])
 
 	const extrudeOptions = {
-		depth: 1.6,
+		depth: 1.4,
 		bevelEnabled: false,
 	}
 
@@ -133,11 +133,12 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const r = w / 2
+				const thickness = 2.6
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
 				const h = hullTop + Math.max(Number(ufoInterface.cockpit.h) - r, 0) + 2
 
 				//roundShape.moveTo(-r + 2, h)
-				roundShape.moveTo(-r + 2, hullTop)
+				roundShape.moveTo(-r + thickness, hullTop)
 				roundShape.lineTo(-r, hullTop)
 				roundShape.lineTo(-r, h)
 
@@ -145,20 +146,20 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					roundShape.lineTo(Math.cos(a) * r, h + Math.sin(a) * r)
 				}
 				roundShape.lineTo(r, hullTop)
-				roundShape.lineTo(r - 2, hullTop)
-				roundShape.lineTo(r - 2, h)
+				roundShape.lineTo(r - thickness, hullTop)
+				roundShape.lineTo(r - thickness, h)
 				for (let a = 0; a <= Math.PI; a += Math.PI / 24) {
-					roundShape.lineTo(Math.cos(a) * (r - 2), h + Math.sin(a) * (r - 2))
+					roundShape.lineTo(Math.cos(a) * (r - thickness), h + Math.sin(a) * (r - thickness))
 				}
 				// roundShape.lineTo(-r + 2, hullTop)
 				roundShape.closePath()
 
 				//generate rounded corners for a stronger print
-				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.moveTo(-r + thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
-				roundCorners.lineTo(-r + 2, hullTop)
-				roundCorners.lineTo(r - 2, hullTop)
-				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.lineTo(-r + thickness, hullTop)
+				roundCorners.lineTo(r - thickness, hullTop)
+				roundCorners.lineTo(r - thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
 				roundCorners.closePath()
 
@@ -173,23 +174,31 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
 				const h = hullTop + Number(ufoInterface.cockpit.h) + 2
 				const r = w / 2
+				const thickness = 2.6
 
 				roundRectShape.moveTo(-w / 2, hullTop)
 				roundRectShape.lineTo(-w / 2, h)
-				roundRectShape.bezierCurveTo(-w / 4, h + 1, w / 4, h + 1, w / 2, h)
+				roundRectShape.bezierCurveTo(-w / 4, h + thickness / 2, w / 4, h + thickness / 2, w / 2, h)
 				roundRectShape.lineTo(w / 2, hullTop)
-				roundRectShape.lineTo(w / 2 - 2, hullTop)
-				roundRectShape.lineTo(w / 2 - 2, h - 2)
-				roundRectShape.bezierCurveTo(w / 4, h, -w / 4, h, -w / 2 + 2, h - 2)
-				roundRectShape.lineTo(-w / 2 + 2, hullTop)
+				roundRectShape.lineTo(w / 2 - thickness, hullTop)
+				roundRectShape.lineTo(w / 2 - thickness, h - thickness)
+				roundRectShape.bezierCurveTo(
+					w / 4,
+					h - thickness / 2,
+					-w / 4,
+					h - thickness / 2,
+					-w / 2 + thickness,
+					h - thickness
+				)
+				roundRectShape.lineTo(-w / 2 + thickness, hullTop)
 				roundRectShape.closePath()
 
 				//generate rounded corners for a stronger print
-				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.moveTo(-r + thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
-				roundCorners.lineTo(-r + 2, hullTop)
-				roundCorners.lineTo(r - 2, hullTop)
-				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.lineTo(-r + thickness, hullTop)
+				roundCorners.lineTo(r - thickness, hullTop)
+				roundCorners.lineTo(r - thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
 				roundCorners.closePath()
 
@@ -202,11 +211,12 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const r = w / 2
+				const thickness = 2.6
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
 				const h = hullTop + Math.max(Number(ufoInterface.cockpit.h) - r, 0) + 2
 
 				//roundShape.moveTo(-r + 2, h)
-				roundShape.moveTo(-r + 2, hullTop)
+				roundShape.moveTo(-r + thickness, hullTop)
 				roundShape.lineTo(-r, hullTop)
 				roundShape.lineTo(-r, h)
 
@@ -214,20 +224,20 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					roundShape.lineTo(Math.cos(a) * r, h + (Math.sin(a) * r) / 1.5)
 				}
 				roundShape.lineTo(r, hullTop)
-				roundShape.lineTo(r - 2, hullTop)
-				roundShape.lineTo(r - 2, h)
+				roundShape.lineTo(r - thickness, hullTop)
+				roundShape.lineTo(r - thickness, h)
 				for (let a = 0; a <= Math.PI; a += Math.PI / 24) {
-					roundShape.lineTo(Math.cos(a) * (r - 2), h + (Math.sin(a) * (r - 2)) / 1.5)
+					roundShape.lineTo(Math.cos(a) * (r - thickness), h + (Math.sin(a) * (r - thickness)) / 1.5)
 				}
 				// roundShape.lineTo(-r + 2, hullTop)
 				roundShape.closePath()
 
 				//generate rounded corners for a stronger print
-				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.moveTo(-r + thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
-				roundCorners.lineTo(-r + 2, hullTop)
-				roundCorners.lineTo(r - 2, hullTop)
-				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.lineTo(-r + thickness, hullTop)
+				roundCorners.lineTo(r - thickness, hullTop)
+				roundCorners.lineTo(r - thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
 				roundCorners.closePath()
 
@@ -242,36 +252,51 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
 				const h = hullTop + Number(ufoInterface.cockpit.h) + 1
 				const r = 1
-				const cR = w / 2 - 0.17
+				const cR = w / 2 - 0.23
+				const thickness = 2.6
 
 				trapezoidShape.moveTo(-w / 2, hullTop)
 				trapezoidShape.lineTo(-w / 2.5, h)
 				for (let a = Math.PI * 2; a >= Math.PI; a -= Math.PI / 24) {
-					trapezoidShape.lineTo(Math.cos(a) * (r - 2), h + Math.sin(a) * (r - 2))
+					trapezoidShape.lineTo(Math.cos(a) * (r - thickness), h + Math.sin(a) * (r - thickness))
 				}
 				trapezoidShape.lineTo(w / 2.5, h)
 				trapezoidShape.lineTo(w / 2, hullTop)
-				trapezoidShape.lineTo(w / 2 - 2, hullTop)
+				trapezoidShape.lineTo(w / 2 - thickness, hullTop)
 
-				trapezoidShape.lineTo(w / 2.5 - 1.5, h - 2)
-				trapezoidShape.bezierCurveTo(w / 2.5 - 1.5, h - 1.75, w / 2.5 - 1.75, h - 1.5, w / 2.5 - 2, h - 1.5)
+				trapezoidShape.lineTo(w / 2.5 - thickness + 0.5, h - thickness)
+				trapezoidShape.bezierCurveTo(
+					w / 2.5 - thickness + 0.5,
+					h - thickness + 0.25,
+					w / 2.5 - thickness + 0.25,
+					h - thickness + 0.5,
+					w / 2.5 - thickness,
+					h - thickness + 0.5
+				)
 
-				trapezoidShape.lineTo(-w / 2.5 + 2, h - 1.5)
-				trapezoidShape.bezierCurveTo(-w / 2.5 + 1.75, h - 1.5, -w / 2.5 + 1.5, h - 1.75, -w / 2.5 + 1.5, h - 2)
+				trapezoidShape.lineTo(-w / 2.5 + thickness, h - thickness + 0.5)
+				trapezoidShape.bezierCurveTo(
+					-w / 2.5 + thickness - 0.25,
+					h - thickness + 0.5,
+					-w / 2.5 + thickness - 0.5,
+					h - thickness + 0.25,
+					-w / 2.5 + thickness - 0.5,
+					h - thickness
+				)
 
-				trapezoidShape.lineTo(-w / 2 + 2, hullTop)
+				trapezoidShape.lineTo(-w / 2 + thickness, hullTop)
 				// trapezoidShape.lineTo(w / 2 - 2, h - 2)
 				// trapezoidShape.lineTo(-w / 2 + 2, hullTop)
 				trapezoidShape.closePath()
 
 				//generate rounded corners for a stronger print
-				roundCorners.moveTo(-cR + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.moveTo(-cR + thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
-				roundCorners.lineTo(-cR + 1, ufoInterface.hull.h / 2 + 1.5)
+				roundCorners.lineTo(-cR + thickness / 2, ufoInterface.hull.h / 2 + 1.5)
 				roundCorners.lineTo(-cR, hullTop)
 				roundCorners.lineTo(cR, hullTop)
-				roundCorners.lineTo(cR - 1, ufoInterface.hull.h / 2 + 1.5)
-				roundCorners.arc(-2.5, 0, 1.5, 0, -Math.PI / 2, true)
+				roundCorners.lineTo(cR - thickness / 2, ufoInterface.hull.h / 2 + 1.5)
+				roundCorners.arc(-1.5 - thickness / 2, 0, 1.5, 0, -Math.PI / 2, true)
 				roundCorners.closePath()
 
 				const geometry = new THREE.ExtrudeGeometry([trapezoidShape, roundCorners], extrudeOptions)
@@ -283,11 +308,12 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const roundCorners = new THREE.Shape()
 				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
 				const r = w / 2
+				const thickness = 2.6
 				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
 				const h = hullTop + Math.max(Number(ufoInterface.cockpit.h) - r, 0) + 2
 
 				//roundShape.moveTo(-r + 2, h)
-				roundShape.moveTo(-r + 2, hullTop)
+				roundShape.moveTo(-r + thickness, hullTop)
 				roundShape.lineTo(-r, hullTop)
 				roundShape.lineTo(-r, h)
 
@@ -295,20 +321,20 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					roundShape.lineTo(Math.cos(a) * r, h + Math.sin(a) * r * 1.5)
 				}
 				roundShape.lineTo(r, hullTop)
-				roundShape.lineTo(r - 2, hullTop)
-				roundShape.lineTo(r - 2, h)
+				roundShape.lineTo(r - thickness, hullTop)
+				roundShape.lineTo(r - thickness, h)
 				for (let a = 0; a <= Math.PI; a += Math.PI / 24) {
-					roundShape.lineTo(Math.cos(a) * (r - 2), h + Math.sin(a) * (r - 2) * 1.5)
+					roundShape.lineTo(Math.cos(a) * (r - thickness), h + Math.sin(a) * (r - thickness) * 1.5)
 				}
 				// roundShape.lineTo(-r + 2, hullTop)
 				roundShape.closePath()
 
 				//generate rounded corners for a stronger print
-				roundCorners.moveTo(-r + 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.moveTo(-r + thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(1.5, 3, 1.5, -Math.PI / 2, Math.PI, true)
-				roundCorners.lineTo(-r + 2, hullTop)
-				roundCorners.lineTo(r - 2, hullTop)
-				roundCorners.lineTo(r - 2, ufoInterface.hull.h / 2 - 1.5)
+				roundCorners.lineTo(-r + thickness, hullTop)
+				roundCorners.lineTo(r - thickness, hullTop)
+				roundCorners.lineTo(r - thickness, ufoInterface.hull.h / 2 - 1.5)
 				roundCorners.arc(-1.5, 3, 1.5, 0, -Math.PI / 2, true)
 				roundCorners.closePath()
 
@@ -625,7 +651,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const hullBottom = -Number(ufoInterface.hull.h) / 2 + 1.66
 				const h = hullBottom - 5
 
-				landingLegsShape.moveTo(-w / 2, hullBottom)
+				landingLegsShape.moveTo(-w / 2 - 0.5, hullBottom)
 				landingLegsShape.lineTo(-w / 2 - 1, h + 1)
 				landingLegsShape.lineTo(-w / 2 - 2, h + 1)
 				landingLegsShape.lineTo(-w / 2 - 2, h)
@@ -641,7 +667,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				landingLegsShape.lineTo(w / 2 + 2, h)
 				landingLegsShape.lineTo(w / 2 + 2, h + 1)
 				landingLegsShape.lineTo(w / 2 + 1, h + 1)
-				landingLegsShape.lineTo(w / 2, hullBottom)
+				landingLegsShape.lineTo(w / 2 + 0.5, hullBottom)
 
 				landingLegsShape.closePath()
 
@@ -655,7 +681,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const hullBottom = -Number(ufoInterface.hull.h) / 2 + 1.66
 				const h = hullBottom - 5
 
-				triLandingLegsShape.moveTo(-w / 2, hullBottom)
+				triLandingLegsShape.moveTo(-w / 2 - 0.5, hullBottom)
 				triLandingLegsShape.lineTo(-w / 2 - 1, h + 1)
 				triLandingLegsShape.lineTo(-w / 2 - 2, h + 1)
 				triLandingLegsShape.lineTo(-w / 2 - 2, h)
@@ -664,14 +690,14 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				triLandingLegsShape.lineTo(-w / 2 + 1, h + 1)
 				triLandingLegsShape.lineTo(-w / 2 + 2, hullBottom - 0.5)
 
-				triLandingLegsShape.lineTo(-1, hullBottom - 0.5)
+				triLandingLegsShape.lineTo(-1.5, hullBottom - 0.5)
 				triLandingLegsShape.lineTo(-1, h + 1)
 				triLandingLegsShape.lineTo(-2, h + 1)
 				triLandingLegsShape.lineTo(-2, h)
 				triLandingLegsShape.lineTo(2, h)
 				triLandingLegsShape.lineTo(2, h + 1)
 				triLandingLegsShape.lineTo(1, h + 1)
-				triLandingLegsShape.lineTo(1, hullBottom - 0.5)
+				triLandingLegsShape.lineTo(1.5, hullBottom - 0.5)
 
 				triLandingLegsShape.lineTo(w / 2 - 2, hullBottom - 0.5)
 				triLandingLegsShape.lineTo(w / 2 - 1, h + 1)
@@ -680,7 +706,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				triLandingLegsShape.lineTo(w / 2 + 2, h)
 				triLandingLegsShape.lineTo(w / 2 + 2, h + 1)
 				triLandingLegsShape.lineTo(w / 2 + 1, h + 1)
-				triLandingLegsShape.lineTo(w / 2, hullBottom)
+				triLandingLegsShape.lineTo(w / 2 + 0.5, hullBottom)
 
 				triLandingLegsShape.closePath()
 
@@ -694,23 +720,23 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				const hullBottom = -Number(ufoInterface.hull.h) / 2 + 1.66
 				const h = hullBottom - 5
 
-				landingPegsShape.moveTo(-w / 2 - 1, hullBottom)
+				landingPegsShape.moveTo(-w / 2 - 1.5, hullBottom)
 				landingPegsShape.lineTo(-w / 2 - 1, h + 1)
 				landingPegsShape.lineTo(-w / 2 - 2, h + 1)
 				landingPegsShape.lineTo(-w / 2 - 2, h)
 				landingPegsShape.lineTo(-w / 2 + 2, h)
 				landingPegsShape.lineTo(-w / 2 + 2, h + 1)
 				landingPegsShape.lineTo(-w / 2 + 1, h + 1)
-				landingPegsShape.lineTo(-w / 2 + 1, hullBottom - 0.5)
+				landingPegsShape.lineTo(-w / 2 + 1.5, hullBottom - 0.5)
 
-				landingPegsShape.lineTo(w / 2 - 1, hullBottom - 0.5)
+				landingPegsShape.lineTo(w / 2 - 1.5, hullBottom - 0.5)
 				landingPegsShape.lineTo(w / 2 - 1, h + 1)
 				landingPegsShape.lineTo(w / 2 - 2, h + 1)
 				landingPegsShape.lineTo(w / 2 - 2, h)
 				landingPegsShape.lineTo(w / 2 + 2, h)
 				landingPegsShape.lineTo(w / 2 + 2, h + 1)
 				landingPegsShape.lineTo(w / 2 + 1, h + 1)
-				landingPegsShape.lineTo(w / 2 + 1, hullBottom)
+				landingPegsShape.lineTo(w / 2 + 1.5, hullBottom)
 
 				landingPegsShape.closePath()
 
@@ -726,9 +752,9 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 				landingSpikes.moveTo(-w / 2, hullBottom)
 				landingSpikes.lineTo(-w / 2 - 1, h)
-				landingSpikes.lineTo(-w / 2 + 3, hullBottom - 0.5)
+				landingSpikes.lineTo(-w / 2 + 4, hullBottom - 0.5)
 
-				landingSpikes.lineTo(w / 2 - 3, hullBottom - 0.5)
+				landingSpikes.lineTo(w / 2 - 4, hullBottom - 0.5)
 				landingSpikes.lineTo(w / 2 + 1, h)
 				landingSpikes.lineTo(w / 2, hullBottom)
 
@@ -746,13 +772,13 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 				triLandingSpikes.moveTo(-w / 2, hullBottom)
 				triLandingSpikes.lineTo(-w / 2 - 1, h)
-				triLandingSpikes.lineTo(-w / 2 + 3, hullBottom - 0.5)
+				triLandingSpikes.lineTo(-w / 2 + 4, hullBottom - 0.5)
 
-				triLandingSpikes.moveTo(-1.5, hullBottom - 0.5)
+				triLandingSpikes.moveTo(-2, hullBottom - 0.5)
 				triLandingSpikes.lineTo(0, h)
-				triLandingSpikes.lineTo(1.5, hullBottom - 0.5)
+				triLandingSpikes.lineTo(2, hullBottom - 0.5)
 
-				triLandingSpikes.lineTo(w / 2 - 3, hullBottom - 0.5)
+				triLandingSpikes.lineTo(w / 2 - 4, hullBottom - 0.5)
 				triLandingSpikes.lineTo(w / 2 + 1, h)
 				triLandingSpikes.lineTo(w / 2, hullBottom)
 
