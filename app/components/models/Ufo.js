@@ -23,7 +23,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 	}, [MIDIinterface[16].val])
 
 	const extrudeOptions = {
-		depth: 1.4,
+		depth: 2,
 		bevelEnabled: false,
 	}
 
