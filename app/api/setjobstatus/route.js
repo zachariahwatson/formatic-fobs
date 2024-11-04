@@ -25,7 +25,7 @@ export async function POST(req) {
 		where: { ID: data.jobID },
 		data: {
 			Status: data.status,
-			TimeStamp: time.toUTCString(),
+			TimeStamp: time,
 		},
 		include: {
 			Model: {
