@@ -352,7 +352,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 				const maxHullTopWidth = w / 2
 				const maxHullMiddleWidth = w / 3
-				const maxHullBottomWidth = w / 2
+				const maxHullBottomWidth = w / 2.1
 
 				almondShape.moveTo(-w / 2, 0)
 				almondShape.bezierCurveTo(-w / 2, 0, -w / 3, h / 2, 0, h / 2)
@@ -375,7 +375,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 				const maxHullTopWidth = w / 2
 				const maxHullMiddleWidth = w / 3
-				const maxHullBottomWidth = w / 2
+				const maxHullBottomWidth = w / 2.1
 
 				almondHalvedShape.moveTo(-w / 2, h / 16)
 				almondHalvedShape.bezierCurveTo(-w / 2, h / 16, -w / 3, h / 2, 0, h / 2)
@@ -453,7 +453,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 				const maxHullTopWidth = w / 3
 				const maxHullMiddleWidth = w / 3
-				const maxHullBottomWidth = w / 2
+				const maxHullBottomWidth = w / 2.1
 
 				lumpyShape.moveTo(-w / 2, 0)
 				lumpyShape.bezierCurveTo(-w / 2, 0, -w / 2.5, h / 3.5, -w / 4, h / 3)
@@ -509,7 +509,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 				const maxHullTopWidth = w
 				const maxHullMiddleWidth = w / 4
-				const maxHullBottomWidth = w / 2 + 0.75
+				const maxHullBottomWidth = w / 2
 
 				invertedConeShape.moveTo(-w / 2, h / 3)
 				invertedConeShape.bezierCurveTo(-w / 2, h / 3 + 1, -w / 4, h / 2, 0, h / 2)
@@ -535,7 +535,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 
 				const maxHullTopWidth = w / 2
 				const maxHullMiddleWidth = w / 3.75
-				const maxHullBottomWidth = w / 2.5
+				const maxHullBottomWidth = w / 2.7
 
 				discShape.moveTo(-w / 2 + 2, h / 16)
 				discShape.bezierCurveTo(-w / 3, h / 16, -w / 4, h / 2, 0, h / 2)
