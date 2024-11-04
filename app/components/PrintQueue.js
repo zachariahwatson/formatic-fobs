@@ -142,7 +142,7 @@ export default function PrintQueue() {
 								{currentJob && currentJob.TimeStamp && currentJob.EstimatedTime
 									? Math.floor(
 											(new Date(currentJob.TimeStamp).getTime() + currentJob.EstimatedTime - Date.now()) / 60000
-									  )
+									  ).toString() + "M"
 									: "NULL"}
 							</span>
 							<span className="font-n27-extralight float-right pt-1">ETA_</span>
