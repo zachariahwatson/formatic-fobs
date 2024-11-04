@@ -13,7 +13,7 @@ export default function ProgressBar({ progress }) {
 					animate={{ width: `${progress}%` }}
 					transition={{ type: "tween", ease: [0.6, 0.05, 0.5, 1], duration: 0.5 }}
 				>
-					<p className="font-n27-extralight text-md opacity-50">{progress}%</p>
+					{progress >= 10 && <p className="font-n27-extralight text-md opacity-50">{progress}%</p>}
 				</motion.div>
 			</div>
 		</div>
