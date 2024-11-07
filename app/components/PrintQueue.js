@@ -8,6 +8,7 @@ export default function PrintQueue() {
 	const [printJobs, setPrintJobs] = useState([])
 	const [currentJob, setcurrentJob] = useState([])
 	const [progress, setProgress] = useState(0)
+	const [remaining, setRemaining] = useState(null)
 
 	useEffect(() => {
 		const socket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`)
@@ -44,6 +45,11 @@ export default function PrintQueue() {
 		socket.on("progress", (progress) => {
 			console.log("socket: progress received")
 			setProgress(progress)
+		})
+
+		socket.on("remaining", (remaining) => {
+			console.log("socket: remaining received")
+			setRemaining(remaining)
 		})
 
 		return () => {
@@ -138,13 +144,7 @@ export default function PrintQueue() {
 							<span className="font-n27-regular">
 								{currentJob && currentJob.Status ? currentJob.Status : "WAITING"}
 							</span>
-							<span className="font-n27-regular float-right pt-1">
-								{currentJob && currentJob.TimeStamp && currentJob.EstimatedTime
-									? Math.floor(
-											(new Date(currentJob.TimeStamp).getTime() + currentJob.EstimatedTime - Date.now()) / 60000
-									  ).toString() + "M"
-									: "NULL"}
-							</span>
+							<span className="font-n27-regular float-right pt-1">{remaining ? remaining + "M" : "NULL"}</span>
 							<span className="font-n27-extralight float-right pt-1">ETA_</span>
 						</p>
 						<svg className="w-full h-10">

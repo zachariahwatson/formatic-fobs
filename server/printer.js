@@ -153,6 +153,7 @@ const printPrintJob = async (printJob) => {
 				} else if (line.includes("M73")) {
 					await printJob.updateProgress(vals[1])
 					socket.emit("progress", vals[1])
+					socket.emit("remaining", vals[2])
 				}
 
 				await serialWriteAndOK(printJob, line)
@@ -365,8 +366,8 @@ const slice = async (printJob) => {
 			.split("=")[1]
 			.trim()
 		const totalSeconds =
-			(parseInt(totalTime.split(" ")[0].replace(/\D/g, "")) + 2) * 60 +
-			(parseInt(totalTime.split(" ")[1].replace(/\D/g, "")) + 30)
+			(parseInt(totalTime.split(" ")[0].replace(/\D/g, "")) + 3) * 60 +
+			parseInt(totalTime.split(" ")[1].replace(/\D/g, ""))
 		const totalMinutes = Math.ceil(totalSeconds / 60)
 		const totalMillis = totalSeconds * 1000
 

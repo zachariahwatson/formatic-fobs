@@ -41,6 +41,15 @@ io.on("connection", (socket) => {
 		}
 	})
 
+	socket.on("remaining", (remaining) => {
+		try {
+			console.log("socket: sending remaining")
+			socket.broadcast.emit("remaining", remaining)
+		} catch (err) {
+			console.error("\x1b[31m%s\x1b[0m", "error emitting remaining:", err)
+		}
+	})
+
 	socket.on("timesup", async () => {
 		try {
 			if (state.timesUp === false) {
