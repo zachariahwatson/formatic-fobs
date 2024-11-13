@@ -19,7 +19,7 @@ io.on("connection", (socket) => {
 			console.log("socket: sending print jobs")
 			socket.broadcast.emit("printjobs")
 		} catch (err) {
-			console.error("error handling printjobs:", err)
+			console.error("\x1b[31m%s\x1b[0m", "error handling printjobs:", err)
 		}
 	})
 
@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
 			console.log("socket: sending current job")
 			socket.broadcast.emit("currentjob")
 		} catch (err) {
-			console.error("error handling printjobs:", err)
+			console.error("\x1b[31m%s\x1b[0m", "error handling printjobs:", err)
 		}
 	})
 
@@ -37,7 +37,16 @@ io.on("connection", (socket) => {
 			console.log("socket: sending progress")
 			socket.broadcast.emit("progress", progress)
 		} catch (err) {
-			console.error("error emitting progress:", err)
+			console.error("\x1b[31m%s\x1b[0m", "error emitting progress:", err)
+		}
+	})
+
+	socket.on("remaining", (remaining) => {
+		try {
+			console.log("socket: sending remaining")
+			socket.broadcast.emit("remaining", remaining)
+		} catch (err) {
+			console.error("\x1b[31m%s\x1b[0m", "error emitting remaining:", err)
 		}
 	})
 
@@ -51,7 +60,7 @@ io.on("connection", (socket) => {
 				console.log("timesup: ", state.timesUp)
 			}
 		} catch (err) {
-			console.error("error in timesup socket listener:", err)
+			console.error("\x1b[31m%s\x1b[0m", "error in timesup socket listener:", err)
 		}
 	})
 })
@@ -59,7 +68,7 @@ io.on("connection", (socket) => {
 app.post("/slice", async (req, res) => {
 	const data = req.body
 	await printer.slice(data).catch((error) => {
-		console.error("slice error: ", error)
+		console.error("\x1b[31m%s\x1b[0m", "slice error: ", error)
 		res.sendStatus(500)
 	})
 	res.sendStatus(200)
@@ -67,7 +76,7 @@ app.post("/slice", async (req, res) => {
 
 app.post("/clearjobqueue", async (req, res) => {
 	await queue.printQueue.obliterate().catch((err) => {
-		console.error("error obliterating queue: ", err)
+		console.error("\x1b[31m%s\x1b[0m", "error obliterating queue: ", err)
 		res.sendStatus(500)
 	})
 	console.log("queue: cleared job queue")
@@ -76,7 +85,7 @@ app.post("/clearjobqueue", async (req, res) => {
 
 app.post("/pausequeue", async (req, res) => {
 	await queue.printQueue.pause().catch((err) => {
-		console.error("error pausing queue: ", err)
+		console.error("\x1b[31m%s\x1b[0m", "error pausing queue: ", err)
 		res.sendStatus(500)
 	})
 	console.log("queue: paused queue")
@@ -85,7 +94,7 @@ app.post("/pausequeue", async (req, res) => {
 
 app.post("/resumequeue", async (req, res) => {
 	await queue.printQueue.resume().catch((err) => {
-		console.error("error resuming queue: ", err)
+		console.error("\x1b[31m%s\x1b[0m", "error resuming queue: ", err)
 		res.sendStatus(500)
 	})
 	console.log("queue: resuming queue")
@@ -94,7 +103,7 @@ app.post("/resumequeue", async (req, res) => {
 
 app.post("/removeactivejob", async (req, res) => {
 	const activeJobs = await queue.printQueue.getJobs(["active"]).catch((err) => {
-		console.error("error removing active job: ", err)
+		console.error("\x1b[31m%s\x1b[0m", "error removing active job: ", err)
 
 		res.sendStatus(500)
 	})
@@ -114,7 +123,7 @@ app.post("/restartfailedjob", async (req, res) => {
 	const data = req.body
 	console.log("worker: checking printer port")
 	await printer.checkPort().catch((err) => {
-		console.error("check port error: ", err)
+		console.error("\x1b[31m%s\x1b[0m", "check port error: ", err)
 		throw err
 	})
 	await queue.printQueue
@@ -130,7 +139,7 @@ app.post("/restartfailedjob", async (req, res) => {
 			{ priority: 1 }
 		)
 		.catch((err) => {
-			console.error("error adding job to queue: ", err)
+			console.error("\x1b[31m%s\x1b[0m", "error adding job to queue: ", err)
 			res.sendStatus(500)
 		})
 	console.log("queue: job restarted: ", data.ID)
@@ -141,7 +150,7 @@ app.get("/timesup", (req, res) => {
 	try {
 		res.json({ timesUp: state.timesUp })
 	} catch (err) {
-		console.error(err)
+		console.error("\x1b[31m%s\x1b[0m", err)
 		res.status(500).json({ message: "Server error" })
 	}
 })
@@ -150,7 +159,7 @@ app.get("/timesup", (req, res) => {
 //   try {
 //     printer.init()
 //   } catch (err) {
-//     console.error('error initializing printer:', err)
+//     console.error('\x1b[31m%s\x1b[0m','error initializing printer:', err)
 //     res.sendStatus(500)
 //   }
 //   console.log('printer initialized')
@@ -168,7 +177,7 @@ app.post("/addjob", async (req, res) => {
 			zPosition: null,
 		})
 		.catch((err) => {
-			console.error("error adding job to queue: ", err)
+			console.error("\x1b[31m%s\x1b[0m", "error adding job to queue: ", err)
 			res.sendStatus(500)
 		})
 	console.log("queue: job queued")
@@ -176,7 +185,7 @@ app.post("/addjob", async (req, res) => {
 })
 
 app.use((err, req, res, next) => {
-	console.error("express error handler:", err)
+	console.error("\x1b[31m%s\x1b[0m", "express error handler:", err)
 	res.status(500).send("Internal Server Error")
 })
 
@@ -190,11 +199,11 @@ queue.worker.on("completed", async (job) => {
 		},
 		body: JSON.stringify({ jobID: job.data.ID, status: "ARCHIVED" }),
 	}).catch((err) => {
-		console.error(err)
+		console.error("\x1b[31m%s\x1b[0m", err)
 		throw err
 	})
 	if (!res.ok) {
-		console.error("re-queueing failed job error: ", res.status)
+		console.error("\x1b[31m%s\x1b[0m", "re-queueing failed job error: ", res.status)
 		throw new Error(res.status)
 	}
 	job.updateData({ ...job.data, Status: "ARCHIVED" })
@@ -210,11 +219,11 @@ queue.worker.on("failed", async (job) => {
 		},
 		body: JSON.stringify({ jobID: job.data.ID, status: "ERROR" }),
 	}).catch((err) => {
-		console.error(err)
+		console.error("\x1b[31m%s\x1b[0m", err)
 		throw err
 	})
 	if (!res.ok) {
-		console.error("re-queueing failed job error: ", res.status)
+		console.error("\x1b[31m%s\x1b[0m", "re-queueing failed job error: ", res.status)
 		throw new Error(res.status)
 	}
 	job.updateData({
@@ -236,11 +245,11 @@ queue.worker.on("waiting", async (job) => {
 		},
 		body: JSON.stringify({ jobID: job.data.ID, status: "QUEUED" }),
 	}).catch((err) => {
-		console.error(err)
+		console.error("\x1b[31m%s\x1b[0m", err)
 		throw err
 	})
 	if (!res.ok) {
-		console.error("setting job status to QUEUED error: ", res.status)
+		console.error("\x1b[31m%s\x1b[0m", "setting job status to QUEUED error: ", res.status)
 		throw new Error(res.status)
 	}
 	job.updateData({
@@ -255,7 +264,7 @@ queue.worker.on("waiting", async (job) => {
 
 queue.worker.on("stalled", async (jobID) => {
 	const job = await queue.printQueue.getJob(jobID).catch((err) => {
-		console.error("error getting stalled job from job id: ", err)
+		console.error("\x1b[31m%s\x1b[0m", "error getting stalled job from job id: ", err)
 	})
 	console.log("worker: job stalled, setting status to QUEUED")
 	const res = await fetch("http://localhost/api/setjobstatus", {
@@ -265,11 +274,11 @@ queue.worker.on("stalled", async (jobID) => {
 		},
 		body: JSON.stringify({ jobID: job.data.ID, status: "QUEUED" }),
 	}).catch((err) => {
-		console.error(err)
+		console.error("\x1b[31m%s\x1b[0m", err)
 		throw err
 	})
 	if (!res.ok) {
-		console.error("setting job status to stalled error: ", res.status)
+		console.error("\x1b[31m%s\x1b[0m", "setting job status to stalled error: ", res.status)
 		throw new Error(res.status)
 	}
 	job.updateData({
@@ -283,7 +292,7 @@ queue.worker.on("stalled", async (jobID) => {
 })
 
 queue.worker.on("error", async (job) => {
-	console.log("worker: job error")
+	console.error("\x1b[31m%s\x1b[0m", "worker: job error")
 	job.updateData({
 		...job.data,
 		Status: "ERROR",

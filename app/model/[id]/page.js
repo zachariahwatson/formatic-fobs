@@ -18,12 +18,13 @@ export default function Page({ params }) {
 		navigator
 			.requestMIDIAccess()
 			.then((midiAccess) => {
-				console.log(midiAccess)
+				//console.log(midiAccess)
 				console.log("navitagor: MIDI access request succeeded")
 				midiInput = midiAccess.inputs.values().next().value
 				midiInput.onmidimessage = handleMIDIMessage
 				//handle MIDI messages and process data before emitting
 				function handleMIDIMessage(message) {
+					//console.log(JSON.stringify(message, null, 2))
 					//process the MIDI message and convert it to a suitable format
 					const rawMIDIdata = message.data
 					processMIDIdata(rawMIDIdata)
@@ -37,11 +38,11 @@ export default function Page({ params }) {
 				}
 			})
 			.catch((err) => {
-				console.error("MIDI access request failed: " + err)
+				console.error("\x1b[31m%s\x1b[0m", "MIDI access request failed: " + err)
 			})
 	}, [])
 
-	console.log(MIDIdata)
+	//console.log(MIDIdata)
 
 	return (
 		<>

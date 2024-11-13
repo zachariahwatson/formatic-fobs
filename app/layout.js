@@ -25,12 +25,12 @@ export default function RootLayout({ children }) {
 					<div
 						className={`w-3/4 rounded-3xl text-4xl outline-none shadow-lg shadow-white border border-white relative`}
 					>
-						<div className="w-full h-28 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
+						<div className="w-full h-28 bg-gradient-to-b from-black from-0% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
 							<Link href="/">
-								<div className="flex flex-row justify-start">
-									<Image className="w-24 h-20 p-2 pt-5 pl-8" src={formfinityLogo} alt="formfinity logo" />
+								<div className="flex flex-row justify-start pl-3">
+									<Image className="object-contain" src={formfinityLogo} width={64} height={64} alt="formfinity logo" />
 
-									<p className="text-7xl px-6 pt-4 pb-2">
+									<p className="text-7xl px-3 pt-4 pb-2">
 										<span className="font-copula">formatic</span>
 										<span className="font-waffold">FOBS</span>
 									</p>
@@ -74,7 +74,7 @@ export default function RootLayout({ children }) {
 									position={[0, -20, 0]}
 									sectionColor={"#666666"}
 									fadeDistance={100}
-									fadeStrength={3}
+									fadeStrength={4}
 								/>
 							</Canvas>
 						</div>
@@ -108,8 +108,8 @@ export default function RootLayout({ children }) {
 							/>
 						</svg>
 					</div>
-					<div className="w-1/4 rounded-3xl p-5 bg-black text-4xl outline-none shadow-lg shadow-white border border-white relative pt-32">
-						<div className="w-full h-56 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
+					<div className="w-1/4 rounded-3xl p-5 bg-black text-4xl outline-none shadow-lg shadow-white border border-white relative pt-32 overflow-y-hidden">
+						<div className="w-full h-56 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-20 rounded-3xl">
 							<p className="text-6xl mb-px px-6 pb-2 pt-6">
 								<span className="font-n27-extralight">PRINT_</span>
 								<span className="font-n27-regular">QUEUE</span>

@@ -52,10 +52,10 @@ export default function Page() {
 				printModel: printModel,
 			}),
 		}).catch((err) => {
-			console.error(err)
+			console.error("\x1b[31m%s\x1b[0m", err)
 		})
 		if (!res.ok) {
-			console.error("handle twitter submit error: ", res.status)
+			console.error("\x1b[31m%s\x1b[0m", "handle twitter submit error: ", res.status)
 		}
 		const data = await res.json()
 		router.push(data.redirectUrl)
@@ -64,13 +64,16 @@ export default function Page() {
 	useEffect(() => {
 		async function fetchTimesUp() {
 			const res = await fetch("http://localhost:3000/timesup").catch((err) => {
-				console.error(err)
+				console.error("\x1b[31m%s\x1b[0m", err)
 			})
 			if (!res.ok) {
-				console.error("get timesUp error: ", res.status)
+				console.error("\x1b[31m%s\x1b[0m", "get timesUp error: ", res.status)
 			}
 			const data = await res.json()
 			setTimesUp(data.timesUp)
+			if (data.timesUp) {
+				setPrintModel(false)
+			}
 		}
 		fetchTimesUp()
 
@@ -95,7 +98,7 @@ export default function Page() {
 			>
 				<form onSubmit={handleTwitterSubmit} className="flex flex-col gap-2 w-1/3">
 					<label className="mb-2 text-5xl flex justify-center">
-						<span className="font-n27-extralight">TWITTER_</span>
+						<span className="font-n27-extralight">X/TWITTER_</span>
 						<span className="font-n27-regular">USERNAME:</span>
 					</label>
 					<input

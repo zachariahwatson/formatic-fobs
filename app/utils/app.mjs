@@ -117,7 +117,7 @@ If you want to auto-arrange multiple .stl models in the Slic3r CLI, you can use 
 //   //read gcode file
 //   fs.readFile(gcodePath, 'utf8', async (err, data) => {
 //     if (err) {
-//       console.error(err)
+//       console.error('\x1b[31m%s\x1b[0m',err)
 //     }
 //     //create array of lines
 //     let gcode = data.split('\n')
@@ -141,8 +141,3 @@ If you want to auto-arrange multiple .stl models in the Slic3r CLI, you can use 
 //     console.log('done!')
 //   })
 // })
-
-
-
-
-

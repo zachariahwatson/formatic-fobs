@@ -1,48 +1,51 @@
-import { prisma } from '../../utils/prisma'
-import { socket } from '../../utils/io'
-import { NextResponse } from 'next/server'
+import { prisma } from "../../utils/prisma"
+import { socket } from "../../utils/io"
+import { NextResponse } from "next/server"
 
 export async function POST(req) {
-    const data = await req.json()
+	const data = await req.json()
 
-    //if changing status to PRINTING, change the current COMPLETED job to ARCHIVED
-    if (data.status == 'PRINTING') {
-        const searchResults = await prisma.print.updateMany({
-            where: {
-                Status: {
-                    equals: 'COMPLETED'
-                }
-            },
-            data: {
-                Status: 'ARCHIVED'
-            }
-        })
-    }
+	//if changing status to PRINTING, change the current COMPLETED job to ARCHIVED
+	if (data.status == "PRINTING") {
+		const searchResults = await prisma.print.updateMany({
+			where: {
+				Status: {
+					equals: "COMPLETED",
+				},
+			},
+			data: {
+				Status: "ARCHIVED",
+			},
+		})
+	}
 
-    const currentPrintJob = await prisma.print.update({
-        where: { ID: data.jobID },
-        data: {
-            Status: data.status
-        },
-        include: {
-            Model: {
-                select: {
-                    ID: true,
-                    Params: true,
-                    User: {
-                        select: {
-                            ContactInfo: true
-                        }
-                    }
-                }
-            }
-        },
-    })
+	const time = new Date()
 
-    socket.emit('currentjob')
-    socket.emit('printjobs')
+	const currentPrintJob = await prisma.print.update({
+		where: { ID: data.jobID },
+		data: {
+			Status: data.status,
+			TimeStamp: time,
+		},
+		include: {
+			Model: {
+				select: {
+					ID: true,
+					Params: true,
+					User: {
+						select: {
+							ContactInfo: true,
+						},
+					},
+				},
+			},
+		},
+	})
 
-    console.log('prisma: job status set')
+	socket.emit("currentjob")
+	socket.emit("printjobs")
 
-    return NextResponse.json({ message: 'changed job status successfully' })
+	console.log("prisma: job status set")
+
+	return NextResponse.json({ message: "changed job status successfully" })
 }

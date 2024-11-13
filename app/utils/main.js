@@ -33,7 +33,6 @@
 // camera.zoom = 50
 // camera.updateProjectionMatrix()
 
-
 // const renderer = new THREE.WebGLRenderer();
 // renderer.setSize( window.innerWidth, window.innerHeight );
 // document.body.appendChild( renderer.domElement );
@@ -75,11 +74,11 @@
 //         console.log(entry)
 //     });
 // }
-  
+
 // function onMIDIFailure(msg) {
-//     console.error(`Failed to get MIDI access - ${msg}`);
+//     console.error('\x1b[31m%s\x1b[0m',`Failed to get MIDI access - ${msg}`);
 // }
-  
+
 // function inputHandler(event) {
 //     const id = event.data[1]
 //     const val = event.data[2]
@@ -170,18 +169,16 @@
 
 // //     // Event handlers for child process events
 // //     childProcess.on('error', (err) => {
-// //     console.error(`Failed to start child process: ${err}`);
+// //     console.error('\x1b[31m%s\x1b[0m',`Failed to start child process: ${err}`);
 // //     });
 
 // //     childProcess.on('close', (code) => {
 // //     if (code === 0) {
 // //         console.log('Child process exited successfully');
 // //     } else {
-// //         console.error(`Child process exited with code ${code}`);
+// //         console.error('\x1b[31m%s\x1b[0m',`Child process exited with code ${code}`);
 // //     }
 // //     });
 // // }
 
 // navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
-  
-  

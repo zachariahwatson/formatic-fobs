@@ -13,6 +13,7 @@ export function DataHandler(MIDIdata) {
 		5: { val: 0, lastUserVal: 0, isRandom: false },
 		6: { val: 0, lastUserVal: 0, isRandom: false },
 		7: { val: 0, lastUserVal: 0, isRandom: false },
+		16: { val: 0, isRandom: false },
 	})
 
 	useEffect(() => {
@@ -22,8 +23,8 @@ export function DataHandler(MIDIdata) {
 	}, [MIDIdata])
 
 	useEffect(() => {
-		if (MIDIdata && MIDIdata.id !== undefined && MIDIdata.id <= 15) {
-			const isRandomButton = MIDIdata.id >= 8
+		if (MIDIdata && MIDIdata.id !== undefined && MIDIdata.id <= 16) {
+			const isRandomButton = MIDIdata.id >= 8 && MIDIdata.id !== 16
 			const id = isRandomButton ? MIDIdata.id - 8 : MIDIdata.id
 
 			if (isRandomButton === true && MIDIdata.val === 1) {
