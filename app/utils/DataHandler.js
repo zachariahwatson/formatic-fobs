@@ -19,7 +19,7 @@ export function DataHandler(MIDIdata) {
 		if (MIDIdata.id === 23 && MIDIdata.val === 127 && !printButtonHit) {
 			setPrintButtonHit(true)
 		}
-	}, [MIDIdata, printButtonHit])
+	}, [MIDIdata])
 
 	useEffect(() => {
 		if (MIDIdata && MIDIdata.id !== undefined && MIDIdata.id <= 15) {
@@ -72,7 +72,7 @@ export function DataHandler(MIDIdata) {
 				}))
 			}
 		}
-	}, [MIDIdata, MIDIinterface])
+	}, [MIDIdata])
 
 	// Return the relevant state from the ref
 	return {

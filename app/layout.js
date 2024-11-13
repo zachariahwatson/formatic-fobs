@@ -8,12 +8,7 @@ import { Canvas } from "@react-three/fiber"
 import { OrbitControls, Grid } from "@react-three/drei"
 import Link from "next/link"
 import Image from "next/image"
-import formfinityLogo from "./../public/fonts/formfinityLogo.svg"
-
-export const metadata = {
-	title: "Formatic Fobs",
-	description: "By Zachariah Watson",
-}
+import formfinityLogo from "./../public/formfinityLogo.png"
 
 export default function RootLayout({ children }) {
 	return (
@@ -24,11 +19,7 @@ export default function RootLayout({ children }) {
 					<path d="M 0 0 l 0 5 l 10 -5 l -10 -5 z" fill="#fff" />
 				</svg>
 				<svg className="h-full w-10 absolute right-0" viewBox="0 -5 10 5">
-					<path
-						d="M 0 0 l 0 5 l 10 -5 l -10 -5 z"
-						fill="#fff"
-						transform="scale(-1,1) translate(-10,0)"
-					/>
+					<path d="M 0 0 l 0 5 l 10 -5 l -10 -5 z" fill="#fff" transform="scale(-1,1) translate(-10,0)" />
 				</svg>
 				<div className="flex w-screen h-screen px-10 pt-10 pb-12">
 					<div
@@ -37,11 +28,7 @@ export default function RootLayout({ children }) {
 						<div className="w-full h-28 bg-gradient-to-b from-black from-50% to-transparent absolute top-0 left-0 z-10 rounded-3xl">
 							<Link href="/">
 								<div className="flex flex-row justify-start">
-									<Image
-										className="w-24 h-24 p-2 pt-5 pl-8"
-										src={formfinityLogo}
-										alt="formfinity logo"
-									/>
+									<Image className="w-24 h-20 p-2 pt-5 pl-8" src={formfinityLogo} alt="formfinity logo" />
 
 									<p className="text-7xl px-6 pt-4 pb-2">
 										<span className="font-copula">formatic</span>
@@ -78,11 +65,7 @@ export default function RootLayout({ children }) {
 							</svg>
 						</div>
 						<div className="rounded-3xl absolute w-full h-full top-0 left-0 -z-10">
-							<Canvas
-								orthographic
-								camera={{ zoom: 37.5, position: [-20, 20, 20] }}
-								className="rounded-3xl"
-							>
+							<Canvas orthographic camera={{ zoom: 37.5, position: [-20, 20, 20] }} className="rounded-3xl">
 								<ambientLight />
 								<directionalLight intensity={3} position={[40, 30, 20]} />
 								<Grid

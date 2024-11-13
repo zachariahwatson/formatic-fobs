@@ -45,10 +45,7 @@ export async function POST(req) {
 				},
 			})
 
-			if (
-				lastPrintJob &&
-				lastPrintJob.EstimatedTime + Date.now() > exhibitEndTime.getTime()
-			) {
+			if (lastPrintJob && lastPrintJob.EstimatedTime + Date.now() > exhibitEndTime.getTime()) {
 				printModel = false
 				message = "queue time exceeds end time"
 			} else {
@@ -59,19 +56,14 @@ export async function POST(req) {
 	}
 
 	//update created model's STL path and add print job ID
-
 	//create .stl file
-	fs.writeFile(
-		process.env.OUTPUTS_PATH + `${model.ID}.stl`,
-		STLstring,
-		(err) => {
-			if (err) {
-				console.error("error creating file:", err)
-			} else {
-				console.log("fs: file created successfully.")
-			}
+	fs.writeFile(process.env.OUTPUTS_PATH + `${model.ID}.stl`, STLstring, (err) => {
+		if (err) {
+			console.error("error creating file:", err)
+		} else {
+			console.log("fs: file created successfully.")
 		}
-	)
+	})
 
 	let updateData = {
 		where: { ID: model.ID },

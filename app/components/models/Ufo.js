@@ -10,7 +10,7 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 	const ufoInterface = {
 		cockpit: {
 			get type() {
-				switch (Math.floor(map(MIDIinterface[0].val, 0, 127, 0, 5))) {
+				switch (Math.floor(map(MIDIinterface[0].val, 0, 127, 0, 4))) {
 					case 0:
 						return "ROUND"
 					case 1:
@@ -19,8 +19,6 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 						return "BELL"
 					case 3:
 						return "POD"
-					case 4:
-						return "BULLET"
 					default:
 						return "ROUND"
 				}
@@ -34,18 +32,14 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 		},
 		hull: {
 			get type() {
-				switch (Math.floor(map(MIDIinterface[3].val, 0, 127, 0, 6))) {
+				switch (Math.floor(map(MIDIinterface[3].val, 0, 127, 0, 4))) {
 					case 0:
 						return "UK_1981"
 					case 1:
 						return "USA_1950"
 					case 2:
-						return "ATLANTIC_1958"
-					case 3:
 						return "UK_1978"
-					case 4:
-						return "RSA_1995"
-					case 5:
+					case 3:
 						return "USA_1947"
 					default:
 						return "UK_1981"
@@ -60,20 +54,18 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 		},
 		tech: {
 			get type() {
-				switch (Math.floor(map(MIDIinterface[6].val, 0, 127, 0, 7))) {
+				switch (Math.floor(map(MIDIinterface[6].val, 0, 127, 0, 6))) {
 					case 0:
 						return "COMPARTMENT"
 					case 1:
 						return "TRI_PROBE"
 					case 2:
-						return "THRUSTER"
-					case 3:
 						return "SINGLE_PROBE"
-					case 4:
+					case 3:
 						return "LANDING_LEGS"
-					case 5:
+					case 4:
 						return "LANDING_PEGS"
-					case 6:
+					case 5:
 						return "NONE"
 					default:
 						return "COMPARTMENT"
@@ -82,21 +74,13 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 		},
 		windows: {
 			get type() {
-				switch (Math.floor(map(MIDIinterface[7].val, 0, 127, 0, 7))) {
+				switch (Math.floor(map(MIDIinterface[7].val, 0, 127, 0, 3))) {
 					case 0:
 						return "CIRCLES"
 					case 1:
 						return "RECTANGLES"
 					case 2:
-						return "LINE"
-					case 3:
-						return "SEGMENTED_LINE"
-					case 4:
 						return "THREE_CIRCLES"
-					case 5:
-						return "TWO_CIRCLES"
-					case 6:
-						return "NONE"
 					default:
 						return "CIRCLES"
 				}
@@ -156,6 +140,68 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				roundRectShape.closePath()
 
 				const geometry = new THREE.ExtrudeGeometry(roundRectShape, {
+					depth: 2,
+					bevelEnabled: false,
+				})
+
+				return geometry
+			},
+			squishedRound(maxHullTopWidth) {
+				const roundShape = new THREE.Shape()
+				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
+				const r = w / 2
+				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
+				const h = hullTop + Math.max(Number(ufoInterface.cockpit.h) - r, 0) + 2
+
+				roundShape.moveTo(-r + 2, h)
+				roundShape.lineTo(-r + 2, hullTop)
+				roundShape.lineTo(-r, hullTop)
+				roundShape.lineTo(-r, h)
+
+				for (let a = Math.PI; a >= 0; a -= Math.PI / 24) {
+					roundShape.lineTo(Math.cos(a) * r, h + (Math.sin(a) * r) / 1.5)
+				}
+				roundShape.lineTo(r, hullTop)
+				roundShape.lineTo(r - 2, hullTop)
+				roundShape.lineTo(r - 2, h)
+				for (let a = 0; a <= Math.PI; a += Math.PI / 24) {
+					roundShape.lineTo(Math.cos(a) * (r - 2), h + (Math.sin(a) * (r - 2)) / 1.5)
+				}
+				// roundShape.lineTo(-r + 2, hullTop)
+
+				roundShape.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry(roundShape, {
+					depth: 2,
+					bevelEnabled: false,
+				})
+
+				return geometry
+			},
+			trapezoid(maxHullTopWidth) {
+				const trapezoidShape = new THREE.Shape()
+				const w = Math.min(maxHullTopWidth, ufoInterface.cockpit.w)
+				const hullTop = Number(ufoInterface.hull.h) / 2 - 3
+				const h = hullTop + Number(ufoInterface.cockpit.h) + 1
+				const r = 1
+
+				trapezoidShape.moveTo(-w / 2, hullTop)
+				trapezoidShape.lineTo(-w / 2.5, h)
+				for (let a = Math.PI * 2; a >= Math.PI; a -= Math.PI / 24) {
+					trapezoidShape.lineTo(Math.cos(a) * (r - 2), h + Math.sin(a) * (r - 2))
+				}
+				trapezoidShape.lineTo(w / 2.5, h)
+				trapezoidShape.lineTo(w / 2, hullTop)
+				trapezoidShape.lineTo(w / 2 - 2, hullTop)
+				trapezoidShape.lineTo(w / 2.5 - 2, h - 2)
+				trapezoidShape.lineTo(-w / 2.5 + 2, h - 2)
+				trapezoidShape.lineTo(-w / 2 + 2, hullTop)
+				// trapezoidShape.lineTo(w / 2 - 2, h - 2)
+				// trapezoidShape.lineTo(-w / 2 + 2, hullTop)
+
+				trapezoidShape.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry(trapezoidShape, {
 					depth: 2,
 					bevelEnabled: false,
 				})
@@ -233,6 +279,34 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					maxHullBottomWidth: maxHullBottomWidth,
 				}
 			},
+			cap() {
+				const capShape = new THREE.Shape()
+				const w = ufoInterface.hull.w
+				const h = ufoInterface.hull.h
+
+				const maxHullTopWidth = w / 1.98
+				const maxHullMiddleWidth = w / 3.75
+				const maxHullBottomWidth = w / 1.5
+
+				capShape.moveTo(-w / 2, -h / 2)
+				capShape.lineTo(-w / 2, -h / 2 + 1)
+				capShape.lineTo(-w / 2 + 1, -h / 2 + 1)
+				capShape.bezierCurveTo(-w / 2 + 1, h / 4, -w / 4, h / 2 - 1, -w / 4, h / 2 - 1)
+				capShape.lineTo(-w / 4, h / 2)
+				capShape.lineTo(w / 4, h / 2)
+				capShape.lineTo(w / 4, h / 2 - 1)
+				capShape.bezierCurveTo(w / 4, h / 2 - 1, w / 2 - 1, h / 4, w / 2 - 1, -h / 2 + 1)
+				capShape.lineTo(w / 2, -h / 2 + 1)
+				capShape.lineTo(w / 2, -h / 2)
+				capShape.closePath()
+
+				return {
+					shape: capShape,
+					maxHullTopWidth: maxHullTopWidth,
+					maxHullMiddleWidth: maxHullMiddleWidth,
+					maxHullBottomWidth: maxHullBottomWidth,
+				}
+			},
 		},
 		tech: {
 			round() {
@@ -270,6 +344,103 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 				trapezoidShape.closePath()
 
 				const geometry = new THREE.ExtrudeGeometry(trapezoidShape, {
+					depth: 2,
+					bevelEnabled: false,
+				})
+
+				return geometry
+			},
+			threeRound(maxHullBottomWidth) {
+				const roundShape = new THREE.Shape()
+				const w = maxHullBottomWidth
+				const r = w / 8
+				const hullBottom = -Number(ufoInterface.hull.h) / 2 + 1
+				const h = hullBottom
+				roundShape.moveTo(w / 2, h)
+				for (let a = Math.PI * 2; a >= Math.PI; a -= Math.PI / 24) {
+					roundShape.lineTo(w / 2 + Math.cos(a) * r, h + Math.sin(a) * r - 1)
+				}
+				for (let a = Math.PI * 2; a >= Math.PI; a -= Math.PI / 24) {
+					roundShape.lineTo(Math.cos(a) * r, h + Math.sin(a) * r - 1)
+				}
+				for (let a = Math.PI * 2; a >= Math.PI; a -= Math.PI / 24) {
+					roundShape.lineTo(-w / 2 + Math.cos(a) * r, h + Math.sin(a) * r - 1)
+				}
+
+				// roundShape.moveTo(r, h)
+				// for (let a = Math.PI * 2; a >= Math.PI; a -= Math.PI / 24) {
+				// 	roundShape.lineTo(w / 2 + Math.cos(a) * r, h + Math.sin(a) * r - 1)
+				// }
+
+				roundShape.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry(roundShape, {
+					depth: 2,
+					bevelEnabled: false,
+				})
+
+				return geometry
+			},
+			landingLegs(maxHullBottomWidth) {
+				const landingLegsShape = new THREE.Shape()
+				const w = maxHullBottomWidth
+				const hullBottom = -Number(ufoInterface.hull.h) / 2 + 1.66
+				const h = hullBottom - 5
+
+				landingLegsShape.moveTo(-w / 2, hullBottom)
+				landingLegsShape.lineTo(-w / 2 - 1, h + 1)
+				landingLegsShape.lineTo(-w / 2 - 2, h + 1)
+				landingLegsShape.lineTo(-w / 2 - 2, h)
+				landingLegsShape.lineTo(-w / 2 + 2, h)
+				landingLegsShape.lineTo(-w / 2 + 2, h + 1)
+				landingLegsShape.lineTo(-w / 2 + 1, h + 1)
+				landingLegsShape.lineTo(-w / 2 + 2, hullBottom - 0.5)
+
+				landingLegsShape.lineTo(w / 2 - 2, hullBottom - 0.5)
+				landingLegsShape.lineTo(w / 2 - 1, h + 1)
+				landingLegsShape.lineTo(w / 2 - 2, h + 1)
+				landingLegsShape.lineTo(w / 2 - 2, h)
+				landingLegsShape.lineTo(w / 2 + 2, h)
+				landingLegsShape.lineTo(w / 2 + 2, h + 1)
+				landingLegsShape.lineTo(w / 2 + 1, h + 1)
+				landingLegsShape.lineTo(w / 2, hullBottom)
+
+				landingLegsShape.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry(landingLegsShape, {
+					depth: 2,
+					bevelEnabled: false,
+				})
+
+				return geometry
+			},
+			landingPegs(maxHullBottomWidth) {
+				const landingPegsShape = new THREE.Shape()
+				const w = maxHullBottomWidth / 2
+				const hullBottom = -Number(ufoInterface.hull.h) / 2 + 1.66
+				const h = hullBottom - 5
+
+				landingPegsShape.moveTo(-w / 2 - 1, hullBottom)
+				landingPegsShape.lineTo(-w / 2 - 1, h + 1)
+				landingPegsShape.lineTo(-w / 2 - 2, h + 1)
+				landingPegsShape.lineTo(-w / 2 - 2, h)
+				landingPegsShape.lineTo(-w / 2 + 2, h)
+				landingPegsShape.lineTo(-w / 2 + 2, h + 1)
+				landingPegsShape.lineTo(-w / 2 + 1, h + 1)
+				landingPegsShape.lineTo(-w / 2 + 1, hullBottom - 0.5)
+
+				landingPegsShape.lineTo(w / 2 - 1, hullBottom - 0.5)
+				landingPegsShape.lineTo(w / 2 - 1, h + 1)
+				landingPegsShape.lineTo(w / 2 - 2, h + 1)
+				landingPegsShape.lineTo(w / 2 - 2, h)
+				landingPegsShape.lineTo(w / 2 + 2, h)
+				landingPegsShape.lineTo(w / 2 + 2, h + 1)
+				landingPegsShape.lineTo(w / 2 + 1, h + 1)
+				landingPegsShape.lineTo(w / 2 + 1, hullBottom)
+
+				landingPegsShape.closePath()
+
+				const geometry = new THREE.ExtrudeGeometry(landingPegsShape, {
 					depth: 2,
 					bevelEnabled: false,
 				})
@@ -340,12 +511,10 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					return ufoParts.cockpit.round(maxHullTopWidth)
 				case "ROUND_RECT":
 					return ufoParts.cockpit.roundRect(maxHullTopWidth)
-				// case 2:
-				// 	return "BELL"
-				// case 3:
-				// 	return "POD"
-				// case 4:
-				// 	return "BULLET"
+				case "BELL":
+					return ufoParts.cockpit.trapezoid(maxHullTopWidth)
+				case "POD":
+					return ufoParts.cockpit.squishedRound(maxHullTopWidth)
 				default:
 					return ufoParts.cockpit.round(maxHullTopWidth)
 			}
@@ -357,12 +526,8 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					return ufoParts.hull.bell()
 				case "UK_1981":
 					return ufoParts.hull.almond()
-				// case "ATLANTIC_1958":
-				// 	return "ATLANTIC_1958"
-				// case "UK_1978":
-				// 	return "UK_1978"
-				// case "RSA_1995":
-				// 	return "RSA_1995"
+				case "UK_1978":
+					return ufoParts.hull.cap()
 				case "USA_1947":
 					return ufoParts.hull.stump()
 				default:
@@ -384,18 +549,18 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 			switch (ufoInterface.tech.type) {
 				case "SINGLE_PROBE":
 					return ufoParts.tech.round()
-				// case 1:
-				// 	return "TRI_PROBE"
-				// case 2:
-				// 	return "THRUSTER"
+				case "TRI_PROBE":
+					if (ufoInterface.hull.type === "UK_1981") {
+						return ufoParts.tech.round(maxHullBottomWidth)
+					} else {
+						return ufoParts.tech.threeRound(maxHullBottomWidth)
+					}
 				case "COMPARTMENT":
 					return ufoParts.tech.trapezoid(maxHullBottomWidth)
-				// case 4:
-				// 	return "LANDING_LEGS"
-				// case 5:
-				// 	return "LANDING_PEGS"
-				// case "NONE":
-				// 	return new THREE.Geometry()
+				case "LANDING_LEGS":
+					return ufoParts.tech.landingLegs(maxHullBottomWidth)
+				case "LANDING_PEGS":
+					return ufoParts.tech.landingPegs(maxHullBottomWidth)
 				default:
 					return ufoParts.tech.trapezoid(maxHullBottomWidth)
 			}
@@ -406,16 +571,8 @@ export default function Ufo({ printButtonHit, MIDIinterface, printModel, params 
 					return ufoParts.windows.fiveCircles(maxHullMiddleWidth)
 				case "RECTANGLES":
 					return ufoParts.windows.rectangles(maxHullMiddleWidth)
-				// case 2:
-				// 	return "LINE"
-				// case 3:
-				// 	return "SEGMENTED_LINE"
 				case "THREE_CIRCLES":
 					return ufoParts.windows.threeCircles(maxHullMiddleWidth)
-				// case 5:
-				// 	return "TWO_CIRCLES"
-				case "NONE":
-					return []
 				default:
 					return ufoParts.windows.fiveCircles(maxHullMiddleWidth)
 			}
