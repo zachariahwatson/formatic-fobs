@@ -1,11 +1,11 @@
-export const bedCount = 10
+export const bedCount = 6
 
-export const printUserName = false
+export const printUserName = true
 
-export const introText = false
+export const introText = true
 
 function createDate(year, month, day, hour, minute) {
 	return new Date(year, month - 1, day, hour - 1, minute)
 }
 
-export const exhibitEndTime = createDate(2023, 9, 23, 21)
+export const exhibitEndTime = createDate(2023, 11, 15, 15)
