@@ -1,12 +1,12 @@
 ![Formatic Fobs logo](./public/readme/formatic-fobs-logo.png)
 
-## _Promo video_
-
-![Formatic Fobs promo video](./public/readme/Formatic-Fobs-Promo.mp4)
-
 ## _Exhibit at the event_
 
 ![Photo of exhibit](./public/readme/IMG_1726.png)
+
+## _Exhibit in action_
+
+![Video of exhibit](./public/readme/output.gif)
 
 ## _Queue system_
 
@@ -15,10 +15,6 @@
 ## _Printing created fobs_
 
 ![Photo of 3d printer](./public/readme/IMG_1730.png)
-
-## _Exhibit in action_
-
-![Video of exhibit](./public/readme/Mvi%201085.mp4)
 
 ## .env
 
